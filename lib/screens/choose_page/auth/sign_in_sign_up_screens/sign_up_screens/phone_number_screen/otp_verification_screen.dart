@@ -8,8 +8,9 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OTPVerificationPage extends StatefulWidget {
   final String authSide;
+  final String verificationId;
 
-  OTPVerificationPage({Key? key, required this.authSide}) : super(key: key);
+  OTPVerificationPage({Key? key, required this.authSide, required this.verificationId}) : super(key: key);
 
   @override
   _OTPVerificationPageState createState() => _OTPVerificationPageState();
