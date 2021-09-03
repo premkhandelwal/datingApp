@@ -43,8 +43,6 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
     Icons.library_music,
     Icons.local_bar,
     Icons.videogame_asset
-
-
   ];
   List<String> _selectedInterests = [];
   @override
@@ -55,7 +53,9 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              TopBarForSignUpAndSignIn(
+              CustomAppBar(
+                centerWidget: Container(),
+                trailingWidget: Container(),
                 context: context,
               ),
               SizedBox(height: 20),

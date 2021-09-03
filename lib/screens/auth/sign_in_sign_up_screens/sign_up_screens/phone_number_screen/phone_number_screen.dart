@@ -2,7 +2,7 @@ import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/screens/choose_page/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +21,10 @@ class PhoneNumberPage extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              TopBarForSignUpAndSignIn(
+              CustomAppBar(
                 context: context,
+                centerWidget: Container(),
+                trailingWidget: Container(),
               ),
               SizedBox(height: 40),
               Row(

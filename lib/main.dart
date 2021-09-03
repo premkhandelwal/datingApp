@@ -1,5 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/screens/choose_page/auth/choose_sign_in_sign_up_page.dart';
+import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {

@@ -1,5 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/screens/choose_page/auth/sign_in_sign_up_screens/sign_up_screens/gender_selection_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/gender_selection_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TopBarForSignUpAndSignIn(
+                CustomAppBar(
+                  centerWidget: Container(),
+                  trailingWidget: Container(),
                   context: context,
                 ),
                 SizedBox(

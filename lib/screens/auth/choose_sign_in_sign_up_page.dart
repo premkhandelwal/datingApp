@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/screens/choose_page/auth/sign_in_sign_up_screens/sign_up_screens/email_phone_selection_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/email_phone_selection_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
