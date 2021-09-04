@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
           subtitle2: TextStyle(fontSize: 18, fontFamily: 'Modernist'),
         ),
       ),
+      // home: DiscoverScreen(),
       home: ChooseSignInSignUpPage(),
     );
   }

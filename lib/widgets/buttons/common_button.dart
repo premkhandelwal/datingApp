@@ -27,11 +27,13 @@ class IconsOutlinedButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
   final Size size;
+  final double iconSize;
   IconsOutlinedButton({
     Key? key,
     required this.icon,
     required this.onPressed,
     this.size = const Size(70, 70),
+    this.iconSize = 24,
   }) : super(key: key);
 
   @override
@@ -47,6 +49,7 @@ class IconsOutlinedButton extends StatelessWidget {
       child: Center(
         child: Icon(
           icon,
+          size: iconSize,
           color: AppColor,
         ),
       ),

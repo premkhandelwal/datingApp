@@ -1,4 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/screens/search_friends_screen/search_friends_Screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
@@ -12,22 +13,6 @@ class YourInterestScreen extends StatefulWidget {
 }
 
 class _YourInterestScreenState extends State<YourInterestScreen> {
-  List<String> interests = [
-    'Photography',
-    'Shopping',
-    'Karaoke',
-    'Yoga',
-    'Cooking',
-    'Tennis',
-    'Run',
-    'Swimming',
-    'Art',
-    'Traveling',
-    'Extreme',
-    'Music',
-    'Drink',
-    'Video games',
-  ];
   List<IconData> iconsList = [
     Icons.camera,
     Icons.shopping_bag_outlined,
