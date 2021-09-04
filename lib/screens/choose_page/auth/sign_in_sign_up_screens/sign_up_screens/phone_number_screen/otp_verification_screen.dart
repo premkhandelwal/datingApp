@@ -24,6 +24,7 @@ class OTPVerificationPage extends StatefulWidget {
 class _OTPVerificationPageState extends State<OTPVerificationPage> {
   bool _sendAgain = false;
   TextEditingController otpController = new TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
