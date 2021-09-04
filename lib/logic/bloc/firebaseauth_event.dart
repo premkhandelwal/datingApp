@@ -3,15 +3,18 @@ part of 'firebaseauth_bloc.dart';
 @immutable
 abstract class FirebaseauthEvent {}
 
+class UserStateNone extends FirebaseauthEvent {}
+
 class UserStateRequested extends FirebaseauthEvent {}
 
 class PhoneVerficationRequested extends FirebaseauthEvent {}
 
-class SignUpRequested extends FirebaseauthEvent {
+class SignUpWithEmailPasswordRequested extends FirebaseauthEvent {
   final String emailId;
   final String password;
 
-  SignUpRequested({required this.emailId, required this.password});
+  SignUpWithEmailPasswordRequested(
+      {required this.emailId, required this.password});
 }
 
 class SignInWithEmailPasswordRequested extends FirebaseauthEvent {
@@ -22,19 +25,16 @@ class SignInWithEmailPasswordRequested extends FirebaseauthEvent {
       {required this.emailId, required this.password});
 }
 
-class SignInWithPhoneNumberRequested extends FirebaseauthEvent {
-  final String phoneNumber;
-
-  SignInWithPhoneNumberRequested({required this.phoneNumber});
-}
-
 class OtpSendRequested extends FirebaseauthEvent {
   final PhoneCodeSent codeSent;
-  final PhoneVerificationFailed phoneVerificationFailed;
+  final PhoneVerificationFailed verificationFailed;
+  final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout;
   final String phoneNumber;
+
   OtpSendRequested({
     required this.codeSent,
-    required this.phoneVerificationFailed,
+    required this.verificationFailed,
+    required this.codeAutoRetrievalTimeout,
     required this.phoneNumber,
   });
 }
@@ -45,6 +45,15 @@ class OtpVerificationRequested extends FirebaseauthEvent {
   OtpVerificationRequested({
     required this.smsCode,
     required this.verificationId,
+  });
+}
+
+class OtpRetrievalTimeOut extends FirebaseauthEvent {}
+
+class OtpRetrievalFailure extends FirebaseauthEvent {
+  final String errorMessage;
+  OtpRetrievalFailure({
+    required this.errorMessage,
   });
 }
 

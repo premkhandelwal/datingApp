@@ -19,18 +19,24 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   Stream<FirebaseauthState> mapEventToState(
     FirebaseauthEvent event,
   ) async* {
-    if (event is UserStateRequested) {
+    if (event is UserStateNone) {
+      yield FirebaseauthInitial();
+    } else if (event is UserStateRequested) {
       yield* _mapUserStatetoState();
     } else if (event is SignInWithEmailPasswordRequested) {
       yield* _mapSignInWithEmailPasswordRequesttoState(event);
-    } else if (event is SignInWithPhoneNumberRequested) {
-      yield* _mapSignInWithPhoneNumberRequesttoState(event);
+    } else if (event is SignUpWithEmailPasswordRequested) {
+      yield* _mapSignUpWithEmailPasswordRequesttoState(event);
     } else if (event is SignOutRequested) {
       yield* _mapSignOutRequesttoState(event);
     } else if (event is OtpSendRequested) {
       yield* _mapSendOtpRequesttoState(event);
     } else if (event is OtpVerificationRequested) {
       yield* _mapVerifyOtpRequesttoState(event);
+    } else if (event is OtpRetrievalTimeOut) {
+      yield OtpRetrievalTimedOut();
+    } else if (event is OtpRetrievalFailure) {
+      yield OtpRetrievalFailed(errorMessage: event.errorMessage);
     }
   }
 
@@ -45,6 +51,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _mapSignInWithEmailPasswordRequesttoState(
       SignInWithEmailPasswordRequested event) async* {
+    yield OperationInProgress();
+
     CurrentUser? user = await firebaseAuthRepo.signInWithEmailPassword(
         event.emailId, event.password);
     if (user != null) {
@@ -54,23 +62,24 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     }
   }
 
-  Stream<FirebaseauthState> _mapSignInWithPhoneNumberRequesttoState(
-      SignInWithPhoneNumberRequested event) async* {
-    
-   
-      String? _verificationId =
-          await firebaseAuthRepo.signInWithPhoneNumber(event.phoneNumber);
-      if (_verificationId != null) {
-        yield PhoneNumberVerificationCompleted(verificationId: _verificationId);
-      } else {
-        yield RequesteImpledOperationFailed();
-      }
-    
+  Stream<FirebaseauthState> _mapSignUpWithEmailPasswordRequesttoState(
+      SignUpWithEmailPasswordRequested event) async* {
+    yield OperationInProgress();
+
+    CurrentUser? user = await firebaseAuthRepo.signUpWithEmailPassword(
+        event.emailId, event.password);
+    if (user != null) {
+      yield UserSignedUp();
+    } else {
+      yield RequestedOperationFailed();
+    }
   }
 
   Stream<FirebaseauthState> _mapSignOutRequesttoState(
       SignOutRequested event) async* {
     try {
+      yield OperationInProgress();
+
       await firebaseAuthRepo.signOut();
       yield UserLoggedOut();
     } catch (e) {
@@ -80,11 +89,18 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _mapSendOtpRequesttoState(
       OtpSendRequested event) async* {
+    yield OperationInProgress();
     try {
       await firebaseAuthRepo.sendOTP(
-          event.phoneNumber, event.codeSent, event.phoneVerificationFailed);
+        event.phoneNumber,
+        event.codeSent,
+        event.verificationFailed,
+        event.codeAutoRetrievalTimeout
+      );
       yield OtpSent();
     } catch (e) {
+      print("Holy");
+      print(e);
       yield RequestedOperationFailed();
     }
   }
@@ -92,6 +108,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   Stream<FirebaseauthState> _mapVerifyOtpRequesttoState(
       OtpVerificationRequested event) async* {
     try {
+      yield OperationInProgress();
+
       bool otpVerified =
           await firebaseAuthRepo.verifyOTP(event.smsCode, event.verificationId);
       if (otpVerified) {
@@ -100,7 +118,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
         yield OtpNotVerified();
       }
     } catch (e) {
-      yield RequestedOperationFailed();
+      yield OtpNotVerified();
     }
   }
 }

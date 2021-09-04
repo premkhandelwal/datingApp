@@ -10,17 +10,26 @@ class PhoneNumberVerificationCompleted extends FirebaseauthState {
   PhoneNumberVerificationCompleted({
     required this.verificationId,
   });
-  
 }
 
-class OtpSent extends FirebaseauthState{}
+class OperationInProgress extends FirebaseauthState {}
 
-class OtpVerified extends FirebaseauthState{}
+class OtpSent extends FirebaseauthState {}
 
-class OtpNotVerified extends FirebaseauthState{}
+class OtpVerified extends FirebaseauthState {}
 
+class OtpNotVerified extends FirebaseauthState {}
 
-class RequestedOperationFailed extends FirebaseauthState{}
+class OtpRetrievalTimedOut extends FirebaseauthState {}
+
+class OtpRetrievalFailed extends FirebaseauthState {
+  final String errorMessage;
+  OtpRetrievalFailed({
+    required this.errorMessage,
+  });
+}
+
+class RequestedOperationFailed extends FirebaseauthState {}
 
 class UserLoggedIn extends FirebaseauthState {
   /* final CurrentUser? currentUser;

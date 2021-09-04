@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -6,11 +8,15 @@ abstract class BaseAuthProvider {
   Future<CurrentUser> signUpWithEmailPassword(String emailId, String password);
   Future<CurrentUser?> signInWithEmailPassword(String emailId, String password);
   //Future<String> signUpWithPhoneNumber(String phoneNumber);
-  Future<String> signInWithPhoneNumber(String phoneNumber);
+  // Future<String> signInWithPhoneNumber(String phoneNumber);
   Future<void> signOut();
   Future<bool> verifyOTP(String smsCode, String verificationId);
-  Future<void> sendOTP(String phoneNumber, PhoneCodeSent codeSent,
-      PhoneVerificationFailed verificationFailed);
+  Future<void> sendOTP(
+    String phoneNumber,
+    PhoneCodeSent codeSent,
+    PhoneVerificationFailed verificationFailed,
+    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout
+  );
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider {
@@ -31,15 +37,6 @@ class FirebaseAuthProvider extends BaseAuthProvider {
     } catch (e) {
       throw Exception(e);
     }
-  }
-
-  @override
-  Future<String> signInWithPhoneNumber(String phoneNumber) async {
-    RecaptchaVerifier verifier = new RecaptchaVerifier();
-    ConfirmationResult result = await _firebaseAuth.signInWithPhoneNumber(
-        phoneNumber, verifier);
-    print(result);
-    return result.verificationId;
   }
 
   @override
@@ -75,15 +72,24 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   }
 
   @override
-  Future<void> sendOTP(String phoneNumber, PhoneCodeSent codeSent,
-      PhoneVerificationFailed verificationFailed) async {
-    if (!phoneNumber.contains('+')) phoneNumber = '+91' + phoneNumber;
-    _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: Duration(seconds: 30),
-        verificationCompleted: (auth) {},
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: (timeout) {});
+  Future<void> sendOTP(
+    String phoneNumber,
+    PhoneCodeSent codeSent,
+    PhoneVerificationFailed verificationFailed,
+    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout
+  ) async {
+    try {
+      if (!phoneNumber.contains('+')) phoneNumber = '+91' + phoneNumber;
+      _firebaseAuth.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          timeout: Duration(seconds: 30),
+          verificationCompleted: (auth) {},
+          verificationFailed: verificationFailed,
+          codeSent: codeSent,
+          codeAutoRetrievalTimeout:codeAutoRetrievalTimeout);
+    } catch (e) {
+      print("hello");
+      print(e);
+    }
   }
 }

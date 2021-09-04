@@ -9,15 +9,18 @@ class FirebaseAuthRepository extends BaseRepository {
   Future<CurrentUser?> signInWithEmailPassword(
           String emailId, String password) =>
       authprovider.signInWithEmailPassword(emailId, password);
-  Future<CurrentUser> signUpWithEmailPassword(
+  Future<CurrentUser?> signUpWithEmailPassword(
           String emailId, String password) =>
       authprovider.signUpWithEmailPassword(emailId, password);
-  Future<String?> signInWithPhoneNumber(String phoneNumber) =>
-      authprovider.signInWithPhoneNumber(phoneNumber);
+  /* Future<String?> signInWithPhoneNumber(String phoneNumber) =>
+      authprovider.signInWithPhoneNumber(phoneNumber); */
   Future<void> signOut() => authprovider.signOut();
-  Future<void> sendOTP(String phoneNumber, PhoneCodeSent codeSent,
-          PhoneVerificationFailed verificationFailed) =>
-      authprovider.sendOTP(phoneNumber, codeSent, verificationFailed);
+  Future<void> sendOTP(
+          String phoneNumber,
+          PhoneCodeSent codeSent,
+          PhoneVerificationFailed verificationFailed,
+          PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout) =>
+      authprovider.sendOTP(phoneNumber, codeSent,verificationFailed,codeAutoRetrievalTimeout);
   Future<bool> verifyOTP(String smsCode, String verificationId) =>
       authprovider.verifyOTP(smsCode, verificationId);
 
