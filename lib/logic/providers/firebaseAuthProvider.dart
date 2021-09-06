@@ -12,11 +12,10 @@ abstract class BaseAuthProvider {
   Future<void> signOut();
   Future<bool> verifyOTP(String smsCode, String verificationId);
   Future<void> sendOTP(
-    String phoneNumber,
-    PhoneCodeSent codeSent,
-    PhoneVerificationFailed verificationFailed,
-    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout
-  );
+      String phoneNumber,
+      PhoneCodeSent codeSent,
+      PhoneVerificationFailed verificationFailed,
+      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout);
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider {
@@ -73,20 +72,18 @@ class FirebaseAuthProvider extends BaseAuthProvider {
 
   @override
   Future<void> sendOTP(
-    String phoneNumber,
-    PhoneCodeSent codeSent,
-    PhoneVerificationFailed verificationFailed,
-    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout
-  ) async {
+      String phoneNumber,
+      PhoneCodeSent codeSent,
+      PhoneVerificationFailed verificationFailed,
+      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout) async {
     try {
-      if (!phoneNumber.contains('+')) phoneNumber = '+91' + phoneNumber;
       _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
           timeout: Duration(seconds: 30),
           verificationCompleted: (auth) {},
           verificationFailed: verificationFailed,
           codeSent: codeSent,
-          codeAutoRetrievalTimeout:codeAutoRetrievalTimeout);
+          codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {
       print("hello");
       print(e);

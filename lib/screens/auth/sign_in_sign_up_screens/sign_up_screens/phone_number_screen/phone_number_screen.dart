@@ -3,7 +3,7 @@ import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseauth_bloc.dart';
-import 'package:dating_app/screens/choose_page/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,10 +11,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PhoneNumberPage extends StatelessWidget {
+class PhoneNumberPage extends StatefulWidget {
   final String authSide;
 
   const PhoneNumberPage({Key? key, required this.authSide}) : super(key: key);
+
+  @override
+  _PhoneNumberPageState createState() => _PhoneNumberPageState();
+}
+
+class _PhoneNumberPageState extends State<PhoneNumberPage> {
+  Country _selectedCountry =
+      Country(isoCode: "IN", iso3Code: 'IND', phoneCode: "91", name: 'India');
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,32 +37,11 @@ class PhoneNumberPage extends StatelessWidget {
       changePageTo(
           context: context,
           widget: OTPVerificationPage(
-            authSide: authSide,
-            
+            verificationId: verificationId,
+            authSide: widget.authSide,
           ));
     }
 
-    /*    if (state is PhoneVerficationRequested) {
-        context.read<FirebaseauthBloc>().add(
-              OtpSendRequested(
-                codeSent: codeSent,
-                phoneNumber: phoneNumber.text,
-                phoneVerificationFailed: (e) {},
-              ),
-            );
-        return CircularProgressIndicator();
-      } else if (state is PhoneNumberVerificationCompleted) {
-        context.read<FirebaseauthBloc>().add(
-              OtpSendRequested(
-                codeSent: codeSent,
-                phoneNumber: phoneNumber.text,
-                phoneVerificationFailed: (e) {},
-              ),
-            );
-        // Add event sendOtp here.
-        return Container(color: Colors.amber,);
-      } else {
-      */
     Widget _buildDropdownItem(Country country) => Container(
           child: Row(
             children: <Widget>[
@@ -101,6 +92,7 @@ class PhoneNumberPage extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: CountryPickerDropdown(
+                        initialValue: "IN",
                         isDense: true,
                         isExpanded: false,
                         priorityList: [
@@ -117,6 +109,9 @@ class PhoneNumberPage extends StatelessWidget {
                         ],
                         itemBuilder: _buildDropdownItem,
                         onValuePicked: (Country country) {
+                          setState(() {
+                            _selectedCountry = country;
+                          });
                           print("${country.isoCode}");
                           print("${country.iso3Code}");
                           print("${country.phoneCode}");
@@ -135,7 +130,6 @@ class PhoneNumberPage extends StatelessWidget {
                           border: InputBorder.none,
                           hintText: "Phone Number",
                         ),
-                        
                       ),
                     ),
                   ],
@@ -156,15 +150,18 @@ class PhoneNumberPage extends StatelessWidget {
                       onPressed: () {
                         context.read<FirebaseauthBloc>().add(OtpSendRequested(
                               codeAutoRetrievalTimeout: (id) {
-                                context.read<FirebaseauthBloc>().add(OtpRetrievalTimeOut());
-
+                                context
+                                    .read<FirebaseauthBloc>()
+                                    .add(OtpRetrievalTimeOut());
                               },
                               verificationFailed: (exception) {
-                                context.read<FirebaseauthBloc>().add(OtpRetrievalFailure(errorMessage: exception.code));
+                                context.read<FirebaseauthBloc>().add(
+                                    OtpRetrievalFailure(
+                                        errorMessage: exception.code));
                                 //throw Exception(exception);
                               },
                               codeSent: codeSent,
-                              phoneNumber: phoneNumber.text,
+                              phoneNumber: "+${_selectedCountry.phoneCode + phoneNumber.text}",
                             ));
                       });
                 },
