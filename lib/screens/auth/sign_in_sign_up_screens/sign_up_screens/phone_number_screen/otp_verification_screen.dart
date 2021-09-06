@@ -47,16 +47,18 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 20),
+                      horizontal: 10.0, vertical: 20),
                   child: PinCodeTextField(
+                      animationType: AnimationType.scale,
+                      length: 6,
                       hintStyle: TextStyle(color: AppColor.withOpacity(0.3)),
                       textStyle: TextStyle(color: Colors.white),
                       autoFocus: true,
                       pinTheme: PinTheme(
                         shape: PinCodeFieldShape.box,
-                        borderRadius: BorderRadius.circular(15),
-                        fieldHeight: 70,
-                        fieldWidth: 67,
+                        borderRadius: BorderRadius.circular(10),
+                        fieldHeight: 50,
+                        fieldWidth: 47,
                         activeColor: Colors.pink,
                         activeFillColor: AppColor,
                         inactiveFillColor: Colors.grey.withOpacity(0),
@@ -66,7 +68,6 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       ),
                       cursorColor: AppColor,
                       appContext: context,
-                      length: 4,
                       enableActiveFill: true,
                       keyboardType: TextInputType.number,
                       hintCharacter: '0',

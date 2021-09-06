@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     _controller.forward(direction: SwipDirection.Left);
   }
 
-  void swipeRight() {
+  Future<void> swipeRight() async {
     _controller.forward(direction: SwipDirection.Right);
+    await Future.delayed(Duration(milliseconds: 300));
+    itIsAMatchPopUp(context);
   }
 
   TCardController _controller = TCardController();
@@ -33,13 +36,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         return ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: SwipeableCard(
-            swipeLeft: swipeLeft,
             personAge: age[index],
             personBio: biography[index],
             personName: name[index],
             personProfession: profession[index],
             imageUrl: sampleImages[index],
             swipeRight: swipeRight,
+            swipeLeft: swipeLeft,
           ),
         );
       },
@@ -81,12 +84,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     children: <Widget>[
                       TCard(
                         size: Size(450, 470),
-                        lockYAxis: true,
                         slideSpeed: 10,
                         cards: cards,
                         controller: _controller,
                         onForward: (index, info) {
                           _index = index;
+
                           print(info.direction);
                           setState(() {});
                         },
