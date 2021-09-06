@@ -1,14 +1,12 @@
+import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/bloc/firebaseauth_bloc.dart';
+import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/bloc/firebaseauth_bloc.dart';
-import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp(
@@ -51,9 +49,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: ChooseSignInSignUpPage(),
+        // home: HomePage(),
       ),
       // home: DiscoverScreen(),
-      
     );
   }
 }

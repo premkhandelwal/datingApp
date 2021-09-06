@@ -76,7 +76,27 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       Icons.filter_alt,
                       color: AppColor,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet(
+                          context: context,
+                          // isScrollControlled: true,
+                          builder: (ctx) => DraggableScrollableSheet(
+                                initialChildSize: 0.5,
+                                maxChildSize: 1,
+                                minChildSize: 0.25,
+                                builder: (BuildContext context,
+                                        ScrollController scrollController) =>
+                                    Container(
+                                  height: 1000,
+                                  decoration:
+                                      BoxDecoration(color: Colors.white),
+                                  child: Column(
+                                    children: [],
+                                  ),
+                                ),
+                              ),
+                          backgroundColor: Colors.black.withOpacity(0));
+                    },
                   ),
                 ),
                 Center(
@@ -87,9 +107,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         slideSpeed: 10,
                         cards: cards,
                         controller: _controller,
-                        onForward: (index, info) {
+                        onForward: (index, info) async {
                           _index = index;
-
+                          if (info.direction == SwipDirection.Right) {
+                            await Future.delayed(Duration(milliseconds: 150));
+                            itIsAMatchPopUp(context);
+                          }
                           print(info.direction);
                           setState(() {});
                         },

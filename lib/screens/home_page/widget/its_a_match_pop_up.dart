@@ -32,11 +32,23 @@ void itIsAMatchPopUp(BuildContext context) {
                                 child: Transform.rotate(
                                   angle: 360 * -10,
                                   alignment: Alignment.center,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.asset(
-                                      sampleImages[1],
-                                      fit: BoxFit.cover,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.8),
+                                          spreadRadius: 1,
+                                          blurRadius: 25,
+                                          offset: Offset(0, 7),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Image.asset(
+                                        sampleImages[1],
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
