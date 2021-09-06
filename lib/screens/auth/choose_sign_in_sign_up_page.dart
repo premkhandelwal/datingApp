@@ -119,7 +119,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: image.asMap().entries.map((entry) {
-                  print(entry.key);
+                 
                   return InkWell(
                     onTap: () {
                       setState(() {
