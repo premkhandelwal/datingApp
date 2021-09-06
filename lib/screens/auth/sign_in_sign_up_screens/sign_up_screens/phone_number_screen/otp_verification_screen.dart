@@ -63,8 +63,8 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       pinTheme: PinTheme(
                         shape: PinCodeFieldShape.box,
                         borderRadius: BorderRadius.circular(15),
-                        fieldHeight: 70,
-                        fieldWidth: 67,
+                        fieldHeight: 50,
+                        fieldWidth: 50,
                         activeColor: Colors.pink,
                         activeFillColor: AppColor,
                         inactiveFillColor: Colors.grey.withOpacity(0),
