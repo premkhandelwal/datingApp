@@ -3,10 +3,9 @@ import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseauth_bloc.dart';
-import 'package:dating_app/screens/choose_page/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +25,7 @@ class PhoneNumberPage extends StatelessWidget {
           context: context,
           widget: OTPVerificationPage(
             authSide: authSide,
-            
+            verificationId: '',
           ));
     }
 
@@ -135,7 +134,6 @@ class PhoneNumberPage extends StatelessWidget {
                           border: InputBorder.none,
                           hintText: "Phone Number",
                         ),
-                        
                       ),
                     ),
                   ],
@@ -156,11 +154,14 @@ class PhoneNumberPage extends StatelessWidget {
                       onPressed: () {
                         context.read<FirebaseauthBloc>().add(OtpSendRequested(
                               codeAutoRetrievalTimeout: (id) {
-                                context.read<FirebaseauthBloc>().add(OtpRetrievalTimeOut());
-
+                                context
+                                    .read<FirebaseauthBloc>()
+                                    .add(OtpRetrievalTimeOut());
                               },
                               verificationFailed: (exception) {
-                                context.read<FirebaseauthBloc>().add(OtpRetrievalFailure(errorMessage: exception.code));
+                                context.read<FirebaseauthBloc>().add(
+                                    OtpRetrievalFailure(
+                                        errorMessage: exception.code));
                                 //throw Exception(exception);
                               },
                               codeSent: codeSent,
