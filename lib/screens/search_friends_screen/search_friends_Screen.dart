@@ -1,5 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/enable_notification_screen/enable_notification_screen.dart';
+import 'package:dating_app/screens/enable_notification_screen/enable_notification_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +16,10 @@ class SearchFriendsScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              TopBarForSignUpAndSignIn(
+              CustomAppBar(
                 context: context,
+                centerWidget: Container(),
+                trailingWidget: Container(),
               ),
               SizedBox(height: 20),
               Container(

@@ -99,8 +99,6 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       );
       yield OtpSent();
     } catch (e) {
-      print("Holy");
-      print(e);
       yield RequestedOperationFailed();
     }
   }

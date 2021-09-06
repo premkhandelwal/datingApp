@@ -15,8 +15,10 @@ class EnableNotificationScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              TopBarForSignUpAndSignIn(
+              CustomAppBar(
                 context: context,
+                centerWidget: Container(),
+                trailingWidget: Container(),
               ),
               SizedBox(height: 20),
               Container(
