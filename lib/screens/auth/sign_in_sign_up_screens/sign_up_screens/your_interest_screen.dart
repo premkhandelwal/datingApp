@@ -102,7 +102,6 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                             _selectedInterests.contains(interests[index])
                                 ? _selectedInterests.remove(interests[index])
                                 : _selectedInterests.add(interests[index]);
-                            print(_selectedInterests);
                             setState(() {});
                           }),
                     );

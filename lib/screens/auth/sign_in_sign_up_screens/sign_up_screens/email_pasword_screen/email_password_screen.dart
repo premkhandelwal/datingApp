@@ -1,8 +1,10 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/bloc/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmailPasswordScreen extends StatefulWidget {
   final String authSide;
@@ -16,6 +18,8 @@ class EmailPasswordScreen extends StatefulWidget {
 
 class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController emailIdController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +61,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: emailIdController,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
@@ -78,6 +83,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       SizedBox(height: 20),
                       TextFormField(
                         obscureText: true,
+                        controller: passwordController,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
@@ -99,15 +105,45 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                     ],
                   )),
               Spacer(),
-              CommonButton(
-                  text: widget.authSide,
-                  onPressed: () {
-                    changePageTo(
-                        context: context,
-                        widget: widget.authSide == 'Sign Up'
-                            ? ProfileDetailPage()
-                            : HomePage());
-                  })
+              BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
+                listenWhen: (previousState, currentState) {
+                  if (previousState is OperationInProgress &&
+                      (currentState is UserLoggedIn ||
+                          currentState is UserSignedUp)) {
+                    return true;
+                  }
+                  return false;
+                },
+                listener: (context, state) {
+                  if (state is UserSignedUp) {
+                    changePageWithoutBack(
+                        context: context, widget: ProfileDetailPage());
+                   
+                  } else if (state is UserLoggedIn) {
+                    changePageWithoutBack(
+                        context: context, widget: HomePage());                  }
+                },
+                builder: (context, state) {
+                  if (state is OperationInProgress) {
+                    return CircularProgressIndicator();
+                  }
+                  return CommonButton(
+                      text: widget.authSide,
+                      onPressed: () {
+                        if (widget.authSide == 'Sign Up') {
+                          context.read<FirebaseauthBloc>().add(
+                              SignUpWithEmailPasswordRequested(
+                                  emailId: emailIdController.text,
+                                  password: passwordController.text));
+                        } else {
+                          context.read<FirebaseauthBloc>().add(
+                              SignInWithEmailPasswordRequested(
+                                  emailId: emailIdController.text,
+                                  password: passwordController.text));
+                        }
+                      });
+                },
+              )
             ],
           ),
         ),
