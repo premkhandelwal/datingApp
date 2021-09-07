@@ -63,3 +63,17 @@ List<String> interests = [
   'Drink',
   'Video games',
 ];
+List<String> location = [
+  'Current Location',
+  'Tsaghveri',
+  'Longfeng',
+  'Daweishan',
+  'Kunigal',
+  'Yanhe',
+  'Linn',
+  'Tepeapulco',
+  'Berriozabal',
+  'Disina',
+  'Pingshan',
+  'Eppenberg',
+];

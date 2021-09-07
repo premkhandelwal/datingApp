@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/screens/home_page/widget/filter_modal_bottom_sheet.dart';
 import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
@@ -17,13 +18,12 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   void swipeLeft() {
+    print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
   Future<void> swipeRight() async {
     _controller.forward(direction: SwipDirection.Right);
-    await Future.delayed(Duration(milliseconds: 300));
-    itIsAMatchPopUp(context);
   }
 
   TCardController _controller = TCardController();
@@ -78,24 +78,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     ),
                     onPressed: () {
                       showModalBottomSheet(
+                          enableDrag: true,
+                          isScrollControlled: true,
                           context: context,
-                          // isScrollControlled: true,
-                          builder: (ctx) => DraggableScrollableSheet(
-                                initialChildSize: 0.5,
-                                maxChildSize: 1,
-                                minChildSize: 0.25,
-                                builder: (BuildContext context,
-                                        ScrollController scrollController) =>
-                                    Container(
-                                  height: 1000,
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Column(
-                                    children: [],
-                                  ),
-                                ),
-                              ),
-                          backgroundColor: Colors.black.withOpacity(0));
+                          backgroundColor: Colors.white.withOpacity(0),
+                          builder: (ctx) => FilterModalBottomSheet());
                     },
                   ),
                 ),
@@ -103,14 +90,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   child: Column(
                     children: <Widget>[
                       TCard(
-                        size: Size(450, 470),
+                        size: Size(450, 500),
                         slideSpeed: 10,
                         cards: cards,
                         controller: _controller,
                         onForward: (index, info) async {
                           _index = index;
                           if (info.direction == SwipDirection.Right) {
-                            await Future.delayed(Duration(milliseconds: 150));
+                            await Future.delayed(Duration(milliseconds: 100));
                             itIsAMatchPopUp(context);
                           }
                           print(info.direction);
