@@ -1,5 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/bloc/firebaseauth_bloc.dart';
+import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/phone_number_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
@@ -24,119 +24,131 @@ class OTPVerificationPage extends StatefulWidget {
 class _OTPVerificationPageState extends State<OTPVerificationPage> {
   bool _sendAgain = false;
   TextEditingController otpController = new TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                CustomAppBar(
-                  context: context,
-                  centerWidget: Container(),
-                  trailingWidget: Container(),
-                ),
-                SizedBox(height: 60),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Type the verification code \nwe’ve sent you',
-                        style: Theme.of(context).textTheme.subtitle2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+    return Form(
+      key: _formKey,
+      child: Scaffold(
+        body: SafeArea(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  CustomAppBar(
+                    context: context,
+                    centerWidget: Container(),
+                    trailingWidget: Container(),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 20),
-                  child: PinCodeTextField(
-                      controller: otpController,
-                      hintStyle: TextStyle(color: AppColor.withOpacity(0.3)),
-                      textStyle: TextStyle(color: Colors.white),
-                      autoFocus: true,
-                      pinTheme: PinTheme(
-                        shape: PinCodeFieldShape.box,
-                        borderRadius: BorderRadius.circular(15),
-                        fieldHeight: 50,
-                        fieldWidth: 50,
-                        activeColor: Colors.pink,
-                        activeFillColor: AppColor,
-                        inactiveFillColor: Colors.grey.withOpacity(0),
-                        selectedFillColor: AppColor.withOpacity(0),
-                        inactiveColor: AppColor.withOpacity(0.3),
-                        selectedColor: AppColor,
-                      ),
-                      cursorColor: AppColor,
-                      appContext: context,
-                      length: 6,
-                      enableActiveFill: true,
-                      keyboardType: TextInputType.number,
-                      hintCharacter: '0',
-                      useHapticFeedback: true,
-                      onChanged: (value) {
-                        print(value);
-                      }),
-                ),
-                Spacer(),
-                BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
-                  listenWhen: (previousState, currentState) {
-                    if ((previousState is OperationInProgress &&
-                            currentState is OtpVerified) ||
-                        currentState is OtpNotVerified) {
-                      return true;
-                    }
-                    return false;
-                  },
-                  builder: (context, state) {
-                    if (state is OperationInProgress) {
-                      return CircularProgressIndicator();
-                    } else if (state is OtpNotVerified) {
-                      return Container();
-                    }
-                    return CommonButton(
-                        text: 'Continue',
-                        onPressed: () {
-                          context.read<FirebaseauthBloc>().add(
-                              OtpVerificationRequested(
-                                  smsCode: otpController.text,
-                                  verificationId: widget.verificationId));
-                        });
-                  },
-                  listener: (context, state) {
-                    if (state is OtpVerified) {
-                      changePageWithoutBack(
-                          context: context,
-                          widget: widget.authSide == 'Sign Up'
-                              ? ProfileDetailPage()
-                              : HomePage());
-                    } else if (state is OtpNotVerified) {
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: Text("Error"),
-                                content: Text("Failed to verify otp!"),
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        changePageTo(
-                                            context: context,
-                                            widget: PhoneNumberPage(
-                                                authSide: widget.authSide));
-                                      },
-                                      child: Text("Ok"))
-                                ],
-                              ));
-                    }
-                  },
-                ),
-                SizedBox(height: 20)
-              ],
+                  SizedBox(height: 60),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Type the verification code \nwe’ve sent you',
+                          style: Theme.of(context).textTheme.subtitle2,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 20),
+                    child: PinCodeTextField(
+                        validator: (val) {
+                          if (val == null) {
+                            return "Otp cannot be empty";
+                          } else if (val.length != 6) {
+                            return 'Otp must be of 6 digit';
+                          }
+                        },
+                        controller: otpController,
+                        hintStyle: TextStyle(color: AppColor.withOpacity(0.3)),
+                        textStyle: TextStyle(color: Colors.white),
+                        autoFocus: true,
+                        pinTheme: PinTheme(
+                          shape: PinCodeFieldShape.box,
+                          borderRadius: BorderRadius.circular(15),
+                          fieldHeight: 50,
+                          fieldWidth: 50,
+                          activeColor: Colors.pink,
+                          activeFillColor: AppColor,
+                          inactiveFillColor: Colors.grey.withOpacity(0),
+                          selectedFillColor: AppColor.withOpacity(0),
+                          inactiveColor: AppColor.withOpacity(0.3),
+                          selectedColor: AppColor,
+                        ),
+                        cursorColor: AppColor,
+                        appContext: context,
+                        length: 6,
+                        enableActiveFill: true,
+                        keyboardType: TextInputType.number,
+                        hintCharacter: '0',
+                        useHapticFeedback: true,
+                        onChanged: (value) {
+                          print(value);
+                        }),
+                  ),
+                  Spacer(),
+                  BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
+                    listenWhen: (previousState, currentState) {
+                      if ((previousState is OperationInProgress &&
+                              currentState is OtpVerified) ||
+                          currentState is OtpNotVerified) {
+                        return true;
+                      }
+                      return false;
+                    },
+                    builder: (context, state) {
+                      if (state is OperationInProgress) {
+                        return CircularProgressIndicator();
+                      } else if (state is OtpNotVerified) {
+                        return Container();
+                      }
+                      return CommonButton(
+                          text: 'Continue',
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<FirebaseauthBloc>().add(
+                                  OtpVerificationRequested(
+                                      smsCode: otpController.text,
+                                      verificationId: widget.verificationId));
+                            }
+                          });
+                    },
+                    listener: (context, state) {
+                      if (state is OtpVerified) {
+                        changePageWithoutBack(
+                            context: context,
+                            widget: widget.authSide == 'Sign Up'
+                                ? ProfileDetailPage()
+                                : HomePage());
+                      } else if (state is OtpNotVerified) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text("Error"),
+                                  content: Text("Failed to verify otp!"),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          changePageTo(
+                                              context: context,
+                                              widget: PhoneNumberPage(
+                                                  authSide: widget.authSide));
+                                        },
+                                        child: Text("Ok"))
+                                  ],
+                                ));
+                      }
+                    },
+                  ),
+                  SizedBox(height: 20)
+                ],
+              ),
             ),
           ),
         ),
