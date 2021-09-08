@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/screens/home_page/widget/filter_modal_bottom_sheet.dart';
+import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +18,11 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   void swipeLeft() {
+    print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
-  void swipeRight() {
+  Future<void> swipeRight() async {
     _controller.forward(direction: SwipDirection.Right);
   }
 
@@ -33,13 +36,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         return ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: SwipeableCard(
-            swipeLeft: swipeLeft,
             personAge: age[index],
             personBio: biography[index],
             personName: name[index],
             personProfession: profession[index],
             imageUrl: sampleImages[index],
             swipeRight: swipeRight,
+            swipeLeft: swipeLeft,
           ),
         );
       },
@@ -73,20 +76,30 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       Icons.filter_alt,
                       color: AppColor,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet(
+                          enableDrag: true,
+                          isScrollControlled: true,
+                          context: context,
+                          backgroundColor: Colors.white.withOpacity(0),
+                          builder: (ctx) => FilterModalBottomSheet());
+                    },
                   ),
                 ),
                 Center(
                   child: Column(
                     children: <Widget>[
                       TCard(
-                        size: Size(450, 470),
-                        lockYAxis: true,
+                        size: Size(450, 500),
                         slideSpeed: 10,
                         cards: cards,
                         controller: _controller,
-                        onForward: (index, info) {
+                        onForward: (index, info) async {
                           _index = index;
+                          if (info.direction == SwipDirection.Right) {
+                            await Future.delayed(Duration(milliseconds: 100));
+                            itIsAMatchPopUp(context);
+                          }
                           print(info.direction);
                           setState(() {});
                         },

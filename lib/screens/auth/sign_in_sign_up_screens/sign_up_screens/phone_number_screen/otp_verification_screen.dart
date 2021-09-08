@@ -6,8 +6,8 @@ import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OTPVerificationPage extends StatefulWidget {
   final String authSide;
@@ -24,7 +24,7 @@ class OTPVerificationPage extends StatefulWidget {
 class _OTPVerificationPageState extends State<OTPVerificationPage> {
   bool _sendAgain = false;
   TextEditingController otpController = new TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +63,8 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       pinTheme: PinTheme(
                         shape: PinCodeFieldShape.box,
                         borderRadius: BorderRadius.circular(15),
-                        fieldHeight: 70,
-                        fieldWidth: 67,
+                        fieldHeight: 50,
+                        fieldWidth: 50,
                         activeColor: Colors.pink,
                         activeFillColor: AppColor,
                         inactiveFillColor: Colors.grey.withOpacity(0),
@@ -125,9 +125,9 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                                   ElevatedButton(
                                       onPressed: () {
                                         changePageTo(
-                                            context: context, widget: PhoneNumberPage(
-                                                    authSide: widget.authSide));
-                                       
+                                            context: context,
+                                            widget: PhoneNumberPage(
+                                                authSide: widget.authSide));
                                       },
                                       child: Text("Ok"))
                                 ],
