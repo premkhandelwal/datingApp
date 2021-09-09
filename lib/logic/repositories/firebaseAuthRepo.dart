@@ -20,9 +20,12 @@ class FirebaseAuthRepository extends BaseRepository {
           PhoneCodeSent codeSent,
           PhoneVerificationFailed verificationFailed,
           PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout) =>
-      authprovider.sendOTP(phoneNumber, codeSent,verificationFailed,codeAutoRetrievalTimeout);
-  Future<bool> verifyOTP(String smsCode, String verificationId) =>
+      authprovider.sendOTP(
+          phoneNumber, codeSent, verificationFailed, codeAutoRetrievalTimeout);
+  Future<AuthCredential?> verifyOTP(String smsCode, String verificationId) =>
       authprovider.verifyOTP(smsCode, verificationId);
+  Future<bool> linkEmailWithPhoneNumber(User? user,String emailId, String password) async => await authprovider.linkEmailWithPhoneNumber(user, emailId, password);
+  Future<bool> linkPhoneNumberWithEmail(User? user,String smsCode, String verificationId) async => await authprovider.linkPhoneNumberWithEmail(user, smsCode,verificationId);
 
   @override
   void dispose() {}

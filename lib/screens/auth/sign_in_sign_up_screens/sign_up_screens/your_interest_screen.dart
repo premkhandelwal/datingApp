@@ -1,9 +1,13 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/screens/search_friends_screen/search_friends_Screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dating_app/logic/data/user.dart';
+
 
 class YourInterestScreen extends StatefulWidget {
   YourInterestScreen({Key? key}) : super(key: key);
@@ -115,6 +119,13 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
               CommonButton(
                   text: 'Continue',
                   onPressed: () {
+                     context
+                              .read<ProfiledetailsBloc>()
+                              .add(AddInterestsInfoEvent(
+                                  user: CurrentUser(
+                                uid: "User1",
+                                interests: _selectedInterests,
+                              )));
                     changePageTo(
                         context: context, widget: SearchFriendsScreen());
                   })

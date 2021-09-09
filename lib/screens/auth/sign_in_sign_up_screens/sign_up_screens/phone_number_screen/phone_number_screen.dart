@@ -37,6 +37,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
       changePageTo(
           context: context,
           widget: OTPVerificationPage(
+            issignUpWithEmail: false,
             verificationId: verificationId,
             authSide: widget.authSide,
           ));
@@ -126,9 +127,9 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                           
                           validator: (val) {
                             if (val == null) {
-                              return "Phone number cannot be empty";
+                              return "Phone Number cannot be empty";
                             } else if (val.length != 10) {
-                              return 'Mobile Number must be of 10 digit';
+                              return 'Phone Number must be of 10 digit';
                             }
                           },
                           controller: phoneNumber,
