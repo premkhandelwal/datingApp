@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 List<String> sampleImages = [
   'assets/images/sample_images/sample_image_1.png',
   'assets/images/sample_images/sample_image_2.png',
@@ -76,4 +78,20 @@ List<String> location = [
   'Disina',
   'Pingshan',
   'Eppenberg',
+];
+List<IconData> iconsList = [
+  Icons.camera,
+  Icons.shopping_bag_outlined,
+  Icons.mic_none_outlined,
+  Icons.fitness_center,
+  Icons.outdoor_grill,
+  Icons.sports_tennis,
+  Icons.directions_run,
+  Icons.pool,
+  Icons.color_lens,
+  Icons.travel_explore,
+  Icons.paragliding,
+  Icons.library_music,
+  Icons.local_bar,
+  Icons.videogame_asset
 ];
