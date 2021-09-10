@@ -30,6 +30,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     } else if (event is SignOutRequested) {
       yield* _mapSignOutRequesttoState(event);
     } else if (event is OtpSendRequested) {
+    yield OperationInProgress();
       yield* _mapSendOtpRequesttoState(event);
     } else if (event is OtpVerificationRequested) {
       yield* _mapVerifyOtpRequesttoState(event);
@@ -37,6 +38,10 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       yield OtpRetrievalTimedOut();
     } else if (event is OtpRetrievalFailure) {
       yield OtpRetrievalFailed(errorMessage: event.errorMessage);
+    } else if (event is LinkEmailWithPhoneNumberEvent) {
+      yield* _maplinkEmailwithPhoneeventtoState(event);
+    } else if (event is LinkPhoneNumberWithEmailEvent) {
+      yield* _maplinkPhonewithEmaileventtoState(event);
     }
   }
 
@@ -89,14 +94,9 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _mapSendOtpRequesttoState(
       OtpSendRequested event) async* {
-    yield OperationInProgress();
     try {
-      await firebaseAuthRepo.sendOTP(
-        event.phoneNumber,
-        event.codeSent,
-        event.verificationFailed,
-        event.codeAutoRetrievalTimeout
-      );
+      await firebaseAuthRepo.sendOTP(event.phoneNumber, event.codeSent,
+          event.verificationFailed, event.codeAutoRetrievalTimeout);
       yield OtpSent();
     } catch (e) {
       yield RequestedOperationFailed();
@@ -108,15 +108,73 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     try {
       yield OperationInProgress();
 
-      bool otpVerified =
+      AuthCredential? authCredential =
           await firebaseAuthRepo.verifyOTP(event.smsCode, event.verificationId);
-      if (otpVerified) {
-        yield OtpVerified();
+      if (authCredential != null) {
+        yield OtpVerified(authCredential: authCredential);
       } else {
         yield OtpNotVerified();
       }
     } catch (e) {
       yield OtpNotVerified();
+    }
+  }
+
+  Stream<FirebaseauthState> _maplinkEmailwithPhoneeventtoState(
+      LinkEmailWithPhoneNumberEvent event) async* {
+      yield OperationInProgress();
+    try {
+
+      bool linkedPhoneNumberEmail = await firebaseAuthRepo
+          .linkEmailWithPhoneNumber(event.user, event.emailId, event.password);
+      if (linkedPhoneNumberEmail) {
+        yield LinkedEmailWithPhoneNumber();
+      } else {
+        yield FailedtoLinkedPhoneNumberEmail();
+      }
+    } catch (e) {
+      yield FailedtoLinkedPhoneNumberEmail();
+    }
+  }
+
+  Stream<FirebaseauthState> _maplinkPhonewithEmaileventtoState(
+      LinkPhoneNumberWithEmailEvent event) async* {
+      yield OperationInProgress();
+    
+    try {
+
+      User? user = FirebaseAuth.instance.currentUser;
+      bool linkedPhoneNumberEmail =
+          await firebaseAuthRepo.linkPhoneNumberWithEmail(
+              user, event.smsCode, event.verificationId);
+      if (linkedPhoneNumberEmail) {
+        yield LinkedPhoneNumberWithEmail();
+      } else {
+        yield FailedtoLinkedPhoneNumberEmail();
+      }
+      // yield OperationInProgress();
+      /*  try {
+        Stream<FirebaseauthState> streamState = _mapSendOtpRequesttoState(
+            OtpSendRequested(
+                codeSent: event.codeSent,
+                verificationFailed: event.verificationFailed,
+                codeAutoRetrievalTimeout: event.codeAutoRetrievalTimeout,
+                phoneNumber: event.phoneNumber));
+        List<FirebaseauthState> statess = await streamState.toList();
+        FirebaseauthState finalstatess = statess[0];
+        User? user = FirebaseAuth.instance.currentUser;
+        if (finalstatess is OtpVerified) {
+          bool linkedPhoneNumberEmail = await firebaseAuthRepo
+              .linkPhoneNumberWithEmail(user, finalstatess.authCredential);
+          if (linkedPhoneNumberEmail) {
+            yield LinkedEmailWithPhoneNumber();
+          }
+        } else {
+          yield FailedtoLinkedPhoneNumberEmail();
+        } */
+
+    } catch (e) {
+      yield FailedtoLinkedPhoneNumberEmail();
     }
   }
 }

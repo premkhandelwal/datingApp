@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/screens/home_page/widget/filter_modal_bottom_sheet.dart';
 import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:tcard/tcard.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({Key? key}) : super(key: key);
@@ -17,12 +19,21 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  void swipeLeft() {
+  void swipeLeft(int index) {
+    context
+        .read<UseractivityBloc>()
+        .add(UserDislikedEvent("User1", name[index]));
+    print("person diliked");
     print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
-  Future<void> swipeRight() async {
+  Future<void> swipeRight(int index) async {
+    context.read<UseractivityBloc>().add(UserLikedEvent("User1", name[index]));
+    context
+        .read<UseractivityBloc>()
+        .add(UserFindMatchEvent("User2", name[index]));
+    print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
 
@@ -89,34 +100,54 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 Center(
                   child: Column(
                     children: <Widget>[
-                      TCard(
-                        size: Size(450, 500),
-                        slideSpeed: 10,
-                        cards: cards,
-                        controller: _controller,
-                        onForward: (index, info) async {
-                          _index = index;
-                          if (info.direction == SwipDirection.Right) {
-                            await Future.delayed(Duration(milliseconds: 100));
-                            itIsAMatchPopUp(context);
+                      BlocListener<UseractivityBloc, UseractivityState>(
+                        listener: (context, state) {
+                          if (state is UserMatchFoundState) {
+                            itIsAMatchPopUp(context, _index - 1);
                           }
-                          print(info.direction);
-                          setState(() {});
                         },
-                        onBack: (index, info) {
-                          _index = index;
-                          setState(() {});
+                        listenWhen: (previousState, currentState) {
+                          if (previousState is UserLikedState &&
+                              currentState is UserMatchFoundState) {
+                            return true;
+                          }
+                          return false;
                         },
-                        onEnd: () {
-                          print('end');
-                        },
+                        child: TCard(
+                          size: Size(450, 500),
+                          slideSpeed: 10,
+                          cards: cards,
+                          controller: _controller,
+                          onForward: (index, info) async {
+                            if (info.direction == SwipDirection.Right) {
+                              context
+                                  .read<UseractivityBloc>()
+                                  .add(UserLikedEvent("User1", name[_index]));
+                              context.read<UseractivityBloc>().add(
+                                  UserFindMatchEvent("User2", name[_index]));
+                            } else if (info.direction == SwipDirection.Left) {
+                              context.read<UseractivityBloc>().add(
+                                  UserDislikedEvent("User1", name[_index]));
+                            }
+                            _index = index;
+                            print(info.direction);
+                            setState(() {});
+                          },
+                          onBack: (index, info) {
+                            _index = index;
+                            setState(() {});
+                          },
+                          onEnd: () {
+                            print('end');
+                          },
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
                               onPressed: () {
-                                swipeLeft();
+                                swipeLeft(_index);
                               },
                               iconSize: 30,
                               color: Color(0xffF27121),
@@ -125,6 +156,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             children: [
                               TextButton(
                                   onPressed: () {
+                                    _index = 0;
                                     _controller.reset();
                                   },
                                   child: Text('Reset Stack')),
@@ -141,7 +173,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             child: Center(
                               child: IconButton(
                                   onPressed: () {
-                                    swipeRight();
+                                    swipeRight(_index);
                                     print('hi');
                                   },
                                   iconSize: 40,

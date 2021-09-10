@@ -16,7 +16,12 @@ class OperationInProgress extends FirebaseauthState {}
 
 class OtpSent extends FirebaseauthState {}
 
-class OtpVerified extends FirebaseauthState {}
+class OtpVerified extends FirebaseauthState {
+  final AuthCredential authCredential;
+  OtpVerified({
+    required this.authCredential,
+  });
+}
 
 class OtpNotVerified extends FirebaseauthState {}
 
@@ -46,3 +51,9 @@ class UserSignedUp extends FirebaseauthState {
 
   UserSignedUp({this.currentUser});
 }
+
+class LinkedEmailWithPhoneNumber extends FirebaseauthState {}
+
+class LinkedPhoneNumberWithEmail extends FirebaseauthState {}
+
+class FailedtoLinkedPhoneNumberEmail extends FirebaseauthState {}

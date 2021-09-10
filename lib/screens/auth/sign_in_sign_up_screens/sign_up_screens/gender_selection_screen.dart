@@ -1,8 +1,11 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
+import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/your_interest_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GenderSelectionScreen extends StatefulWidget {
   GenderSelectionScreen({Key? key}) : super(key: key);
@@ -73,6 +76,13 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                           ));
                         }
                       : () {
+                          context
+                              .read<ProfiledetailsBloc>()
+                              .add(AddGenderInfoEvent(
+                                  user: CurrentUser(
+                                uid: "User1",
+                                gender: _selected,
+                              )));
                           changePageTo(
                               context: context, widget: YourInterestScreen());
                         })
