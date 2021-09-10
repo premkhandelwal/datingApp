@@ -9,14 +9,19 @@ import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class OTPVerificationPage extends StatefulWidget {
   final String authSide;
   final String verificationId;
-  final bool issignUpWithEmail; // This variable will be true when user has signed with email and password and we want him to add his phone number as well as the secondary login
+  final bool
+      issignUpWithEmail; // This variable will be true when user has signed with email and password and we want him to add his phone number as well as the secondary login
 
   OTPVerificationPage(
-      {Key? key, required this.authSide, required this.verificationId, required this.issignUpWithEmail})
+      {Key? key,
+      required this.authSide,
+      required this.verificationId,
+      required this.issignUpWithEmail})
       : super(key: key);
 
   @override
@@ -27,6 +32,17 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
   bool _sendAgain = false;
   TextEditingController otpController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _listenOTP();
+    super.initState();
+  }
+
+  void _listenOTP() async {
+    await SmsAutoFill().listenForCode;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -94,12 +110,25 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                           print(value);
                         }),
                   ),
+                  Container(
+                child:  PinFieldAutoFill(
+                        controller: otpController,
+
+                  decoration: UnderlineDecoration(
+                    textStyle: TextStyle(fontSize: 20, color: Colors.black),
+                    colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.3)),
+                  ),
+                 codeLength: 6,
+                  // controller: otpController,
+                ),
+              ),
                   Spacer(),
                   BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                     listenWhen: (previousState, currentState) {
                       if ((previousState is OperationInProgress &&
                               currentState is OtpVerified) ||
-                          currentState is OtpNotVerified || currentState is LinkedPhoneNumberWithEmail) {
+                          currentState is OtpNotVerified ||
+                          currentState is LinkedPhoneNumberWithEmail) {
                         return true;
                       }
                       return false;
@@ -114,11 +143,13 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                           text: 'Continue',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              context.read<FirebaseauthBloc>().add(
-                                !widget.issignUpWithEmail? 
-                                  OtpVerificationRequested(
+                              context.read<FirebaseauthBloc>().add(!widget
+                                      .issignUpWithEmail
+                                  ? OtpVerificationRequested(
                                       smsCode: otpController.text,
-                                      verificationId: widget.verificationId):LinkPhoneNumberWithEmailEvent( smsCode: otpController.text,
+                                      verificationId: widget.verificationId)
+                                  : LinkPhoneNumberWithEmailEvent(
+                                      smsCode: otpController.text,
                                       verificationId: widget.verificationId));
                             }
                           });
@@ -132,10 +163,9 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                                     connectWith: "email",
                                   )
                                 : HomePage());
-                      }else if(state is LinkedPhoneNumberWithEmail){
+                      } else if (state is LinkedPhoneNumberWithEmail) {
                         changePageWithoutBack(
-                            context: context,
-                            widget: ProfileDetailPage());
+                            context: context, widget: ProfileDetailPage());
                       } else if (state is OtpNotVerified) {
                         showDialog(
                             context: context,
