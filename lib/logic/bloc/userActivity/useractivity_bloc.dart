@@ -29,21 +29,19 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
 
   Stream<UseractivityState> _mapUserLikedeventTostate(
       UserLikedEvent event) async* {
-    await userActivityRepository.userLiked(event.userUID, event.likedUserUID);
+    await userActivityRepository.userLiked(event.likedUserUID);
     yield UserLikedState();
   }
 
   Stream<UseractivityState> _mapUserDisLikedeventTostate(
       UserDislikedEvent event) async* {
-    await userActivityRepository.userDisliked(
-        event.userUID, event.dislikedUserUID);
+    await userActivityRepository.userDisliked(event.dislikedUserUID);
     yield UserDislikedState();
   }
 
   Stream<UseractivityState> _mapUserMatchFoundeventTostate(
       UserFindMatchEvent event) async* {
-    bool x = await userActivityRepository.userFindMatch(
-        event.matchUserUID, event.selfUID);
+    bool x = await userActivityRepository.userFindMatch(event.matchUserUID);
     print("xMatches ?");
     print(x);
     if (x) {

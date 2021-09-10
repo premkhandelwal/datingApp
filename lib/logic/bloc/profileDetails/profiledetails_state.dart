@@ -13,4 +13,10 @@ class AddedInterestsInfoState extends ProfiledetailsState{}
 
 class AddingInfoState extends ProfiledetailsState{}
 
+class SubmittingInfoState extends ProfiledetailsState{}
+
+class SubmittedInfoState extends ProfiledetailsState{}
+
+class FailedtoSubmitInfoState extends ProfiledetailsState{}
+
 class FailedtoAddInfoState extends ProfiledetailsState{}

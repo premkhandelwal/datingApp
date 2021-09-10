@@ -17,8 +17,8 @@ class ProfileDetailPage extends StatefulWidget {
 
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
   String _date = "Choose birthday date";
-  TextEditingController firstName = new TextEditingController();
-  TextEditingController lastName = new TextEditingController();
+  TextEditingController name = new TextEditingController();
+  TextEditingController profession = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   height: 50,
                 ),
                 TextFormField(
-                  controller: firstName,
+                  controller: name,
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -103,7 +103,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   height: 20,
                 ),
                 TextFormField(
-                  controller: lastName,
+                  controller: profession,
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -181,9 +181,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   onPressed: () {
                     context.read<ProfiledetailsBloc>().add(AddBasicInfoEvent(
                         user: CurrentUser(
-                            uid: "User1",
-                            firstName: firstName.text,
-                            lastName: lastName.text,
+                            name: name.text,
+                            profession: profession.text,
                             birthDate: _date)));
                     changePageTo(
                         context: context, widget: GenderSelectionScreen());

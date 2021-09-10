@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';

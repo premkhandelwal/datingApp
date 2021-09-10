@@ -58,11 +58,9 @@ class OtpRetrievalFailure extends FirebaseauthEvent {
 }
 
 class LinkEmailWithPhoneNumberEvent extends FirebaseauthEvent {
-  final User? user;
   final String emailId;
   final String password;
   LinkEmailWithPhoneNumberEvent({
-    required this.user,
     required this.emailId,
     required this.password,
   });

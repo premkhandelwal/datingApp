@@ -1,4 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SharedObjects.prefs = await CachedSharedPreference.getInstance();
+
   runApp(MyApp(
     firebaseAuthRepository: FirebaseAuthRepository(),
     userActivityRepository: UserActivityRepository(),
@@ -69,7 +72,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // home: ChooseSignInSignUpPage(),
-        home: HomePage(),
+        home: SharedObjects.prefs?.getString(SessionConstants.sessionSignedInWith) ==
+                null
+            ? ChooseSignInSignUpPage()
+            : HomePage(),
         // home: MatchesScreen(),
       ),
       // home: DiscoverScreen(),

@@ -1,4 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/phone_number_screen.dart';
@@ -35,8 +36,15 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
 
   @override
   void initState() {
-    _listenOTP();
+    // _listenOTP();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    SmsAutoFill().unregisterListener();
+    // otpController.dispose();
+    super.dispose();
   }
 
   void _listenOTP() async {
@@ -110,18 +118,19 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                           print(value);
                         }),
                   ),
-                  Container(
-                child:  PinFieldAutoFill(
-                        controller: otpController,
+                  /* Container(
+                    child: PinFieldAutoFill(
+                      controller: otpController,
 
-                  decoration: UnderlineDecoration(
-                    textStyle: TextStyle(fontSize: 20, color: Colors.black),
-                    colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.3)),
-                  ),
-                 codeLength: 6,
-                  // controller: otpController,
-                ),
-              ),
+                      decoration: UnderlineDecoration(
+                        textStyle: TextStyle(fontSize: 20, color: Colors.black),
+                        colorBuilder:
+                            FixedColorBuilder(Colors.black.withOpacity(0.3)),
+                      ),
+                      codeLength: 6,
+                      // controller: otpController,
+                    ),
+                  ), */
                   Spacer(),
                   BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                     listenWhen: (previousState, currentState) {
@@ -143,19 +152,28 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                           text: 'Continue',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              context.read<FirebaseauthBloc>().add(!widget
-                                      .issignUpWithEmail
-                                  ? OtpVerificationRequested(
-                                      smsCode: otpController.text,
-                                      verificationId: widget.verificationId)
-                                  : LinkPhoneNumberWithEmailEvent(
-                                      smsCode: otpController.text,
-                                      verificationId: widget.verificationId));
+                              context
+                                  .read<FirebaseauthBloc>()
+                                  .add(!widget.issignUpWithEmail
+                                      ? OtpVerificationRequested(
+                                          smsCode: otpController.text,
+                                          verificationId: widget.verificationId)
+                                      : LinkPhoneNumberWithEmailEvent(
+                                          smsCode: otpController.text,
+                                          verificationId:
+                                              widget.verificationId));
                             }
                           });
                     },
                     listener: (context, state) {
                       if (state is OtpVerified) {
+                        if (widget.authSide != "Sign Up") {
+                          SharedObjects.prefs?.setString(
+                              SessionConstants.sessionSignedInWith, "phone number");
+                          SharedObjects.prefs?.setString(
+                              SessionConstants.sessionUid, state.userUID!);
+                        }
+
                         changePageWithoutBack(
                             context: context,
                             widget: widget.authSide == 'Sign Up'
@@ -169,14 +187,14 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       } else if (state is OtpNotVerified) {
                         showDialog(
                             context: context,
-                            builder: (context) => AlertDialog(
+                            builder: (contextz) => AlertDialog(
                                   title: Text("Error"),
                                   content: Text("Failed to verify otp!"),
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
                                           changePageTo(
-                                              context: context,
+                                              context: contextz,
                                               widget: PhoneNumberPage(
                                                   authSide: widget.authSide));
                                         },

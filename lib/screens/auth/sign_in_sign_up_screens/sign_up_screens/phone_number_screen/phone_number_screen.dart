@@ -22,10 +22,7 @@ class PhoneNumberPage extends StatefulWidget {
 class _PhoneNumberPageState extends State<PhoneNumberPage> {
   Country _selectedCountry =
       Country(isoCode: "IN", iso3Code: 'IND', phoneCode: "91", name: 'India');
-  @override
-  void initState() {
-    super.initState();
-  }
+
 
   final _formKey = GlobalKey<FormState>();
   @override
@@ -160,12 +157,10 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                         text: 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context
-                                .read<FirebaseauthBloc>()
+                            context.read<FirebaseauthBloc>()
                                 .add(OtpSendRequested(
                                   codeAutoRetrievalTimeout: (id) {
-                                    context
-                                        .read<FirebaseauthBloc>()
+                                    context.read<FirebaseauthBloc>()
                                         .add(OtpRetrievalTimeOut());
                                   },
                                   verificationFailed: (exception) {
