@@ -30,6 +30,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     } else if (event is SignOutRequested) {
       yield* _mapSignOutRequesttoState(event);
     } else if (event is OtpSendRequested) {
+    yield OperationInProgress();
       yield* _mapSendOtpRequesttoState(event);
     } else if (event is OtpVerificationRequested) {
       yield* _mapVerifyOtpRequesttoState(event);
@@ -93,7 +94,6 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _mapSendOtpRequesttoState(
       OtpSendRequested event) async* {
-    yield OperationInProgress();
     try {
       await firebaseAuthRepo.sendOTP(event.phoneNumber, event.codeSent,
           event.verificationFailed, event.codeAutoRetrievalTimeout);
@@ -122,8 +122,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _maplinkEmailwithPhoneeventtoState(
       LinkEmailWithPhoneNumberEvent event) async* {
+      yield OperationInProgress();
     try {
-      // yield OperationInProgress();
 
       bool linkedPhoneNumberEmail = await firebaseAuthRepo
           .linkEmailWithPhoneNumber(event.user, event.emailId, event.password);
@@ -139,7 +139,10 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _maplinkPhonewithEmaileventtoState(
       LinkPhoneNumberWithEmailEvent event) async* {
+      yield OperationInProgress();
+    
     try {
+
       User? user = FirebaseAuth.instance.currentUser;
       bool linkedPhoneNumberEmail =
           await firebaseAuthRepo.linkPhoneNumberWithEmail(
