@@ -1,5 +1,7 @@
+import 'dart:math';
+
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/screens/home_page/chat_screen.dart';
+import 'package:dating_app/screens/home_page/chat/chat_screen.dart';
 import 'package:dating_app/screens/home_page/discover_screen.dart';
 import 'package:dating_app/screens/home_page/matches_screen.dart';
 import 'package:dating_app/screens/home_page/profile_screen.dart';
@@ -63,13 +65,55 @@ List<PersistentBottomNavBarItem> _navBarsItems() {
       activeColorSecondary: AppColor,
     ),
     PersistentBottomNavBarItem(
-      icon: Icon(Icons.favorite_border),
+      icon: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Icon(Icons.favorite_border),
+          if (Random().nextBool())
+            Positioned(
+              top: -8,
+              right: -10,
+              child: CircleAvatar(
+                radius: 12,
+                backgroundColor: AppColor,
+                child: Text(
+                  '5',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Modernist',
+                      color: Colors.white),
+                ),
+              ),
+            )
+        ],
+      ),
       title: ("Matches"),
       activeColorPrimary: Colors.grey,
       activeColorSecondary: AppColor,
     ),
     PersistentBottomNavBarItem(
-      icon: Icon(Icons.chat),
+      icon: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Icon(Icons.chat),
+          if (Random().nextBool())
+            Positioned(
+              top: -8,
+              right: -10,
+              child: CircleAvatar(
+                radius: 12,
+                backgroundColor: AppColor,
+                child: Text(
+                  '5',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Modernist',
+                      color: Colors.white),
+                ),
+              ),
+            )
+        ],
+      ),
       title: ("Chat"),
       activeColorPrimary: Colors.grey,
       activeColorSecondary: AppColor,
