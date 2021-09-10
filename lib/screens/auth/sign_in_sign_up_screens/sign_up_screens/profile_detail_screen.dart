@@ -1,9 +1,12 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
+import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/gender_selection_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileDetailPage extends StatefulWidget {
   const ProfileDetailPage({Key? key}) : super(key: key);
@@ -176,6 +179,12 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                 ),
                 CommonButton(
                   onPressed: () {
+                    context.read<ProfiledetailsBloc>().add(AddBasicInfoEvent(
+                        user: CurrentUser(
+                            uid: "User1",
+                            firstName: firstName.text,
+                            lastName: lastName.text,
+                            birthDate: _date)));
                     changePageTo(
                         context: context, widget: GenderSelectionScreen());
                   },

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,12 +9,14 @@ abstract class BaseAuthProvider {
   //Future<String> signUpWithPhoneNumber(String phoneNumber);
   // Future<String> signInWithPhoneNumber(String phoneNumber);
   Future<void> signOut();
-  Future<bool> verifyOTP(String smsCode, String verificationId);
+  Future<AuthCredential?> verifyOTP(String smsCode, String verificationId);
   Future<void> sendOTP(
       String phoneNumber,
       PhoneCodeSent codeSent,
       PhoneVerificationFailed verificationFailed,
       PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout);
+  Future<bool> linkEmailWithPhoneNumber(User? user, String emailId, String password);
+  Future<bool> linkPhoneNumberWithEmail(User? user, String smsCode, String verificationId);
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider {
@@ -51,6 +52,21 @@ class FirebaseAuthProvider extends BaseAuthProvider {
     return CurrentUser(firebaseUser: credential.user);
   }
 
+  @override
+  Future<bool> linkEmailWithPhoneNumber(User? user,String emailId, String password) async {
+    AuthCredential credential =
+        EmailAuthProvider.credential(email: emailId, password: password);
+    UserCredential? userCredential = await user?.linkWithCredential(credential);
+    return userCredential != null;
+  }
+
+  @override
+  Future<bool> linkPhoneNumberWithEmail(User? user,String smsCode,String verificationId) async {
+    AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+    UserCredential? userCredential = await user?.linkWithCredential(credential);
+    return userCredential != null;
+  }
+
   /* @override
   Future<String> signUpWithPhoneNumber(String phoneNumber) async {
     ConfirmationResult userCredential =
@@ -59,15 +75,18 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   } */
 
   @override
-  Future<bool> verifyOTP(String smsCode, String verificationId) async {
+  Future<AuthCredential?> verifyOTP(
+      String smsCode, String verificationId) async {
     AuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode:
             smsCode); // Creates a credential by taking verificationId and smsCode recieved via OTP
-    UserCredential result = await _firebaseAuth.signInWithCredential(
-        credential); //Pass the credential created, to the signInWithCredential()
-    return result.user?.uid !=
-        null; // returns true if otp is verified else returns false
+    UserCredential result =
+        await _firebaseAuth.signInWithCredential(credential);
+    if (result.user?.uid != null) {
+      return credential;
+    } //Pass the credential created, to the signInWithCredential()
+    return null; // returns true if otp is verified else returns false
   }
 
   @override

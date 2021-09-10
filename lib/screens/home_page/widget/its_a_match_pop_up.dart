@@ -5,8 +5,7 @@ import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 
-Random random = Random();
-void itIsAMatchPopUp(BuildContext context) {
+void itIsAMatchPopUp(BuildContext context, int index) {
   showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -49,8 +48,7 @@ void itIsAMatchPopUp(BuildContext context) {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: Image.asset(
-                                        sampleImages[random
-                                            .nextInt(sampleImages.length)],
+                                        sampleImages[index],
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -81,8 +79,7 @@ void itIsAMatchPopUp(BuildContext context) {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: Image.asset(
-                                        sampleImages[random
-                                            .nextInt(sampleImages.length)],
+                                        sampleImages[index],
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -99,7 +96,7 @@ void itIsAMatchPopUp(BuildContext context) {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'It’s a match, ${name[random.nextInt(name.length)]}!',
+                            'It’s a match with ${name[index]}!',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
