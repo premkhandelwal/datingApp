@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/logic/data/user.dart';
 import 'package:meta/meta.dart';
 
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
@@ -24,6 +25,8 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapUserDisLikedeventTostate(event);
     } else if (event is UserFindMatchEvent) {
       yield* _mapUserMatchFoundeventTostate(event);
+    } else if (event is FetchAllUsersEvent) {
+      yield* _mapFetchUsersEventtoState();
     }
   }
 
@@ -48,6 +51,15 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield UserMatchFoundState();
     } else {
       yield UserMatchNotFoundState();
+    }
+  }
+
+  Stream<UseractivityState> _mapFetchUsersEventtoState() async* {
+    try {
+      List<CurrentUser> _users = await userActivityRepository.fetchAllUsers();
+      yield FetchedAllUsersState(users: _users);
+    } catch (e) {
+      yield FailedToFetchAllUsersState();
     }
   }
 }

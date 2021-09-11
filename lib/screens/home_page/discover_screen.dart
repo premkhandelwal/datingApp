@@ -42,6 +42,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   TCardController _controller = TCardController();
   int _index = 0;
   @override
+  void initState() {
+    context.read<UseractivityBloc>().add(FetchAllUsersEvent());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<Widget> cards = List.generate(
       sampleImages.length,

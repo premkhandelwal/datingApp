@@ -80,7 +80,6 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                               .read<ProfiledetailsBloc>()
                               .add(AddGenderInfoEvent(
                                   user: CurrentUser(
-                                uid: SessionConstants.sessionUid,
                                 gender: _selected,
                               )));
                           changePageTo(

@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
+import 'package:dating_app/logic/data/user.dart';
 
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
   Future<void> userDisliked(String likedUserUID);
   Future<bool> userFindMatch(String matchUserUID);
+  Future<List<CurrentUser>> fetchAllUsers();
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
-  CollectionReference collection =
+  CollectionReference<Map<String, dynamic>> collection =
       FirebaseFirestore.instance.collection("UserActivity");
 
   @override
@@ -42,5 +44,21 @@ class UserActivityProvider extends BaseUserActivityProvider {
         .collection("LikedUsers")
         .doc(likedUserUID)
         .set({likedUserUID: DateTime.now()});
+  }
+
+  @override
+  Future<List<CurrentUser>> fetchAllUsers() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await collection.get();
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+          querySnapshot.docs;
+      List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
+      print(usersList);
+      print(usersList[0].name);
+      return usersList;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

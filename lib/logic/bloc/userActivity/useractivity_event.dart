@@ -21,3 +21,5 @@ class UserFindMatchEvent extends UseractivityEvent {
      this.matchUserUID,
   );
 }
+
+class FetchAllUsersEvent extends UseractivityEvent{}

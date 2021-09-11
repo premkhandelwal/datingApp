@@ -65,10 +65,26 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
             padding: EdgeInsets.all(20),
             child: Column(
               children: [
-                CustomAppBar(
-                  context: context,
-                  centerWidget: Container(),
-                  trailingWidget: Container(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomAppBar(
+                      context: context,
+                      centerWidget: Container(),
+                      trailingWidget: Container(),
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          changePageTo(context: context, widget: ProfileDetailPage());
+                        },
+                        child: Text(
+                          "Skip",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'Modernist',
+                              color: Colors.red),
+                        ))
+                  ],
                 ),
                 SizedBox(
                   height: 60,
