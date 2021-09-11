@@ -19,16 +19,22 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  void swipeLeft(int index) {
-    context.read<UseractivityBloc>().add(UserDislikedEvent(name[index]));
+  void swipeLeft() {
+    context
+        .read<UseractivityBloc>()
+        .add(UserDislikedEvent(name[_controller.index]));
     print("person diliked");
     print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
-  Future<void> swipeRight(int index) async {
-    context.read<UseractivityBloc>().add(UserLikedEvent(name[index]));
-    context.read<UseractivityBloc>().add(UserFindMatchEvent(name[index]));
+  Future<void> swipeRight() async {
+    context
+        .read<UseractivityBloc>()
+        .add(UserLikedEvent(name[_controller.index]));
+    context
+        .read<UseractivityBloc>()
+        .add(UserFindMatchEvent(name[_controller.index]));
     print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
@@ -145,7 +151,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         children: [
                           IconButton(
                               onPressed: () {
-                                swipeLeft(_index);
+                                swipeLeft();
                               },
                               iconSize: 30,
                               color: Color(0xffF27121),
@@ -171,7 +177,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             child: Center(
                               child: IconButton(
                                   onPressed: () {
-                                    swipeRight(_index);
+                                    swipeRight();
                                     print('hi');
                                   },
                                   iconSize: 40,
