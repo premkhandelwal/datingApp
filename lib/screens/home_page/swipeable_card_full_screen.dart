@@ -1,5 +1,6 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/screens/home_page/full_screen_image.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -164,16 +165,17 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Container(
-                                        child: Row(
-                                      children: [
-                                        Text(
-                                          interests[index],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2,
-                                        )
-                                      ],
-                                    ));
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            interests[index],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2,
+                                          )
+                                        ],
+                                      ),
+                                    );
                                   },
                                 ),
                               ),
@@ -211,13 +213,27 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                           childAspectRatio: 1),
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return ClipRRect(
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                FullScreenImage(
+                                              image: sampleImages,
+                                              currentIndex: index,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
                                         child: Image.asset(
                                           sampleImages[index],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
-                                        ));
+                                        ),
+                                      ),
+                                    );
                                   },
                                 ),
                               ),
@@ -236,6 +252,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                     Navigator.of(context).pop();
                                     await Future.delayed(
                                         Duration(milliseconds: 200));
+                                    print('hi');
                                     swipeLeft();
                                     print('hi');
                                   },

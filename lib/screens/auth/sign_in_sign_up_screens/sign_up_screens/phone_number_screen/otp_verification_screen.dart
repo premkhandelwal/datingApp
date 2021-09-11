@@ -8,14 +8,13 @@ import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class OTPVerificationPage extends StatefulWidget {
   final String authSide;
   final String verificationId;
-  final bool
-      issignUpWithEmail; // This variable will be true when user has signed with email and password and we want him to add his phone number as well as the secondary login
+  final bool issignUpWithEmail;
+  // This variable will be true when user has signed with email and password and we want him to add his phone number as well as the secondary login
 
   OTPVerificationPage(
       {Key? key,
@@ -72,56 +71,64 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       ],
                     ),
                   ),
-                  Padding(
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(
+                  //       horizontal: 20.0, vertical: 20),
+                  //   child: PinCodeTextField(
+                  //       validator: (val) {
+                  //         if (val == null) {
+                  //           return "Otp cannot be empty";
+                  //         } else if (val.length != 6) {
+                  //           return 'Otp must be of 6 digit';
+                  //         }
+                  //       },
+                  //       controller: otpController,
+                  //       hintStyle: TextStyle(color: AppColor.withOpacity(0.3)),
+                  //       textStyle: TextStyle(color: Colors.white),
+                  //       autoFocus: true,
+                  //       pinTheme: PinTheme(
+                  //         shape: PinCodeFieldShape.box,
+                  //         borderRadius: BorderRadius.circular(15),
+                  //         fieldHeight: 50,
+                  //         fieldWidth: 50,
+                  //         activeColor: Colors.pink,
+                  //         activeFillColor: AppColor,
+                  //         inactiveFillColor: Colors.grey.withOpacity(0),
+                  //         selectedFillColor: AppColor.withOpacity(0),
+                  //         inactiveColor: AppColor.withOpacity(0.3),
+                  //         selectedColor: AppColor,
+                  //       ),
+                  //       cursorColor: AppColor,
+                  //       appContext: context,
+                  //       length: 6,
+                  //       enableActiveFill: true,
+                  //       keyboardType: TextInputType.number,
+                  //       hintCharacter: '0',
+                  //       useHapticFeedback: true,
+                  //       onChanged: (value) {
+                  //         print(value);
+                  //       }),
+                  // ),
+                  Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 20),
-                    child: PinCodeTextField(
-                        validator: (val) {
-                          if (val == null) {
-                            return "Otp cannot be empty";
-                          } else if (val.length != 6) {
-                            return 'Otp must be of 6 digit';
-                          }
-                        },
-                        controller: otpController,
-                        hintStyle: TextStyle(color: AppColor.withOpacity(0.3)),
-                        textStyle: TextStyle(color: Colors.white),
-                        autoFocus: true,
-                        pinTheme: PinTheme(
-                          shape: PinCodeFieldShape.box,
-                          borderRadius: BorderRadius.circular(15),
-                          fieldHeight: 50,
-                          fieldWidth: 50,
-                          activeColor: Colors.pink,
-                          activeFillColor: AppColor,
-                          inactiveFillColor: Colors.grey.withOpacity(0),
-                          selectedFillColor: AppColor.withOpacity(0),
-                          inactiveColor: AppColor.withOpacity(0.3),
-                          selectedColor: AppColor,
-                        ),
-                        cursorColor: AppColor,
-                        appContext: context,
-                        length: 6,
-                        enableActiveFill: true,
-                        keyboardType: TextInputType.number,
-                        hintCharacter: '0',
-                        useHapticFeedback: true,
-                        onChanged: (value) {
-                          print(value);
-                        }),
+                    child: PinFieldAutoFill(
+                      controller: otpController,
+                      autoFocus: true,
+                      decoration: UnderlineDecoration(
+                        hintText: '000000',
+                        lineHeight: 1,
+                        hintTextStyle:
+                            TextStyle(fontSize: 20, color: Colors.grey),
+                        bgColorBuilder: FixedColorBuilder(AppColor),
+                        textStyle: TextStyle(fontSize: 20, color: Colors.white),
+                        gapSpace: 10,
+                        colorBuilder: FixedColorBuilder(AppColor),
+                      ),
+                      codeLength: 6,
+                      // controller: otpController,
+                    ),
                   ),
-                  Container(
-                child:  PinFieldAutoFill(
-                        controller: otpController,
-
-                  decoration: UnderlineDecoration(
-                    textStyle: TextStyle(fontSize: 20, color: Colors.black),
-                    colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.3)),
-                  ),
-                 codeLength: 6,
-                  // controller: otpController,
-                ),
-              ),
                   Spacer(),
                   BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                     listenWhen: (previousState, currentState) {

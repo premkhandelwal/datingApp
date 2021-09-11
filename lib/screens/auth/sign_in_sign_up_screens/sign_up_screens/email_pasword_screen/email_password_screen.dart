@@ -1,7 +1,6 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:email_validator/email_validator.dart';
@@ -27,6 +26,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   Widget build(BuildContext context) {
     return Form(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(25.0),
@@ -58,7 +58,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
                 Form(
                     key: _formKey,
                     child: Column(
@@ -92,37 +92,54 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           keyboardType: TextInputType.emailAddress,
                         ),
                         SizedBox(height: 20),
-                        TextFormField(
-                          validator: (val) {
-                            String pattern =
-                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-                            RegExp regex = new RegExp(pattern);
-                            if (val == null) {
-                              return "Password cannot be empty";
-                            } else if (!regex.hasMatch(val)) {
-                              return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter, at least one digit and at least one special character';
-                            }
-                            return null;
-                          },
-                          obscureText: true,
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(color: AppColor)),
-                              focusColor: AppColor,
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                gapPadding: 5,
-                                borderSide: BorderSide(color: AppColor),
+                        Container(
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width - 100,
+                                child: TextFormField(
+                                  validator: (val) {
+                                    String pattern =
+                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+                                    RegExp regex = new RegExp(pattern);
+                                    if (val == null) {
+                                      return "Password cannot be empty";
+                                    } else if (!regex.hasMatch(val)) {
+                                      return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter,at least one digit and at least one special character';
+                                    }
+                                    return null;
+                                  },
+                                  obscureText: true,
+                                  controller: passwordController,
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          borderSide:
+                                              BorderSide(color: AppColor)),
+                                      focusColor: AppColor,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        gapPadding: 5,
+                                        borderSide: BorderSide(color: AppColor),
+                                      ),
+                                      errorMaxLines: 4,
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          borderSide:
+                                              BorderSide(color: AppColor)),
+                                      labelText: "Enter Your Password",
+                                      labelStyle: TextStyle(color: AppColor)),
+                                  textInputAction: TextInputAction.done,
+                                  keyboardType: TextInputType.text,
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(color: AppColor)),
-                              labelText: "Enter Your Password",
-                              labelStyle: TextStyle(color: AppColor)),
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.text,
+                              // IconsOutlinedButton(
+                              //     icon: Icons.eye, onPressed: onPressed)
+                            ],
+                          ),
                         ),
                       ],
                     )),
@@ -139,7 +156,10 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   listener: (context, state) {
                     if (state is UserSignedUp) {
                       changePageWithoutBack(
-                          context: context, widget: LinkPhoneEmailScreen(connectWith: "phone number",));
+                          context: context,
+                          widget: LinkPhoneEmailScreen(
+                            connectWith: "phone number",
+                          ));
                     } else if (state is UserLoggedIn) {
                       changePageWithoutBack(
                           context: context, widget: HomePage());

@@ -5,7 +5,6 @@ import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
-import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -70,9 +69,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: ChooseSignInSignUpPage(),
         home: HomePage(),
-        // home: MatchesScreen(),
       ),
-      // home: DiscoverScreen(),
     );
   }
 }

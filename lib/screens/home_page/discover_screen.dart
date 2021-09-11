@@ -8,8 +8,8 @@ import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
-import 'package:tcard/tcard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcard/tcard.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({Key? key}) : super(key: key);
@@ -19,20 +19,22 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  void swipeLeft(int index) {
+  void swipeLeft() {
     context
         .read<UseractivityBloc>()
-        .add(UserDislikedEvent("User1", name[index]));
+        .add(UserDislikedEvent("User1", name[_controller.index]));
     print("person diliked");
     print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
-  Future<void> swipeRight(int index) async {
-    context.read<UseractivityBloc>().add(UserLikedEvent("User1", name[index]));
+  Future<void> swipeRight() async {
     context
         .read<UseractivityBloc>()
-        .add(UserFindMatchEvent("User2", name[index]));
+        .add(UserLikedEvent("User1", name[_controller.index]));
+    context
+        .read<UseractivityBloc>()
+        .add(UserFindMatchEvent("User2", name[_controller.index]));
     print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
@@ -142,45 +144,53 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           },
                         ),
                       ),
+                      SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
                               onPressed: () {
-                                swipeLeft(_index);
+                                swipeLeft();
                               },
                               iconSize: 30,
                               color: Color(0xffF27121),
                               icon: Icon(Icons.close)),
-                          Column(
-                            children: [
-                              TextButton(
-                                  onPressed: () {
-                                    _index = 0;
-                                    _controller.reset();
-                                  },
-                                  child: Text('Reset Stack')),
-                              TextButton(
-                                  onPressed: () {
-                                    _controller.back();
-                                  },
-                                  child: Text('1 Step Back')),
-                            ],
-                          ),
+                          // Column(
+                          //   children: [
+                          //     TextButton(
+                          //         onPressed: () {
+                          //           _index = 0;
+                          //           _controller.reset();
+                          //         },
+                          //         child: Text('Reset Stack')),
+                          //     TextButton(
+                          //         onPressed: () {
+                          //           _controller.back();
+                          //         },
+                          //         child: Text('1 Step Back')),
+                          //   ],
+                          // ),
                           CircleAvatar(
                             backgroundColor: AppColor,
-                            radius: 30,
+                            radius: 40,
                             child: Center(
                               child: IconButton(
                                   onPressed: () {
-                                    swipeRight(_index);
+                                    swipeRight();
                                     print('hi');
                                   },
-                                  iconSize: 40,
+                                  iconSize: 60,
                                   color: Colors.white,
                                   icon: Icon(Icons.favorite)),
                             ),
-                          )
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                _controller.back();
+                              },
+                              iconSize: 30,
+                              color: Color(0xffF27121),
+                              icon: Icon(Icons.restore)),
                         ],
                       )
                     ],
