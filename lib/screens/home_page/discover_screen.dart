@@ -42,6 +42,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   TCardController _controller = TCardController();
   int _index = 0;
   @override
+  void initState() {
+    context.read<UseractivityBloc>().add(FetchAllUsersEvent());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<Widget> cards = List.generate(
       sampleImages.length,
@@ -146,6 +152,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           },
                         ),
                       ),
+                      SizedBox(
+                        height: 40,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -156,35 +165,27 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               iconSize: 30,
                               color: Color(0xffF27121),
                               icon: Icon(Icons.close)),
-                          Column(
-                            children: [
-                              TextButton(
-                                  onPressed: () {
-                                    _index = 0;
-                                    _controller.reset();
-                                  },
-                                  child: Text('Reset Stack')),
-                              TextButton(
-                                  onPressed: () {
-                                    _controller.back();
-                                  },
-                                  child: Text('1 Step Back')),
-                            ],
-                          ),
                           CircleAvatar(
                             backgroundColor: AppColor,
-                            radius: 30,
+                            radius: 40,
                             child: Center(
                               child: IconButton(
                                   onPressed: () {
                                     swipeRight();
                                     print('hi');
                                   },
-                                  iconSize: 40,
+                                  iconSize: 60,
                                   color: Colors.white,
                                   icon: Icon(Icons.favorite)),
                             ),
-                          )
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                _controller.back();
+                              },
+                              iconSize: 30,
+                              color: Color(0xffF27121),
+                              icon: Icon(Icons.restore)),
                         ],
                       )
                     ],

@@ -1,4 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/phone_number_screen.dart';
@@ -163,6 +164,11 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                     },
                     listener: (context, state) {
                       if (state is OtpVerified) {
+                          SharedObjects.prefs?.setString(
+                              SessionConstants.sessionSignedInWith, "phone number");
+                          SharedObjects.prefs?.setString(
+                              SessionConstants.sessionUid, state.userUID!);
+
                         changePageWithoutBack(
                             context: context,
                             widget: widget.authSide == 'Sign Up'

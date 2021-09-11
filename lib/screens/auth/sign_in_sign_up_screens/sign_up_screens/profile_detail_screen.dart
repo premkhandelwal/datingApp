@@ -17,6 +17,7 @@ class ProfileDetailPage extends StatefulWidget {
 
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
   String _date = "Choose birthday date";
+  DateTime _selectedDate = DateTime.now();
   TextEditingController name = new TextEditingController();
   TextEditingController profession = new TextEditingController();
 
@@ -142,6 +143,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         },
                         showTitleActions: true,
                         onConfirm: (date) {
+                          _selectedDate = date;
                           _date = '${date.day}/${date.month}/${date.year}';
                           setState(() {});
                         },
@@ -183,7 +185,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         user: CurrentUser(
                             name: name.text,
                             profession: profession.text,
-                            birthDate: _date)));
+                            birthDate:_selectedDate)));
                     changePageTo(
                         context: context, widget: GenderSelectionScreen());
                   },
