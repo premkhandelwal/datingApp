@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 
-
 class YourInterestScreen extends StatefulWidget {
   YourInterestScreen({Key? key}) : super(key: key);
 
@@ -103,13 +102,13 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
               CommonButton(
                   text: 'Continue',
                   onPressed: () {
-                     context
-                              .read<ProfiledetailsBloc>()
-                              .add(AddInterestsInfoEvent(
-                                  user: CurrentUser(
-                                uid: "User1",
-                                interests: _selectedInterests,
-                              )));
+                    context
+                        .read<ProfiledetailsBloc>()
+                        .add(AddInterestsInfoEvent(
+                            user: CurrentUser(
+                          interests: _selectedInterests,
+                        )));
+                    context.read<ProfiledetailsBloc>().add(SubmitInfoEvent());
                     changePageTo(
                         context: context, widget: SearchFriendsScreen());
                   })

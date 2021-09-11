@@ -1,4 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
@@ -155,12 +156,21 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   },
                   listener: (context, state) {
                     if (state is UserSignedUp) {
+                      SharedObjects.prefs?.setString(
+                          SessionConstants.sessionSignedInWith, "email");
+                      SharedObjects.prefs?.setString(
+                          SessionConstants.sessionUid, state.userUID);
                       changePageWithoutBack(
                           context: context,
                           widget: LinkPhoneEmailScreen(
                             connectWith: "phone number",
                           ));
                     } else if (state is UserLoggedIn) {
+                      SharedObjects.prefs?.setString(
+                          SessionConstants.sessionSignedInWith, "email");
+                      SharedObjects.prefs?.setString(
+                          SessionConstants.sessionUid, state.userUID);
+                      print(state.userUID);
                       changePageWithoutBack(
                           context: context, widget: HomePage());
                     }

@@ -6,12 +6,12 @@ class ProfileDetailsRepository extends BaseRepository {
   final ProfileDetailsProvider profileDetailsProvider =
       ProfileDetailsProvider();
 
-  Future<void> addBasicInfo(CurrentUser user) =>
+  /* Future<void> addBasicInfo(CurrentUser user) =>
       profileDetailsProvider.addBasicInfo(user);
   Future<void> addGenderInfo(CurrentUser user) =>
-      profileDetailsProvider.addGenderInfo(user);
-  Future<void> addInterestInfo(CurrentUser user) =>
-      profileDetailsProvider.addInterestInfo(user);
+      profileDetailsProvider.addGenderInfo(user); */
+  Future<void> submitUserInfo(CurrentUser user) =>
+      profileDetailsProvider.submitUserInfo(user);
 
   @override
   void dispose() {}

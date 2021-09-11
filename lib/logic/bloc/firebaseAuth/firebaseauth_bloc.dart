@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:meta/meta.dart';
 
 part 'firebaseauth_event.dart';
@@ -30,7 +29,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     } else if (event is SignOutRequested) {
       yield* _mapSignOutRequesttoState(event);
     } else if (event is OtpSendRequested) {
-    yield OperationInProgress();
+      yield OperationInProgress();
       yield* _mapSendOtpRequesttoState(event);
     } else if (event is OtpVerificationRequested) {
       yield* _mapVerifyOtpRequesttoState(event);
@@ -46,9 +45,9 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   }
 
   Stream<FirebaseauthState> _mapUserStatetoState() async* {
-    bool isSignedIn = firebaseAuthRepo.isSignedIn();
-    if (isSignedIn) {
-      yield UserLoggedIn();
+    String? currentUserUID = firebaseAuthRepo.getCurrentUserUID();
+    if (currentUserUID != null) {
+      yield UserLoggedIn(userUID: currentUserUID);
     } else {
       yield UserLoggedOut();
     }
@@ -61,7 +60,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     CurrentUser? user = await firebaseAuthRepo.signInWithEmailPassword(
         event.emailId, event.password);
     if (user != null) {
-      yield UserLoggedIn();
+      yield UserLoggedIn(userUID: user.firebaseUser!.uid);
     } else {
       yield RequestedOperationFailed();
     }
@@ -74,7 +73,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     CurrentUser? user = await firebaseAuthRepo.signUpWithEmailPassword(
         event.emailId, event.password);
     if (user != null) {
-      yield UserSignedUp();
+      
+      yield UserSignedUp(userUID: user.firebaseUser!.uid);
     } else {
       yield RequestedOperationFailed();
     }
@@ -111,7 +111,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       AuthCredential? authCredential =
           await firebaseAuthRepo.verifyOTP(event.smsCode, event.verificationId);
       if (authCredential != null) {
-        yield OtpVerified(authCredential: authCredential);
+        String? uid = firebaseAuthRepo.getCurrentUserUID();
+        yield OtpVerified(authCredential: authCredential,userUID: uid);
       } else {
         yield OtpNotVerified();
       }
@@ -122,11 +123,10 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _maplinkEmailwithPhoneeventtoState(
       LinkEmailWithPhoneNumberEvent event) async* {
-      yield OperationInProgress();
+    yield OperationInProgress();
     try {
-
       bool linkedPhoneNumberEmail = await firebaseAuthRepo
-          .linkEmailWithPhoneNumber(event.user, event.emailId, event.password);
+          .linkEmailWithPhoneNumber(event.emailId, event.password);
       if (linkedPhoneNumberEmail) {
         yield LinkedEmailWithPhoneNumber();
       } else {
@@ -139,40 +139,16 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
 
   Stream<FirebaseauthState> _maplinkPhonewithEmaileventtoState(
       LinkPhoneNumberWithEmailEvent event) async* {
-      yield OperationInProgress();
-    
-    try {
+    yield OperationInProgress();
 
-      User? user = FirebaseAuth.instance.currentUser;
-      bool linkedPhoneNumberEmail =
-          await firebaseAuthRepo.linkPhoneNumberWithEmail(
-              user, event.smsCode, event.verificationId);
+    try {
+      bool linkedPhoneNumberEmail = await firebaseAuthRepo
+          .linkPhoneNumberWithEmail(event.smsCode, event.verificationId);
       if (linkedPhoneNumberEmail) {
         yield LinkedPhoneNumberWithEmail();
       } else {
         yield FailedtoLinkedPhoneNumberEmail();
       }
-      // yield OperationInProgress();
-      /*  try {
-        Stream<FirebaseauthState> streamState = _mapSendOtpRequesttoState(
-            OtpSendRequested(
-                codeSent: event.codeSent,
-                verificationFailed: event.verificationFailed,
-                codeAutoRetrievalTimeout: event.codeAutoRetrievalTimeout,
-                phoneNumber: event.phoneNumber));
-        List<FirebaseauthState> statess = await streamState.toList();
-        FirebaseauthState finalstatess = statess[0];
-        User? user = FirebaseAuth.instance.currentUser;
-        if (finalstatess is OtpVerified) {
-          bool linkedPhoneNumberEmail = await firebaseAuthRepo
-              .linkPhoneNumberWithEmail(user, finalstatess.authCredential);
-          if (linkedPhoneNumberEmail) {
-            yield LinkedEmailWithPhoneNumber();
-          }
-        } else {
-          yield FailedtoLinkedPhoneNumberEmail();
-        } */
-
     } catch (e) {
       yield FailedtoLinkedPhoneNumberEmail();
     }

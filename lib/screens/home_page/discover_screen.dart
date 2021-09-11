@@ -8,8 +8,8 @@ import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcard/tcard.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({Key? key}) : super(key: key);
@@ -19,22 +19,20 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  void swipeLeft() {
+  void swipeLeft(int index) {
     context
         .read<UseractivityBloc>()
-        .add(UserDislikedEvent("User1", name[_controller.index]));
+        .add(UserDislikedEvent(name[index]));
     print("person diliked");
     print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
-  Future<void> swipeRight() async {
+  Future<void> swipeRight(int index) async {
+    context.read<UseractivityBloc>().add(UserLikedEvent(name[index]));
     context
         .read<UseractivityBloc>()
-        .add(UserLikedEvent("User1", name[_controller.index]));
-    context
-        .read<UseractivityBloc>()
-        .add(UserFindMatchEvent("User2", name[_controller.index]));
+        .add(UserFindMatchEvent(name[index]));
     print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
@@ -124,12 +122,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             if (info.direction == SwipDirection.Right) {
                               context
                                   .read<UseractivityBloc>()
-                                  .add(UserLikedEvent("User1", name[_index]));
+                                  .add(UserLikedEvent(name[_index]));
                               context.read<UseractivityBloc>().add(
-                                  UserFindMatchEvent("User2", name[_index]));
+                                  UserFindMatchEvent(name[_index]));
                             } else if (info.direction == SwipDirection.Left) {
                               context.read<UseractivityBloc>().add(
-                                  UserDislikedEvent("User1", name[_index]));
+                                  UserDislikedEvent(name[_index]));
                             }
                             _index = index;
                             print(info.direction);
@@ -144,53 +142,45 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           },
                         ),
                       ),
-                      SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
                               onPressed: () {
-                                swipeLeft();
+                                swipeLeft(_index);
                               },
                               iconSize: 30,
                               color: Color(0xffF27121),
                               icon: Icon(Icons.close)),
-                          // Column(
-                          //   children: [
-                          //     TextButton(
-                          //         onPressed: () {
-                          //           _index = 0;
-                          //           _controller.reset();
-                          //         },
-                          //         child: Text('Reset Stack')),
-                          //     TextButton(
-                          //         onPressed: () {
-                          //           _controller.back();
-                          //         },
-                          //         child: Text('1 Step Back')),
-                          //   ],
-                          // ),
+                          Column(
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    _index = 0;
+                                    _controller.reset();
+                                  },
+                                  child: Text('Reset Stack')),
+                              TextButton(
+                                  onPressed: () {
+                                    _controller.back();
+                                  },
+                                  child: Text('1 Step Back')),
+                            ],
+                          ),
                           CircleAvatar(
                             backgroundColor: AppColor,
-                            radius: 40,
+                            radius: 30,
                             child: Center(
                               child: IconButton(
                                   onPressed: () {
-                                    swipeRight();
+                                    swipeRight(_index);
                                     print('hi');
                                   },
-                                  iconSize: 60,
+                                  iconSize: 40,
                                   color: Colors.white,
                                   icon: Icon(Icons.favorite)),
                             ),
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                _controller.back();
-                              },
-                              iconSize: 30,
-                              color: Color(0xffF27121),
-                              icon: Icon(Icons.restore)),
+                          )
                         ],
                       )
                     ],

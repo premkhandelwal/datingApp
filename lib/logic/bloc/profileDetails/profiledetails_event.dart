@@ -23,3 +23,7 @@ class AddInterestsInfoEvent extends ProfiledetailsEvent {
     required this.user,
   });
 }
+
+class SubmitInfoEvent extends ProfiledetailsEvent{
+   
+}

@@ -8,7 +8,6 @@ import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,8 +28,6 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
   final TextEditingController phoneNumber = new TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
-  final User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -202,10 +199,44 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         ),
                       ),
                 Spacer(),
-                BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
+                BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
+                  listener: (context, state) {
+                    if (state is FailedtoLinkedPhoneNumberEmail) {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("Error"),
+                                content: Text(
+                                  "Failed to link email-id and phone number",
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(ctx);
+                                        changePageWithoutBack(
+                                            context: context,
+                                            widget: ProfileDetailPage());
+                                      },
+                                      child: Text("Ok"))
+                                ],
+                              ));
+                    } else {
+                      changePageWithoutBack(
+                          context: context, widget: ProfileDetailPage());
+                    }
+                  },
+                  listenWhen: (previousState, currentState) {
+                    if ((currentState is LinkedEmailWithPhoneNumber &&
+                            previousState is OperationInProgress) ||
+                        currentState is OtpVerified ||
+                        currentState is FailedtoLinkedPhoneNumberEmail) {
+                      return true;
+                    }
+                    return false;
+                  },
                   builder: (context, state) {
                     print(state);
-                    if (state is OtpSent) {
+                    if (state is OtpSent || state is OperationInProgress) {
                       return CircularProgressIndicator();
                     }
                     return CommonButton(
@@ -215,7 +246,6 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                             context.read<FirebaseauthBloc>().add(
                                 widget.connectWith == "email"
                                     ? LinkEmailWithPhoneNumberEvent(
-                                        user: user,
                                         emailId: emailIdController.text,
                                         password: passwordController.text)
                                     : OtpSendRequested(

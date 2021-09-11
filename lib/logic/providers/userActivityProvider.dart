@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 
 abstract class BaseUserActivityProvider {
-  Future<void> userLiked(String selfUID, String likedUserUID);
-  Future<void> userDisliked(String userUID, String likedUserUID);
-  Future<bool> userFindMatch(String matchUserUID, String selfUID);
+  Future<void> userLiked(String likedUserUID);
+  Future<void> userDisliked(String likedUserUID);
+  Future<bool> userFindMatch(String matchUserUID);
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
@@ -11,22 +13,21 @@ class UserActivityProvider extends BaseUserActivityProvider {
       FirebaseFirestore.instance.collection("UserActivity");
 
   @override
-  Future<void> userDisliked(String userUID, String dislikedUserUID) async {
+  Future<void> userDisliked(String dislikedUserUID) async {
     await collection
-        .doc(userUID)
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .collection("DislikedUsers")
         .doc(dislikedUserUID)
         .set({dislikedUserUID: DateTime.now()});
   }
 
   @override
-  Future<bool> userFindMatch(String matchUserUID, String selfUID) async {
+  Future<bool> userFindMatch(String matchUserUID) async {
     bool exist = false;
-    print(selfUID);
     await collection
         .doc(matchUserUID)
         .collection("LikedUsers")
-        .doc(selfUID)
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .get()
         .then((doc) {
       exist = doc.exists;
@@ -35,9 +36,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<void> userLiked(String userUID, String likedUserUID) async {
+  Future<void> userLiked(String likedUserUID) async {
     await collection
-        .doc(userUID)
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .collection("LikedUsers")
         .doc(likedUserUID)
         .set({likedUserUID: DateTime.now()});

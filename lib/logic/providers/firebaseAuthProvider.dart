@@ -3,7 +3,7 @@ import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class BaseAuthProvider {
-  bool isSignedIn();
+  String? getCurrentUserUID();
   Future<CurrentUser> signUpWithEmailPassword(String emailId, String password);
   Future<CurrentUser?> signInWithEmailPassword(String emailId, String password);
   //Future<String> signUpWithPhoneNumber(String phoneNumber);
@@ -15,15 +15,15 @@ abstract class BaseAuthProvider {
       PhoneCodeSent codeSent,
       PhoneVerificationFailed verificationFailed,
       PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout);
-  Future<bool> linkEmailWithPhoneNumber(User? user, String emailId, String password);
-  Future<bool> linkPhoneNumberWithEmail(User? user, String smsCode, String verificationId);
+  Future<bool> linkEmailWithPhoneNumber(String emailId, String password);
+  Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
-  bool isSignedIn() {
-    return _firebaseAuth.currentUser != null;
+  String? getCurrentUserUID() {
+    return _firebaseAuth.currentUser?.uid ;
   }
 
   @override
@@ -53,17 +53,17 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   }
 
   @override
-  Future<bool> linkEmailWithPhoneNumber(User? user,String emailId, String password) async {
+  Future<bool> linkEmailWithPhoneNumber(String emailId, String password) async {
     AuthCredential credential =
         EmailAuthProvider.credential(email: emailId, password: password);
-    UserCredential? userCredential = await user?.linkWithCredential(credential);
+    UserCredential? userCredential = await _firebaseAuth.currentUser?.linkWithCredential(credential);
     return userCredential != null;
   }
 
   @override
-  Future<bool> linkPhoneNumberWithEmail(User? user,String smsCode,String verificationId) async {
+  Future<bool> linkPhoneNumberWithEmail(String smsCode,String verificationId) async {
     AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
-    UserCredential? userCredential = await user?.linkWithCredential(credential);
+    UserCredential? userCredential = await _firebaseAuth.currentUser?.linkWithCredential(credential);
     return userCredential != null;
   }
 

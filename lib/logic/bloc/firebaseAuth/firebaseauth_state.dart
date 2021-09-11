@@ -18,8 +18,10 @@ class OtpSent extends FirebaseauthState {}
 
 class OtpVerified extends FirebaseauthState {
   final AuthCredential authCredential;
+  final String? userUID;
   OtpVerified({
     required this.authCredential,
+    this.userUID
   });
 }
 
@@ -37,9 +39,10 @@ class OtpRetrievalFailed extends FirebaseauthState {
 class RequestedOperationFailed extends FirebaseauthState {}
 
 class UserLoggedIn extends FirebaseauthState {
-  /* final CurrentUser? currentUser;
-
-  UserLoggedIn({this.currentUser}); */
+  final String userUID;
+  UserLoggedIn({
+    required this.userUID,
+  });
 }
 
 class UserLoggingIn extends FirebaseauthState {}
@@ -47,9 +50,10 @@ class UserLoggingIn extends FirebaseauthState {}
 class UserLoggedOut extends FirebaseauthState {}
 
 class UserSignedUp extends FirebaseauthState {
-  final CurrentUser? currentUser;
-
-  UserSignedUp({this.currentUser});
+  final String userUID;
+  UserSignedUp({
+    required this.userUID,
+  });
 }
 
 class LinkedEmailWithPhoneNumber extends FirebaseauthState {}

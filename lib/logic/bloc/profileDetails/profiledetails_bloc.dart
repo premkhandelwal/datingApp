@@ -12,7 +12,7 @@ part 'profiledetails_state.dart';
 class ProfiledetailsBloc
     extends Bloc<ProfiledetailsEvent, ProfiledetailsState> {
   final ProfileDetailsRepository profileDetailsRepository;
-
+  CurrentUser currentUser = CurrentUser();
   ProfiledetailsBloc({
     required this.profileDetailsRepository,
   }) : super(ProfiledetailsInitial());
@@ -27,6 +27,8 @@ class ProfiledetailsBloc
       yield* _mapAddGenderInfoEventtoState(event);
     } else if (event is AddInterestsInfoEvent) {
       yield* _mapAddInterestInfoEventtoState(event);
+    } else if (event is SubmitInfoEvent) {
+      yield* _mapSubmitInfoEventtoState(event);
     }
   }
 
@@ -34,7 +36,9 @@ class ProfiledetailsBloc
       AddBasicInfoEvent event) async* {
     try {
       yield AddingInfoState();
-      // currentuser.firstName = event.user.firstName;
+      currentUser.name = event.user.name;
+      currentUser.profession = event.user.profession;
+      currentUser.birthDate = event.user.birthDate;
       // await profileDetailsRepository.addBasicInfo(event.user);
       yield AddedBasicInfoState();
     } catch (e) {
@@ -46,7 +50,9 @@ class ProfiledetailsBloc
       AddGenderInfoEvent event) async* {
     try {
       yield AddingInfoState();
-      await profileDetailsRepository.addGenderInfo(event.user);
+      currentUser.gender = event.user.gender;
+      currentUser.uid = event.user.uid;
+      // await profileDetailsRepository.addGenderInfo(event.user);
       yield AddedGenderInfoState();
     } catch (e) {
       yield FailedtoAddInfoState();
@@ -57,10 +63,23 @@ class ProfiledetailsBloc
       AddInterestsInfoEvent event) async* {
     try {
       yield AddingInfoState();
-      await profileDetailsRepository.addInterestInfo(event.user);
+      currentUser.interests = event.user.interests;
+
+      // await profileDetailsRepository.addUserInfo(event.user);
       yield AddedInterestsInfoState();
     } catch (e) {
       yield FailedtoAddInfoState();
+    }
+  }
+
+  Stream<ProfiledetailsState> _mapSubmitInfoEventtoState(
+      SubmitInfoEvent event) async* {
+    try {
+      yield SubmittingInfoState();
+      await profileDetailsRepository.submitUserInfo(currentUser);
+      yield SubmittedInfoState();
+    } catch (e) {
+      yield FailedtoSubmitInfoState();
     }
   }
 }

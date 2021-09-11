@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class CurrentUser {
   String? uid;
-  String? firstName;
-  String? lastName;
+  String? name;
+  String? profession;
   num? age;
   String? birthDate;
   GENDER? gender;
@@ -16,28 +16,27 @@ class CurrentUser {
   List<String?>? interests;
   CurrentUser(
       {this.uid,
-      this.firstName,
-      this.lastName,
+      this.name,
+      this.profession,
       this.age,
       this.birthDate,
       this.gender,
       this.interestedin,
       this.location,
       this.firebaseUser,
-      this.interests
-      });
+      this.interests});
 
   Map<String, dynamic> toMap() {
     return {
-      'firstName': firstName,
-      'lastName': lastName,
+      'name': name,
+      'profession': profession,
       'age': age,
       'birthDate': birthDate,
       'gender': gender?.index,
       'interestedin': interestedin?.index,
       'location': location,
       'uid': uid,
-      'interests':interests
+      'interests': interests
     };
   }
 
@@ -45,16 +44,15 @@ class CurrentUser {
     int gender = map['gender'];
     int interestedIn = map['interestedin'];
     return CurrentUser(
-      uid: map['uid'],
-      firstName: map['firstName'],
-      lastName: map['lastName'],
-      age: map['age'],
-      birthDate: map['birthDate'],
-      gender: GENDER.values[gender],
-      interestedin: INTERESTEDIN.values[interestedIn],
-      location: map['location'],
-      interests: map['interests']
-    );
+        uid: map['uid'],
+        name: map['name'],
+        profession: map['profession'],
+        age: map['age'],
+        birthDate: map['birthDate'],
+        gender: GENDER.values[gender],
+        interestedin: INTERESTEDIN.values[interestedIn],
+        location: map['location'],
+        interests: map['interests']);
   }
 
   String toJson() => json.encode(toMap());
