@@ -20,7 +20,9 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   void swipeLeft(int index) {
-    context.read<UseractivityBloc>().add(UserDislikedEvent(name[index]));
+    context
+        .read<UseractivityBloc>()
+        .add(UserDislikedEvent(name[index]));
     print("person diliked");
     print('left');
     _controller.forward(direction: SwipDirection.Left);
@@ -28,7 +30,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Future<void> swipeRight(int index) async {
     context.read<UseractivityBloc>().add(UserLikedEvent(name[index]));
-    context.read<UseractivityBloc>().add(UserFindMatchEvent(name[index]));
+    context
+        .read<UseractivityBloc>()
+        .add(UserFindMatchEvent(name[index]));
     print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
@@ -119,13 +123,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               context
                                   .read<UseractivityBloc>()
                                   .add(UserLikedEvent(name[_index]));
-                              context
-                                  .read<UseractivityBloc>()
-                                  .add(UserFindMatchEvent(name[_index]));
+                              context.read<UseractivityBloc>().add(
+                                  UserFindMatchEvent(name[_index]));
                             } else if (info.direction == SwipDirection.Left) {
-                              context
-                                  .read<UseractivityBloc>()
-                                  .add(UserDislikedEvent(name[_index]));
+                              context.read<UseractivityBloc>().add(
+                                  UserDislikedEvent(name[_index]));
                             }
                             _index = index;
                             print(info.direction);
