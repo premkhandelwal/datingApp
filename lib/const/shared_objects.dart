@@ -11,7 +11,8 @@ class CachedSharedPreference {
   static final sessionKeyList = {
     SessionConstants.sessionUid,
     SessionConstants.sessionUsername,
-    SessionConstants.sessionSignedInWith
+    SessionConstants.sessionSignedInWith,
+    SessionConstants.sessionAllFetchedUsers
   };
 
   static Map<String, dynamic> map = Map();
@@ -59,6 +60,8 @@ class CachedSharedPreference {
   Future<void> clearSession() async {
     await sharedPreferences?.remove(SessionConstants.sessionUsername);
     await sharedPreferences?.remove(SessionConstants.sessionUid);
+    await sharedPreferences?.remove(SessionConstants.sessionSignedInWith);
+    await sharedPreferences?.remove(SessionConstants.sessionAllFetchedUsers);
     map.removeWhere((k, v) => (sessionKeyList.contains(k)));
   }
 }

@@ -28,7 +28,7 @@ class CustomAppBar extends StatelessWidget {
                     Navigator.of(context).pop();
                   })),
         centerWidget,
-        Container(height: 62, width: 62, child: trailingWidget)
+        Container(height: 62, width: 100, child: trailingWidget)
       ],
     );
   }

@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 abstract class BaseProfileDetailProvider {
+  Future<void> updateUserInfo(CurrentUser user);
   Future<void> submitUserInfo(CurrentUser user);
   Future<CurrentUser> fetchUserInfo();
   Future<String?> fetchLocationInfo();
@@ -16,12 +17,25 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
       FirebaseFirestore.instance.collection("UserActivity");
 
   @override
+  Future<void> updateUserInfo(CurrentUser user) async {
+    await collection
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+        .update({
+      "name": user.name,
+      "profession": user.profession,
+      "about": user.about,
+      "interests": user.interests,
+    });
+  }
+
+  @override
   Future<void> submitUserInfo(CurrentUser user) async {
     try {
       await collection
           .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
           .set({
         "name": user.name,
+        "age" : user.age,
         "profession": user.profession,
         "birthDate": user.birthDate,
         "gender": user.gender!.index,

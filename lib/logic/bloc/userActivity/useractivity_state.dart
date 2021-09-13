@@ -13,6 +13,17 @@ class UserMatchFoundState extends UseractivityState {}
 
 class UserMatchNotFoundState extends UseractivityState {}
 
+class FetchingMatchedUsersState extends UseractivityState {}
+
+class FetchedMatchedUsersState extends UseractivityState {
+  final List<CurrentUser> users;
+
+  FetchedMatchedUsersState({required this.users});
+}
+
+class FailedtoMatchUsersState extends UseractivityState {}
+
+
 class FetchedAllUsersState extends UseractivityState {
   final List<CurrentUser> users;
 

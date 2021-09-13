@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -23,7 +24,7 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   String? getCurrentUserUID() {
-    return _firebaseAuth.currentUser?.uid ;
+    return _firebaseAuth.currentUser?.uid;
   }
 
   @override
@@ -41,6 +42,8 @@ class FirebaseAuthProvider extends BaseAuthProvider {
 
   @override
   Future<void> signOut() async {
+    SharedObjects.prefs?.clearSession();
+    SharedObjects.prefs?.clearAll();
     _firebaseAuth.signOut();
   }
 
@@ -56,14 +59,18 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   Future<bool> linkEmailWithPhoneNumber(String emailId, String password) async {
     AuthCredential credential =
         EmailAuthProvider.credential(email: emailId, password: password);
-    UserCredential? userCredential = await _firebaseAuth.currentUser?.linkWithCredential(credential);
+    UserCredential? userCredential =
+        await _firebaseAuth.currentUser?.linkWithCredential(credential);
     return userCredential != null;
   }
 
   @override
-  Future<bool> linkPhoneNumberWithEmail(String smsCode,String verificationId) async {
-    AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
-    UserCredential? userCredential = await _firebaseAuth.currentUser?.linkWithCredential(credential);
+  Future<bool> linkPhoneNumberWithEmail(
+      String smsCode, String verificationId) async {
+    AuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId, smsCode: smsCode);
+    UserCredential? userCredential =
+        await _firebaseAuth.currentUser?.linkWithCredential(credential);
     return userCredential != null;
   }
 

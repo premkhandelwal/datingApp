@@ -10,10 +10,13 @@ class ProfileDetailsRepository extends BaseRepository {
       profileDetailsProvider.addBasicInfo(user);
   Future<void> addGenderInfo(CurrentUser user) =>
       profileDetailsProvider.addGenderInfo(user); */
+  Future<void> updateUserInfo(CurrentUser user) =>
+      profileDetailsProvider.updateUserInfo(user);
   Future<void> submitUserInfo(CurrentUser user) =>
       profileDetailsProvider.submitUserInfo(user);
   Future<CurrentUser> fetchUserInfo() => profileDetailsProvider.fetchUserInfo();
-  Future<String?> fetchLocationInfo() => profileDetailsProvider.fetchLocationInfo();
+  Future<String?> fetchLocationInfo() =>
+      profileDetailsProvider.fetchLocationInfo();
 
   @override
   void dispose() {}

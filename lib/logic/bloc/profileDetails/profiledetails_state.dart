@@ -19,6 +19,12 @@ class SubmittedInfoState extends ProfiledetailsState {}
 
 class FailedtoSubmitInfoState extends ProfiledetailsState {}
 
+class UpdatingInfoState extends ProfiledetailsState {}
+
+class UpdatedInfoState extends ProfiledetailsState {}
+
+class FailedtoUpdateInfoState extends ProfiledetailsState {}
+
 class FailedtoAddInfoState extends ProfiledetailsState {}
 
 class FetchingInfoState extends ProfiledetailsState {}

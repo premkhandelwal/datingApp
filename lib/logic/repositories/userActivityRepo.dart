@@ -6,7 +6,8 @@ class UserActivityRepository extends BaseRepository {
   UserActivityProvider activityProvider = UserActivityProvider();
   Future<void> userLiked(String likedUserUID) => activityProvider.userLiked(likedUserUID);
   Future<void> userDisliked(String dislikedUserUID) => activityProvider.userDisliked(dislikedUserUID);
-  Future<bool> userFindMatch(String matchUserUID) => activityProvider.userFindMatch(matchUserUID);
+  Future<bool> userFindMatch(String matchUserUID,) => activityProvider.userFindMatch(matchUserUID);
+  Future<List<CurrentUser>> fetchMatchedUsers() => activityProvider.fetchMatchedUsers();
   Future<List<CurrentUser>> fetchAllUsers() => activityProvider.fetchAllUsers();
 
   @override

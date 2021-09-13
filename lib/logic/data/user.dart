@@ -8,6 +8,7 @@ class CurrentUser {
   String? uid;
   String? name;
   String? profession;
+  String? about;
   num? age;
   DateTime? birthDate;
   GENDER? gender;
@@ -19,6 +20,7 @@ class CurrentUser {
       {this.uid,
       this.name,
       this.profession,
+      this.about,
       this.age,
       this.birthDate,
       this.gender,
@@ -31,6 +33,7 @@ class CurrentUser {
     return {
       'name': name,
       'profession': profession,
+      'about': about,
       'age': age,
       'birthDate': birthDate,
       'gender': gender?.index,
@@ -47,8 +50,9 @@ class CurrentUser {
     return CurrentUser(
         uid: map['uid'] != null ? map['uid'] : null,
         name: map['name'] != null ? map['name'] : null,
-        profession: map['profession'] ?? null,
-        // age: map['age'],
+        profession: map['profession'] != null ? map['profession']:null,
+        about: map['about'] != null ? map['about']:null,
+        age: map['age'] != null ? map['age']: null,
         birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
         gender: gender != null ? GENDER.values[gender] : GENDER.NotSelected,
         // interestedin: INTERESTEDIN.values[interestedIn],
@@ -63,6 +67,7 @@ class CurrentUser {
     List<CurrentUser> users = [];
     for (var snapshot in snapshots) {
       users.add(CurrentUser.fromMap(snapshot.data()));
+      users[users.length - 1].uid = snapshot.id;
     }
     return users;
   }

@@ -33,6 +33,8 @@ class ProfiledetailsBloc
       yield* _mapFetchInfotoState(event);
     } else if (event is FetchLocationInfoEvent) {
       yield* _mapFetchLocationInfotoState(event);
+    } else if (event is UpdateInfoEvent) {
+      yield* _mapUpdateInfotoState(event);
     }
   }
 
@@ -43,6 +45,7 @@ class ProfiledetailsBloc
       currentUser.name = event.user.name;
       currentUser.profession = event.user.profession;
       currentUser.birthDate = event.user.birthDate;
+      currentUser.age = event.user.age;
       // await profileDetailsRepository.addBasicInfo(event.user);
       yield AddedBasicInfoState();
     } catch (e) {
@@ -107,4 +110,16 @@ class ProfiledetailsBloc
       yield FailedFetchInfoState();
     }
   }
+
+  Stream<ProfiledetailsState> _mapUpdateInfotoState(
+      UpdateInfoEvent event) async* {
+    yield UpdatingInfoState();
+    try {
+       await profileDetailsRepository.updateUserInfo(event.user);
+      yield  UpdatedInfoState();
+    } catch (e) {
+      yield FailedtoUpdateInfoState();
+    }
+  }
+
 }

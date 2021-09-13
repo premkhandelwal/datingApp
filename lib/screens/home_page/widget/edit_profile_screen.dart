@@ -1,11 +1,20 @@
+import 'package:dating_app/screens/home_page/profile_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
+import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
-import 'package:flutter/material.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  final CurrentUser user;
+  const EditProfileScreen({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -13,6 +22,24 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   List<String> _selectedInterests = [];
+  TextEditingController nameController = TextEditingController();
+  TextEditingController professionController = TextEditingController();
+  TextEditingController aboutController = TextEditingController();
+
+  @override
+  void initState() {
+    _fillFields();
+    super.initState();
+  }
+
+  void _fillFields() {
+    if (widget.user.name != null) {
+      nameController.text = widget.user.name!;
+    }
+    if (widget.user.profession != null) {
+      professionController.text = widget.user.profession!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: nameController,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -80,6 +108,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       height: 20,
                     ),
                     TextFormField(
+                      controller: professionController,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -96,6 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       height: 20,
                     ),
                     TextFormField(
+                      controller: aboutController,
                       maxLines: 5,
                       maxLength: 399,
                       decoration: InputDecoration(
@@ -170,11 +200,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             SizedBox(height: 20),
-            CommonButton(
-                text: 'Continue',
-                onPressed: () {
-                  Navigator.of(context).pop();
-                })
+            BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
+              listener: (context, state) {
+                if (state is UpdatedInfoState) {
+                  changePageWithoutBack(context: context, widget: ProfilePage());
+                }
+              },
+              builder: (context, state) {
+                if (state is UpdatingInfoState) {
+                  return CircularProgressIndicator();
+                }
+                return CommonButton(
+                    text: 'Continue',
+                    onPressed: () {
+                      context.read<ProfiledetailsBloc>().add(UpdateInfoEvent(
+                          user: CurrentUser(
+                              name: nameController.text,
+                              about: aboutController.text,
+                              profession: professionController.text,
+                              interests: _selectedInterests)));
+                    });
+              },
+            )
           ],
         ),
       ),

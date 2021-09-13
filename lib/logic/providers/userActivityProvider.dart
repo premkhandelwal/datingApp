@@ -8,6 +8,7 @@ abstract class BaseUserActivityProvider {
   Future<void> userDisliked(String likedUserUID);
   Future<bool> userFindMatch(String matchUserUID);
   Future<List<CurrentUser>> fetchAllUsers();
+  Future<List<CurrentUser>> fetchMatchedUsers();
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
@@ -31,9 +32,25 @@ class UserActivityProvider extends BaseUserActivityProvider {
         .collection("LikedUsers")
         .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .get()
-        .then((doc) {
+        .then((doc) async {
       exist = doc.exists;
+      if (exist) {
+        String? selfUid =
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid);
+        await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .collection("MatchedUsers")
+            .doc(matchUserUID)
+            .set({matchUserUID: DateTime.now()});
+
+        await collection
+            .doc(matchUserUID)
+            .collection("MatchedUsers")
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .set({selfUid!: DateTime.now()});
+      }
     });
+
     return exist;
   }
 
@@ -56,9 +73,48 @@ class UserActivityProvider extends BaseUserActivityProvider {
       List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
       print(usersList);
       print(usersList[0].name);
+      usersList.removeWhere((element) => element.uid == SharedObjects.prefs?.getString(SessionConstants.sessionUid));
+      SessionConstants.allUsers = usersList;
       return usersList;
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  @override
+  Future<List<CurrentUser>> fetchMatchedUsers() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection
+          .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+          .collection("MatchedUsers")
+          .get();
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+          querySnapshot.docs;
+      List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
+      print(usersList);
+      print(usersList[0].name);
+      return usersList;
+    } catch (e) {
+      throw Exception(e);
+    }
+/*       QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection
+          .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+          .collection("MatchedUsers")
+          .get();
+
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+          querySnapshot.docs;
+
+      List<String> ids = [];
+      listSnapShots.forEach((element) async{
+        QuerySnapshot<Map<String, dynamic>> querySnapshot1 =await  collection.doc(element.id).collection("MatchedUsers").get();
+        List<QueryDocumentSnapshot<Map<String, dynamic>>> listquerySnapshot = querySnapshot1.docs;
+      List<CurrentUser> usersList = CurrentUser.toCurrentList(listquerySnapshot);
+  
+      });
+      List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
+      print(usersList);
+      print(usersList[0].name);
+      return usersList; */
   }
 }

@@ -22,4 +22,6 @@ class UserFindMatchEvent extends UseractivityEvent {
   );
 }
 
+class FetchMatchedUsersEvent extends UseractivityEvent{}
+
 class FetchAllUsersEvent extends UseractivityEvent{}

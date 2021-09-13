@@ -27,6 +27,9 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapUserMatchFoundeventTostate(event);
     } else if (event is FetchAllUsersEvent) {
       yield* _mapFetchUsersEventtoState();
+    }else if(event is FetchMatchedUsersEvent){
+      yield* _mapFetchMatchedUsersEventtoState();
+
     }
   }
 
@@ -58,6 +61,15 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     try {
       List<CurrentUser> _users = await userActivityRepository.fetchAllUsers();
       yield FetchedAllUsersState(users: _users);
+    } catch (e) {
+      yield FailedToFetchAllUsersState();
+    }
+  }
+
+  Stream<UseractivityState> _mapFetchMatchedUsersEventtoState() async* {
+    try {
+      List<CurrentUser> _users = await userActivityRepository.fetchMatchedUsers();
+      yield FetchedMatchedUsersState(users: _users);
     } catch (e) {
       yield FailedToFetchAllUsersState();
     }

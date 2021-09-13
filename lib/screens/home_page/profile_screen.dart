@@ -18,7 +18,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   Random random = Random();
   CurrentUser _currentUser = CurrentUser();
-  CurrentUser _tempUser = CurrentUser();
   String? _currentLocation;
 
   @override
@@ -28,22 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
-  int calculateAge(DateTime birthDate) {
-    DateTime currentDate = DateTime.now();
-    int age = currentDate.year - birthDate.year;
-    int month1 = currentDate.month;
-    int month2 = birthDate.month;
-    if (month2 > month1) {
-      age--;
-    } else if (month1 == month2) {
-      int day1 = currentDate.day;
-      int day2 = birthDate.day;
-      if (day2 > day1) {
-        age--;
-      }
-    }
-    return age;
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
                                   Text(
-                                    '${biography[random.nextInt(biography.length)]}',
+                                    '${_currentUser.about != null ? _currentUser.about : ""}',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -293,7 +277,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             backgroundColor:
                                                 Colors.white.withOpacity(0),
                                             builder: (ctx) =>
-                                                EditProfileScreen());
+                                                EditProfileScreen(user: _currentUser,));
                                       },
                                       iconSize: 45,
                                       color: Colors.white,

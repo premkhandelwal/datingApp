@@ -185,7 +185,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         user: CurrentUser(
                             name: name.text,
                             profession: profession.text,
-                            birthDate:_selectedDate)));
+                            birthDate:_selectedDate,
+                            age: calculateAge(_selectedDate)
+                            )));
                     changePageTo(
                         context: context, widget: GenderSelectionScreen());
                   },
