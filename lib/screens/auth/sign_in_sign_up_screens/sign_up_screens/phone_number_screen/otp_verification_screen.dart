@@ -1,6 +1,7 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
+import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/phone_number_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
@@ -164,18 +165,39 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                     },
                     listener: (context, state) {
                       if (state is OtpVerified) {
+                        if (state.userUID != null) {
                           SharedObjects.prefs?.setString(
-                              SessionConstants.sessionSignedInWith, "phone number");
+                              SessionConstants.sessionSignedInWith,
+                              "phone number");
                           SharedObjects.prefs?.setString(
                               SessionConstants.sessionUid, state.userUID!);
 
-                        changePageWithoutBack(
+                          changePageWithoutBack(
+                              context: context,
+                              widget: widget.authSide == 'Sign Up'
+                                  ? LinkPhoneEmailScreen(
+                                      connectWith: "email",
+                                    )
+                                  : HomePage());
+                        } else {
+                          showDialog(
                             context: context,
-                            widget: widget.authSide == 'Sign Up'
-                                ? LinkPhoneEmailScreen(
-                                    connectWith: "email",
-                                  )
-                                : HomePage());
+                            builder: (context) => AlertDialog(
+                              title: Text("Error"),
+                              content: Text(
+                                  "Something went wrong. Please try again later"),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      changePageWithoutBack(
+                                          context: context,
+                                          widget: ChooseSignInSignUpPage());
+                                    },
+                                    child: Text("Ok"))
+                              ],
+                            ),
+                          );
+                        }
                       } else if (state is LinkedPhoneNumberWithEmail) {
                         changePageWithoutBack(
                             context: context, widget: ProfileDetailPage());

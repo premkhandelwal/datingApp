@@ -21,14 +21,24 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
 
   @override
   Future<void> updateUserInfo(CurrentUser user) async {
-    await collection
-        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
-        .update({
-      "name": user.name,
-      "profession": user.profession,
-      "about": user.about,
-      "interests": user.interests,
-    });
+    Reference ref = storage.ref().child(
+        "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
+    if (user.image != null) {
+      UploadTask uploadTask = ref.putFile(user.image!);
+      uploadTask.whenComplete(() async {
+        user.imageDownloadUrl = await ref.getDownloadURL();
+        await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .update({
+          "name": user.name,
+          "profession": user.profession,
+          "about": user.about,
+          "interests": user.interests,
+           "profileImageUrl":
+                user.imageDownloadUrl != null ? user.imageDownloadUrl : null
+        });
+      });
+    }
   }
 
   @override
@@ -40,22 +50,22 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
         UploadTask uploadTask = ref.putFile(user.image!);
         uploadTask.whenComplete(() async {
           user.imageDownloadUrl = await ref.getDownloadURL();
-           await collection
-          .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
-          .set({
-        "name": user.name,
-        "age": user.age,
-        "profession": user.profession,
-        "birthDate": user.birthDate,
-        "gender": user.gender!.index,
-        "interests": user.interests,
-        "profileImageUrl": user.imageDownloadUrl != null ? user.imageDownloadUrl : null
-      });
+          await collection
+              .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+              .set({
+            "name": user.name,
+            "age": user.age,
+            "profession": user.profession,
+            "birthDate": user.birthDate,
+            "gender": user.gender!.index,
+            "interests": user.interests,
+            "profileImageUrl":
+                user.imageDownloadUrl != null ? user.imageDownloadUrl : null
+          });
         }).catchError((onError) {
           print(onError);
         });
       }
-     
     } catch (e) {
       throw Exception(e);
     }

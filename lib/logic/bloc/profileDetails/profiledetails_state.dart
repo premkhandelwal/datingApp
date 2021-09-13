@@ -21,7 +21,11 @@ class FailedtoSubmitInfoState extends ProfiledetailsState {}
 
 class UpdatingInfoState extends ProfiledetailsState {}
 
-class UpdatedInfoState extends ProfiledetailsState {}
+class UpdatedInfoState extends ProfiledetailsState {
+  final CurrentUser currentUser;
+
+  UpdatedInfoState({required this.currentUser});
+}
 
 class FailedtoUpdateInfoState extends ProfiledetailsState {}
 

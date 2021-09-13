@@ -124,6 +124,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           context
                               .read<FirebaseauthBloc>()
                               .add(SignOutRequested());
+                          /* changePageWithoutBack(
+                              context: context, widget: ChooseSignInSignUpPage()); */
                         },
                       ),
                     ],
@@ -136,7 +138,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         listener: (context, state) {
                           if (state is UserMatchFoundState) {
                             itIsAMatchPopUp(context, _index - 1);
-                          } else if (state is FetchedAllUsersState) {                      
+                          } else if (state is FetchedAllUsersState) {
                             SessionConstants.allUsers = state.users;
                           }
                         },
@@ -159,10 +161,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               onForward: (index, info) async {
                                 if (info.direction == SwipDirection.Right) {
                                   context.read<UseractivityBloc>().add(
-                                      UserLikedEvent(SessionConstants.allUsers[_index].uid!));
-                                  context
-                                      .read<UseractivityBloc>()
-                                      .add(UserFindMatchEvent(SessionConstants.allUsers[_index].uid!));
+                                      UserLikedEvent(SessionConstants
+                                          .allUsers[_index].uid!));
+                                  context.read<UseractivityBloc>().add(
+                                      UserFindMatchEvent(SessionConstants
+                                          .allUsers[_index].uid!));
                                 } else if (info.direction ==
                                     SwipDirection.Left) {
                                   context

@@ -29,31 +29,33 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
-      listenWhen: (previousState, currentState) {
-        if (currentState is FetchedInfoState ||
-            currentState is FetchedLocationInfo) {
-          return true;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        if (state is FetchedInfoState) {
-          _currentUser = state.currentUser;
-          print(_currentUser.name);
-          if (_currentUser.birthDate != null) {
-            _currentUser.age = calculateAge(_currentUser.birthDate!);
+    return Scaffold(
+      body: BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
+        listenWhen: (previousState, currentState) {
+          if (currentState is FetchedInfoState ||
+              currentState is FetchedLocationInfo || currentState is UpdatedInfoState) {
+            return true;
           }
-        } else if (state is FetchedLocationInfo) {
-          _currentLocation = state.locationInfo;
-        }
-      },
-      builder: (context, state) {
-        if (state is FetchingInfoState) {
-          return Center(child: CircularProgressIndicator());
-        }
-        return Scaffold(
-          body: SafeArea(
+          return false;
+        },
+        listener: (context, state) {
+          if (state is FetchedInfoState) {
+            _currentUser = state.currentUser;
+            print(_currentUser.name);
+            if (_currentUser.birthDate != null) {
+              _currentUser.age = calculateAge(_currentUser.birthDate!);
+            }
+          }else if(state is UpdatedInfoState){
+             _currentUser = state.currentUser;
+          } else if (state is FetchedLocationInfo) {
+            _currentLocation = state.locationInfo;
+          }
+        },
+        builder: (context, state) {
+          if (state is FetchingInfoState) {
+            return Center(child: CircularProgressIndicator(color: Colors.pink,));
+          }
+          return SafeArea(
             child: Container(
               child: Stack(
                 children: [
@@ -134,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   .textTheme
                                                   .bodyText2!),
                                           if (_currentLocation != null)
-                                            Text("$_currentLocation",
+                                            Text("",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .subtitle1!),
@@ -303,9 +305,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

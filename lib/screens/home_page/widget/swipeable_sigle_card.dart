@@ -23,7 +23,11 @@ class SwipeableSingleCard extends StatelessWidget {
         Container(
           height: 700,
           width: 400,
-          child: Image.asset(
+          child: imageUrl.startsWith("assets")? Image.asset(
+            imageUrl,
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+          ): Image.network(
             imageUrl,
             fit: BoxFit.cover,
             alignment: Alignment.topCenter,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dating_app/screens/home_page/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final CurrentUser user;
@@ -25,6 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController professionController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
+  File? _image;
 
   @override
   void initState() {
@@ -39,6 +43,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (widget.user.profession != null) {
       professionController.text = widget.user.profession!;
     }
+  }
+
+  Future<File?> _addImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+    return null;
   }
 
   @override
@@ -70,6 +85,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 70,
+                          child: _image != null
+                              ? Image.file(
+                                  _image!,
+                                  alignment: Alignment.topCenter,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  widget.user.imageDownloadUrl != null
+                                      ? widget.user.imageDownloadUrl!
+                                      : sampleImages[0],
+                                  alignment: Alignment.topCenter,
+                                  fit: BoxFit.cover,
+                                ),
                           backgroundImage: AssetImage(sampleImages[0]),
                         ),
                         Positioned(
@@ -79,10 +107,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: CircleAvatar(
                               radius: 25,
                               backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.add_a_photo,
-                                size: 30,
-                                color: AppColor,
+                              child: IconButton(
+                                onPressed: _addImage,
+                                icon: Icon(
+                                  Icons.add_a_photo,
+                                  size: 30,
+                                  color: AppColor,
+                                ),
                               ),
                             ),
                           ),
@@ -203,12 +234,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
               listener: (context, state) {
                 if (state is UpdatedInfoState) {
-                  changePageWithoutBack(context: context, widget: ProfilePage());
+                  Navigator.pop(context);
                 }
               },
               builder: (context, state) {
                 if (state is UpdatingInfoState) {
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator(
+                    backgroundColor: Colors.yellow,
+                  );
                 }
                 return CommonButton(
                     text: 'Continue',
@@ -218,6 +251,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               name: nameController.text,
                               about: aboutController.text,
                               profession: professionController.text,
+                              image: _image,
                               interests: _selectedInterests)));
                     });
               },

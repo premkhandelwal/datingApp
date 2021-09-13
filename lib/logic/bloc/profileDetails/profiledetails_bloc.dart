@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 
@@ -117,8 +114,8 @@ class ProfiledetailsBloc
       UpdateInfoEvent event) async* {
     yield UpdatingInfoState();
     try {
-      await profileDetailsRepository.updateUserInfo(event.user);
-      yield UpdatedInfoState();
+    await profileDetailsRepository.updateUserInfo(event.user);
+      yield UpdatedInfoState(currentUser: event.user);
     } catch (e) {
       yield FailedtoUpdateInfoState();
     }

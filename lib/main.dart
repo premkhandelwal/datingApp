@@ -7,6 +7,7 @@ import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
+import 'package:dating_app/screens/auth/logginInScreen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,47 +37,53 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              FirebaseauthBloc(firebaseAuthRepo: firebaseAuthRepository),
-        ),
-        BlocProvider(
-          create: (context) =>
-              UseractivityBloc(userActivityRepository: userActivityRepository),
-        ),
-        BlocProvider(
-          create: (context) => ProfiledetailsBloc(
-            profileDetailsRepository: profileDetailsRepository,
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                FirebaseauthBloc(firebaseAuthRepo: firebaseAuthRepository),
           ),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Dating App',
-        theme: ThemeData(
-          accentColor: AppColor.withOpacity(0.1),
-          primaryColor: AppColor,
-          scaffoldBackgroundColor: Colors.white,
-          textTheme: TextTheme(
-            bodyText1: TextStyle(
-                fontSize: 34,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Modernist'),
-            bodyText2: TextStyle(
-                fontSize: 27,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Modernist'),
-            subtitle1: TextStyle(fontSize: 14, fontFamily: 'Modernist'),
-            subtitle2: TextStyle(fontSize: 18, fontFamily: 'Modernist'),
+          BlocProvider(
+            create: (context) => UseractivityBloc(
+                userActivityRepository: userActivityRepository),
           ),
-        ),
-        // home: ChooseSignInSignUpPage(),
-        home: SharedObjects.prefs
-                    ?.getString(SessionConstants.sessionSignedInWith) ==
-                null
-            ? ChooseSignInSignUpPage()
-            : HomePage(),
-      ),
-    );
+          BlocProvider(
+            create: (context) => ProfiledetailsBloc(
+              profileDetailsRepository: profileDetailsRepository,
+            ),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Dating App',
+          theme: ThemeData(
+            accentColor: AppColor.withOpacity(0.1),
+            primaryColor: AppColor,
+            scaffoldBackgroundColor: Colors.white,
+            textTheme: TextTheme(
+              bodyText1: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Modernist'),
+              bodyText2: TextStyle(
+                  fontSize: 27,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Modernist'),
+              subtitle1: TextStyle(fontSize: 14, fontFamily: 'Modernist'),
+              subtitle2: TextStyle(fontSize: 18, fontFamily: 'Modernist'),
+            ),
+          ),
+          // home: ChooseSignInSignUpPage(),
+          home: BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
+              builder: (context, state) {
+            print(state);
+             if (state is FirebaseauthInitial) {
+                context.read<FirebaseauthBloc>().add(UserStateRequested());
+              } else if (state is UserLoggedIn) {
+              return HomePage();
+            } else if (state is UserLoggedOut) {
+              return ChooseSignInSignUpPage();
+            }
+            return LoggingIn();
+          }),
+        ));
   }
 }

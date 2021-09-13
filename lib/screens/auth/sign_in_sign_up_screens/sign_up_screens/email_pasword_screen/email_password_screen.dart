@@ -22,7 +22,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailIdController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
-
+  bool obscure = true;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -111,9 +111,26 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                     }
                                     return null;
                                   },
-                                  obscureText: true,
+                                  obscureText: obscure,
                                   controller: passwordController,
                                   decoration: InputDecoration(
+                                      suffixIcon: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              obscure = !obscure;
+                                            });
+                                          },
+                                          child: obscure
+                                              ? Icon(
+                                                  Icons.visibility_off,
+                                                  color: Colors.black,
+                                                  size: 25,
+                                                )
+                                              : Icon(
+                                                  Icons.visibility,
+                                                  color: Colors.black,
+                                                  size: 25,
+                                                )),
                                       enabledBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(15),

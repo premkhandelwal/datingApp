@@ -118,7 +118,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: BorderSide(color: Colors.black45)),
-                      labelText: "First Name",
+                      labelText: "Full Name",
                       labelStyle: TextStyle(color: Colors.black45)),
                 ),
                 SizedBox(
@@ -135,7 +135,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: BorderSide(color: Colors.black45)),
-                      labelText: "Last Name",
+                      labelText: "Profession",
                       labelStyle: TextStyle(color: Colors.black45)),
                 ),
                 SizedBox(height: 10),

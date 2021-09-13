@@ -17,7 +17,6 @@ class _FullScreenImageState extends State<FullScreenImage> {
   int _current = 0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _current = widget.currentIndex;
   }
