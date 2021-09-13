@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
@@ -14,6 +15,8 @@ abstract class BaseUserActivityProvider {
 class UserActivityProvider extends BaseUserActivityProvider {
   CollectionReference<Map<String, dynamic>> collection =
       FirebaseFirestore.instance.collection("UserActivity");
+
+  FirebaseStorage storage = FirebaseStorage.instance;
 
   @override
   Future<void> userDisliked(String dislikedUserUID) async {
@@ -70,10 +73,13 @@ class UserActivityProvider extends BaseUserActivityProvider {
           await collection.get();
       List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
           querySnapshot.docs;
+     
       List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
-      print(usersList);
-      print(usersList[0].name);
-      usersList.removeWhere((element) => element.uid == SharedObjects.prefs?.getString(SessionConstants.sessionUid));
+     
+
+      usersList.removeWhere((element) =>
+          element.uid ==
+          SharedObjects.prefs?.getString(SessionConstants.sessionUid));
       SessionConstants.allUsers = usersList;
       return usersList;
     } catch (e) {

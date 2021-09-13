@@ -27,8 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
@@ -62,11 +60,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     height: 500,
                     width: double.infinity,
-                    child: Image.asset(
-                      sampleImages[random.nextInt(sampleImages.length)],
-                      fit: BoxFit.fitWidth,
-                      alignment: Alignment.topCenter,
-                    ),
+                    child: _currentUser.imageDownloadUrl != null
+                        ? Image.network(
+                            _currentUser.imageDownloadUrl!,
+                            fit: BoxFit.fitWidth,
+                            alignment: Alignment.topCenter,
+                          )
+                        : Image.asset(
+                            sampleImages[random.nextInt(sampleImages.length)],
+                            fit: BoxFit.fitWidth,
+                            alignment: Alignment.topCenter,
+                          ),
                   ),
                   Container(
                     child: ListView(
@@ -276,8 +280,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                             context: context,
                                             backgroundColor:
                                                 Colors.white.withOpacity(0),
-                                            builder: (ctx) =>
-                                                EditProfileScreen(user: _currentUser,));
+                                            builder: (ctx) => EditProfileScreen(
+                                                  user: _currentUser,
+                                                ));
                                       },
                                       iconSize: 45,
                                       color: Colors.white,

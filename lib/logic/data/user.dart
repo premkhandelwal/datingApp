@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
@@ -9,11 +10,13 @@ class CurrentUser {
   String? name;
   String? profession;
   String? about;
+  String? location;
   num? age;
   DateTime? birthDate;
   GENDER? gender;
   INTERESTEDIN? interestedin;
-  String? location;
+  File? image;
+  String? imageDownloadUrl;
   User? firebaseUser;
   List<String?>? interests;
   CurrentUser(
@@ -22,11 +25,13 @@ class CurrentUser {
       this.profession,
       this.about,
       this.age,
+      this.image,
       this.birthDate,
       this.gender,
       this.interestedin,
       this.location,
       this.firebaseUser,
+      this.imageDownloadUrl,
       this.interests});
 
   Map<String, dynamic> toMap() {
@@ -50,13 +55,14 @@ class CurrentUser {
     return CurrentUser(
         uid: map['uid'] != null ? map['uid'] : null,
         name: map['name'] != null ? map['name'] : null,
-        profession: map['profession'] != null ? map['profession']:null,
-        about: map['about'] != null ? map['about']:null,
-        age: map['age'] != null ? map['age']: null,
+        profession: map['profession'] != null ? map['profession'] : null,
+        about: map['about'] != null ? map['about'] : null,
+        age: map['age'] != null ? map['age'] : null,
         birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
         gender: gender != null ? GENDER.values[gender] : GENDER.NotSelected,
         // interestedin: INTERESTEDIN.values[interestedIn],
         location: map['location'] ?? map['location'],
+        imageDownloadUrl: map['profileImageUrl'] != null ? map['profileImageUrl'] : null,
         interests: map['interests'] != null
             ? List<String>.from(map['interests'])
             : []);

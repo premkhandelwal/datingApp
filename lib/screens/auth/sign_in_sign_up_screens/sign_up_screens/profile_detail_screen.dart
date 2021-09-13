@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
@@ -7,6 +9,7 @@ import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileDetailPage extends StatefulWidget {
   const ProfileDetailPage({Key? key}) : super(key: key);
@@ -20,6 +23,19 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   DateTime _selectedDate = DateTime.now();
   TextEditingController name = new TextEditingController();
   TextEditingController profession = new TextEditingController();
+   File? _image;
+
+  Future<File?> _addImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+      _image = File(pickedFile.path);
+      });
+        
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +77,11 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(25.0),
-                        child: Image.asset(
+                        child: _image != null ?Image.file(
+                          _image!,
+                          alignment: Alignment.topCenter,
+                          fit: BoxFit.cover,
+                        ):Image.asset(
                           'assets/images/female_model_2.png',
                           alignment: Alignment.topCenter,
                           fit: BoxFit.cover,
@@ -76,8 +96,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           color: AppColor,
                           borderRadius: BorderRadius.circular(25.0),
                           border: Border.all(color: Colors.white, width: 4)),
-                      child: Icon(
-                        Icons.camera_alt_rounded,
+                      child: IconButton(
+                        onPressed: _addImage,
+                        icon: Icon(Icons.camera_alt_rounded),
                         color: Colors.white,
                       ),
                     ),
@@ -185,9 +206,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         user: CurrentUser(
                             name: name.text,
                             profession: profession.text,
-                            birthDate:_selectedDate,
-                            age: calculateAge(_selectedDate)
-                            )));
+                            birthDate: _selectedDate,
+                            age: calculateAge(_selectedDate),
+                            image: _image)));
                     changePageTo(
                         context: context, widget: GenderSelectionScreen());
                   },

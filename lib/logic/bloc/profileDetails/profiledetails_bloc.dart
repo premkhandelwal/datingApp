@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -46,6 +47,7 @@ class ProfiledetailsBloc
       currentUser.profession = event.user.profession;
       currentUser.birthDate = event.user.birthDate;
       currentUser.age = event.user.age;
+      currentUser.image = event.user.image;
       // await profileDetailsRepository.addBasicInfo(event.user);
       yield AddedBasicInfoState();
     } catch (e) {
@@ -115,11 +117,10 @@ class ProfiledetailsBloc
       UpdateInfoEvent event) async* {
     yield UpdatingInfoState();
     try {
-       await profileDetailsRepository.updateUserInfo(event.user);
-      yield  UpdatedInfoState();
+      await profileDetailsRepository.updateUserInfo(event.user);
+      yield UpdatedInfoState();
     } catch (e) {
       yield FailedtoUpdateInfoState();
     }
   }
-
 }

@@ -64,7 +64,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   ? listUsers[index].name!
                   : name[index],
               personProfession: profession[index],
-              imageUrl: sampleImages[index],
+              imageUrl: listUsers[index].imageDownloadUrl != null
+                  ? listUsers[index].imageDownloadUrl!
+                  : sampleImages[index],
               swipeRight: swipeRight,
               swipeLeft: swipeLeft,
             ),
@@ -134,8 +136,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         listener: (context, state) {
                           if (state is UserMatchFoundState) {
                             itIsAMatchPopUp(context, _index - 1);
-                          } else if (state is FetchedAllUsersState) {
-                            
+                          } else if (state is FetchedAllUsersState) {                      
                             SessionConstants.allUsers = state.users;
                           }
                         },
