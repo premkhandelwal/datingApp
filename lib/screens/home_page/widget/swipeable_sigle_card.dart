@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
@@ -12,7 +13,8 @@ class SwipeableSingleCard extends StatelessWidget {
     required this.personProfession,
   }) : super(key: key);
 
-  final String imageUrl, personName, personProfession;
+  final File? imageUrl;
+  final String personName, personProfession;
   final int personAge;
 
   @override
@@ -23,15 +25,13 @@ class SwipeableSingleCard extends StatelessWidget {
         Container(
           height: 700,
           width: 400,
-          child: imageUrl.startsWith("assets")? Image.asset(
-            imageUrl,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ): Image.network(
-            imageUrl,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ),
+          child: imageUrl != null
+              ? Image.file(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                )
+              : Container(color: Colors.amber,),
         ),
         Positioned(
           left: 8,

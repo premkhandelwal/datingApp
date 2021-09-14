@@ -11,8 +11,24 @@ part 'firebaseauth_state.dart';
 
 class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   FirebaseauthBloc({required this.firebaseAuthRepo})
-      : super(FirebaseauthInitial());
+      : super(FirebaseauthInitial()) {
+    subscription =
+        firebaseAuthRepo.getInstance.authStateChanges().listen((user) async* {
+      if (user == null) {
+        yield UserLoggedOut();
+      } else {
+        yield UserLoggedIn(userUID: user.uid);
+      }
+    });
+  }
   final FirebaseAuthRepository firebaseAuthRepo;
+  StreamSubscription<User?>? subscription;
+
+  @override
+  Future<void> close() {
+    subscription?.cancel();
+    return super.close();
+  }
 
   @override
   Stream<FirebaseauthState> mapEventToState(
@@ -41,6 +57,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       yield* _maplinkEmailwithPhoneeventtoState(event);
     } else if (event is LinkPhoneNumberWithEmailEvent) {
       yield* _maplinkPhonewithEmaileventtoState(event);
+    } else if (state is UserLoggedOut) {
+      
     }
   }
 
@@ -73,7 +91,6 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     CurrentUser? user = await firebaseAuthRepo.signUpWithEmailPassword(
         event.emailId, event.password);
     if (user != null) {
-      
       yield UserSignedUp(userUID: user.firebaseUser!.uid);
     } else {
       yield RequestedOperationFailed();
@@ -86,6 +103,13 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       yield OperationInProgress();
 
       await firebaseAuthRepo.signOut();
+      firebaseAuthRepo.getInstance.authStateChanges().listen((user) async* {
+        if (user == null) {
+          yield UserLoggedOut();
+        } else {
+          yield UserLoggedIn(userUID: user.uid);
+        }
+      });
       yield UserLoggedOut();
     } catch (e) {
       yield RequestedOperationFailed();
@@ -112,7 +136,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
           await firebaseAuthRepo.verifyOTP(event.smsCode, event.verificationId);
       if (authCredential != null) {
         String? uid = firebaseAuthRepo.getCurrentUserUID();
-        yield OtpVerified(authCredential: authCredential,userUID: uid);
+        yield OtpVerified(authCredential: authCredential, userUID: uid);
       } else {
         yield OtpNotVerified();
       }

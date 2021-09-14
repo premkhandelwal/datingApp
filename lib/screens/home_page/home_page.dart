@@ -20,6 +20,12 @@ class _HomePageState extends State<HomePage> {
       PersistentTabController(initialIndex: 0);
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PersistentTabView(
       context,

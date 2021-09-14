@@ -24,6 +24,10 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      persistentFooterButtons: null,
+      bottomNavigationBar: null,
+      bottomSheet: null,
+      
       body: SafeArea(
         child: Container(
           child: Column(

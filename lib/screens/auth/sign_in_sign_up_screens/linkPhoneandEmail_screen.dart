@@ -75,7 +75,8 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                     ),
                     GestureDetector(
                         onTap: () {
-                          changePageTo(context: context, widget: ProfileDetailPage());
+                          changePageTo(
+                              context: context, widget: ProfileDetailPage());
                         },
                         child: Text(
                           "Skip",
@@ -217,7 +218,9 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                 Spacer(),
                 BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                   listener: (context, state) {
-                    if (state is FailedtoLinkedPhoneNumberEmail) {
+                    if (state is UserLoggedOut) {
+                      print("Hello");
+                    } else if (state is FailedtoLinkedPhoneNumberEmail) {
                       showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(

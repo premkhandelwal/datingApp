@@ -3,13 +3,14 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CurrentUser {
   String? uid;
   String? name;
   String? profession;
-  String? about;
+  String? bio;
   String? location;
   num? age;
   DateTime? birthDate;
@@ -18,12 +19,12 @@ class CurrentUser {
   File? image;
   String? imageDownloadUrl;
   User? firebaseUser;
-  List<String?>? interests;
+  List<String>? interests;
   CurrentUser(
       {this.uid,
       this.name,
       this.profession,
-      this.about,
+      this.bio,
       this.age,
       this.image,
       this.birthDate,
@@ -38,7 +39,7 @@ class CurrentUser {
     return {
       'name': name,
       'profession': profession,
-      'about': about,
+      'bio': bio,
       'age': age,
       'birthDate': birthDate,
       'gender': gender?.index,
@@ -53,27 +54,32 @@ class CurrentUser {
     int? gender = map['gender'] ?? null;
     // int interestedIn = map['interestedin'];
     return CurrentUser(
-        uid: map['uid'] != null ? map['uid'] : null,
-        name: map['name'] != null ? map['name'] : null,
-        profession: map['profession'] != null ? map['profession'] : null,
-        about: map['about'] != null ? map['about'] : null,
-        age: map['age'] != null ? map['age'] : null,
-        birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
-        gender: gender != null ? GENDER.values[gender] : GENDER.NotSelected,
-        // interestedin: INTERESTEDIN.values[interestedIn],
-        location: map['location'] ?? map['location'],
-        imageDownloadUrl: map['profileImageUrl'] != null ? map['profileImageUrl'] : null,
-        interests: map['interests'] != null
-            ? List<String>.from(map['interests'])
-            : []);
+      uid: map['uid'] != null ? map['uid'] : null,
+      name: map['name'] != null ? map['name'] : null,
+      profession: map['profession'] != null ? map['profession'] : null,
+      bio: map['bio'] != null ? map['bio'] : null,
+      age: map['age'] != null ? map['age'] : null,
+      birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
+      gender: gender != null ? GENDER.values[gender] : GENDER.NotSelected,
+      // interestedin: INTERESTEDIN.values[interestedIn],
+      location: map['location'] ?? map['location'],
+      imageDownloadUrl:
+          map['profileImageUrl'] != null ? map['profileImageUrl'] : null,
+      interests:
+          map['interests'] != null ? List<String>.from(map['interests']) : [],
+    );
   }
 
-  static List<CurrentUser> toCurrentList(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshots) {
+  static Future<List<CurrentUser>> toCurrentList(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshots) async{
     List<CurrentUser> users = [];
     for (var snapshot in snapshots) {
+      
       users.add(CurrentUser.fromMap(snapshot.data()));
       users[users.length - 1].uid = snapshot.id;
+      if(snapshot.data()["profileImageUrl"] != null){
+       users[users.length - 1].image = await urlToFile(snapshot.data()["profileImageUrl"],snapshot.id);
+      }
     }
     return users;
   }

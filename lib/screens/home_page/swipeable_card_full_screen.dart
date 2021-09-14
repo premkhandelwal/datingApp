@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/screens/home_page/full_screen_image.dart';
@@ -8,7 +10,7 @@ import 'package:flutter/material.dart';
 class SwipeableCardFullScreen extends StatelessWidget {
   const SwipeableCardFullScreen({
     Key? key,
-    required this.imageUrl,
+    required this.image,
     required this.personName,
     required this.personBio,
     required this.personProfession,
@@ -17,7 +19,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
     required this.swipeRight,
   }) : super(key: key);
   final Function swipeLeft, swipeRight;
-  final String imageUrl;
+  final File? image;
   final String personName, personBio, personProfession;
   final int personAge;
 
@@ -31,11 +33,11 @@ class SwipeableCardFullScreen extends StatelessWidget {
               Container(
                 height: 500,
                 width: double.infinity,
-                child: Image.asset(
-                  imageUrl,
+                child: image != null ? Image.file(
+                  image!,
                   fit: BoxFit.fitWidth,
                   alignment: Alignment.topCenter,
-                ),
+                ) : Container(),
               ),
               Container(
                 child: ListView(
@@ -141,7 +143,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 30),
                               Text(
-                                'About',
+                                'Bio',
                                 style: Theme.of(context).textTheme.bodyText2,
                               ),
                               Text(

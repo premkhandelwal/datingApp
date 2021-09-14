@@ -5,6 +5,13 @@ import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
+import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
+import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
+import 'package:dating_app/logic/repositories/userActivityRepo.dart';
+import 'package:dating_app/main.dart';
+import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
+import 'package:dating_app/screens/auth/landingPage.dart';
+import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/screens/home_page/widget/filter_modal_bottom_sheet.dart';
 import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
@@ -22,9 +29,8 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   void swipeLeft() {
-    context
-        .read<UseractivityBloc>()
-        .add(UserDislikedEvent(name[_controller.index]));
+    context.read<UseractivityBloc>().add(
+        UserDislikedEvent(SessionConstants.allUsers[_controller.index].uid!));
     print("person diliked");
     print('left');
     _controller.forward(direction: SwipDirection.Left);
@@ -34,9 +40,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     context
         .read<UseractivityBloc>()
         .add(UserLikedEvent(SessionConstants.allUsers[_controller.index].uid!));
-    context
-        .read<UseractivityBloc>()
-        .add(UserFindMatchEvent(name[_controller.index]));
+    context.read<UseractivityBloc>().add(
+        UserFindMatchEvent(SessionConstants.allUsers[_controller.index].uid!));
     print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
@@ -64,9 +69,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   ? listUsers[index].name!
                   : name[index],
               personProfession: profession[index],
-              imageUrl: listUsers[index].imageDownloadUrl != null
-                  ? listUsers[index].imageDownloadUrl!
-                  : sampleImages[index],
+              imageUrl: listUsers[index].image != null
+                  ? listUsers[index].image!
+                  : null,
               swipeRight: swipeRight,
               swipeLeft: swipeLeft,
             ),
@@ -116,18 +121,19 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         },
                       ),
                       IconButton(
-                        icon: Icon(
-                          Icons.logout_outlined,
-                          color: AppColor,
-                        ),
-                        onPressed: () {
-                          context
-                              .read<FirebaseauthBloc>()
-                              .add(SignOutRequested());
-                          /* changePageWithoutBack(
-                              context: context, widget: ChooseSignInSignUpPage()); */
-                        },
-                      ),
+                          icon: Icon(
+                            Icons.logout_outlined,
+                            color: AppColor,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<FirebaseauthBloc>()
+                                .add(SignOutRequested());
+
+                            WidgetsBinding.instance?.addPostFrameCallback((_) {
+                             changePageWithoutBack(context: context, widget: ChooseSignInSignUpPage());
+                            });
+                          }),
                     ],
                   ),
                 ),
@@ -137,7 +143,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       BlocConsumer<UseractivityBloc, UseractivityState>(
                         listener: (context, state) {
                           if (state is UserMatchFoundState) {
-                            itIsAMatchPopUp(context, _index - 1);
+                            itIsAMatchPopUp(context, state.user.image!,state.user.name!);
                           } else if (state is FetchedAllUsersState) {
                             SessionConstants.allUsers = state.users;
                           }
@@ -168,9 +174,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                           .allUsers[_index].uid!));
                                 } else if (info.direction ==
                                     SwipDirection.Left) {
-                                  context
-                                      .read<UseractivityBloc>()
-                                      .add(UserDislikedEvent(name[_index]));
+                                  context.read<UseractivityBloc>().add(
+                                      UserDislikedEvent(SessionConstants
+                                          .allUsers[_index].uid!));
                                 }
                                 _index = index;
                                 print(info.direction);

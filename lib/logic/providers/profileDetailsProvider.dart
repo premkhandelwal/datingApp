@@ -32,10 +32,10 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
             .update({
           "name": user.name,
           "profession": user.profession,
-          "about": user.about,
+          "bio": user.bio,
           "interests": user.interests,
-           "profileImageUrl":
-                user.imageDownloadUrl != null ? user.imageDownloadUrl : null
+          "profileImageUrl":
+              user.imageDownloadUrl != null ? user.imageDownloadUrl : null
         });
       });
     }
@@ -81,6 +81,8 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
       if (doc.exists && doc.data() != null) {
         Map<String, dynamic> dataMap = doc.data()!;
         user = CurrentUser.fromMap(dataMap);
+        user.image = await urlToFile(doc.data()!["profileImageUrl"],
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid));
       }
       return user;
     } catch (e) {

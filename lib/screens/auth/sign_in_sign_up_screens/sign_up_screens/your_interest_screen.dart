@@ -42,7 +42,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                'Select a few of your interests and let everyone know what you’re passionate about.',
+                'Select a few of your interests and let everyone know what you’re passionate bio.',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               SizedBox(height: 20),

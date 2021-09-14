@@ -74,8 +74,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
       List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
           querySnapshot.docs;
      
-      List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
-     
+      List<CurrentUser> usersList = await CurrentUser.toCurrentList(listSnapShots);
 
       usersList.removeWhere((element) =>
           element.uid ==
@@ -96,7 +95,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
           .get();
       List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
           querySnapshot.docs;
-      List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
+      List<CurrentUser> usersList = await CurrentUser.toCurrentList(listSnapShots);
       print(usersList);
       print(usersList[0].name);
       return usersList;

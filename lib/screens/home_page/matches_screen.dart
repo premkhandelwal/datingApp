@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:dating_app/const/app_const.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +36,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
     }
 
     Widget cards(int index) {
-      String? personName = SessionConstants.allUsers[index].name;
-      num? personAge = SessionConstants.allUsers[index].age;
-      String imageUrl = SessionConstants.allUsers[index].imageDownloadUrl != null ?  SessionConstants.allUsers[index].imageDownloadUrl! : sampleImages[index];
+      String? personName = _matchedUsersList[index].name;
+      num? personAge = _matchedUsersList[index].age;
+      File? imageUrl;
+      if (_matchedUsersList[index].image != null) {
+        imageUrl = _matchedUsersList[index].image!;
+      }
       return Container(
           padding: EdgeInsets.all(7),
           child: ClipRRect(
@@ -49,15 +53,15 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     child: Container(
                       height: 350,
                       width: 200,
-                      child:imageUrl.startsWith("assets") ? Image.asset(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                      ) :  Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                      ),
+                      child: imageUrl == null
+                          ? Container(
+                              color: Colors.amber,
+                            )
+                          : Image.file(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                            ),
                     ),
                   ),
                   Positioned(
@@ -183,8 +187,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                           SessionConstants.allUsers[index].name;
                       _matchedUsersList[i].age =
                           SessionConstants.allUsers[index].age;
-                      _matchedUsersList[i].imageDownloadUrl =
-                          SessionConstants.allUsers[index].imageDownloadUrl;
+                      _matchedUsersList[i].image =
+                          SessionConstants.allUsers[index].image;
                     }
                   }
                 }, builder: (context, state) {

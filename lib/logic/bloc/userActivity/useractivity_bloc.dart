@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:meta/meta.dart';
 
@@ -51,7 +52,7 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     print("xMatches ?");
     print(x);
     if (x) {
-      yield UserMatchFoundState();
+      yield UserMatchFoundState(user: SessionConstants.allUsers.firstWhere((element) => element.uid == event.matchUserUID));
     } else {
       yield UserMatchNotFoundState();
     }

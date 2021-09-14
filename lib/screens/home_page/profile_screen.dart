@@ -33,27 +33,28 @@ class _ProfilePageState extends State<ProfilePage> {
       body: BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
         listenWhen: (previousState, currentState) {
           if (currentState is FetchedInfoState ||
-              currentState is FetchedLocationInfo || currentState is UpdatedInfoState) {
+              currentState is FetchedLocationInfo ||
+              currentState is UpdatedInfoState) {
             return true;
           }
           return false;
         },
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is FetchedInfoState) {
             _currentUser = state.currentUser;
             print(_currentUser.name);
-            if (_currentUser.birthDate != null) {
-              _currentUser.age = calculateAge(_currentUser.birthDate!);
-            }
-          }else if(state is UpdatedInfoState){
-             _currentUser = state.currentUser;
+          } else if (state is UpdatedInfoState) {
+            _currentUser = state.currentUser;
           } else if (state is FetchedLocationInfo) {
             _currentLocation = state.locationInfo;
           }
         },
         builder: (context, state) {
           if (state is FetchingInfoState) {
-            return Center(child: CircularProgressIndicator(color: Colors.pink,));
+            return Center(
+                child: CircularProgressIndicator(
+              color: Colors.pink,
+            ));
           }
           return SafeArea(
             child: Container(
@@ -62,16 +63,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     height: 500,
                     width: double.infinity,
-                    child: _currentUser.imageDownloadUrl != null
-                        ? Image.network(
-                            _currentUser.imageDownloadUrl!,
+                    child: _currentUser.image != null &&
+                            isImage(_currentUser.image!.path)
+                        ? Image.file(
+                            _currentUser.image!,
+                            errorBuilder: (context, exception, stacktrace) {
+                              return Center(
+                                  child: Text(
+                                      "Failed to load image. Please select another iamge"));
+                            },
                             fit: BoxFit.fitWidth,
                             alignment: Alignment.topCenter,
                           )
-                        : Image.asset(
-                            sampleImages[random.nextInt(sampleImages.length)],
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.topCenter,
+                        : Container(
+                            color: Colors.amber,
                           ),
                   ),
                   Container(
@@ -136,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   .textTheme
                                                   .bodyText2!),
                                           if (_currentLocation != null)
-                                            Text("",
+                                            Text(_currentLocation!,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .subtitle1!),
@@ -144,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       Container(
                                         height: 40,
-                                        width: 61,
+                                        width: 80,
                                         decoration: BoxDecoration(
                                             color: AppColor.withOpacity(0.9),
                                             borderRadius:
@@ -153,10 +158,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Icon(
-                                              Icons.location_on,
-                                              color: Colors.white,
-                                              size: 18,
+                                            IconButton(
+                                              onPressed: () {
+                                                context
+                                                    .read<ProfiledetailsBloc>()
+                                                    .add(FetchInfoEvent());
+                                              },
+                                              icon: Icon(
+                                                Icons.location_on,
+                                                color: Colors.white,
+                                                size: 15,
+                                              ),
                                             ),
                                             Text(
                                               '1 KM',
@@ -174,12 +186,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   SizedBox(height: 30),
                                   Text(
-                                    'About',
+                                    'Bio',
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
                                   Text(
-                                    '${_currentUser.about != null ? _currentUser.about : ""}',
+                                    '${_currentUser.bio != null ? _currentUser.bio : ""}',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -207,7 +219,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 children: [
                                                   Text(
                                                     _currentUser
-                                                        .interests![index]!,
+                                                        .interests![index],
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .subtitle2,
@@ -272,11 +284,12 @@ class _ProfilePageState extends State<ProfilePage> {
                               left: MediaQuery.of(context).size.width / 2.5,
                               child: CircleAvatar(
                                 backgroundColor: AppColor,
-                                radius: 40,
+                                radius: 35,
                                 child: Center(
                                   child: IconButton(
                                       onPressed: () {
                                         showModalBottomSheet(
+                                            clipBehavior: Clip.none,
                                             enableDrag: true,
                                             isScrollControlled: true,
                                             context: context,
@@ -286,7 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   user: _currentUser,
                                                 ));
                                       },
-                                      iconSize: 45,
+                                      iconSize: 25,
                                       color: Colors.white,
                                       icon: Icon(Icons.edit)),
                                 ),

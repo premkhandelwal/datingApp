@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 
-void itIsAMatchPopUp(BuildContext context, int index) {
+void itIsAMatchPopUp(BuildContext context, File image,String name) {
   showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -45,8 +47,8 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        sampleImages[index],
+                                      child: Image.file(
+                                        image,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -76,8 +78,8 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        sampleImages[index],
+                                      child: Image.file(
+                                        image,        
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -94,7 +96,7 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'It’s a match with ${name[index]}!',
+                            'It’s a match with $name!',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!

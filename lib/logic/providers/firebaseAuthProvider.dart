@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
 
 abstract class BaseAuthProvider {
   String? getCurrentUserUID();
@@ -21,11 +24,20 @@ abstract class BaseAuthProvider {
   Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
 }
 
-class FirebaseAuthProvider extends BaseAuthProvider {
+class FirebaseAuthProvider extends BaseAuthProvider  with ChangeNotifier{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  FirebaseAuth get getInstance => _firebaseAuth;
+
   @override
   String? getCurrentUserUID() {
     return _firebaseAuth.currentUser?.uid;
+  }
+
+  StreamSubscription<User?> onAuthStateChanged() {
+    return _firebaseAuth.authStateChanges().listen((event) {
+      print(event);
+    });
   }
 
   @override
@@ -45,7 +57,10 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   Future<void> signOut() async {
     SharedObjects.prefs?.clearSession();
     SharedObjects.prefs?.clearAll();
+    Directory tempDir = await getTemporaryDirectory();
+    tempDir.deleteSync(recursive: true);
     _firebaseAuth.signOut();
+    notifyListeners();
   }
 
   @override

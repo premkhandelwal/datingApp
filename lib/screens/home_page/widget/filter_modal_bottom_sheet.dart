@@ -7,8 +7,8 @@ class FilterModalBottomSheet extends StatefulWidget {
   FilterModalBottomSheet({
     Key? key,
   }) : super(key: key);
-  double distance = 1;
   RangeValues ageRange = const RangeValues(18, 22);
+  double distance = 1;
   @override
   _FilterModalBottomSheetState createState() => _FilterModalBottomSheetState();
 }

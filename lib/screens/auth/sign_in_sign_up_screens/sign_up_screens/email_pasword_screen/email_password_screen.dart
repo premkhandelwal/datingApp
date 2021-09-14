@@ -93,71 +93,59 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           keyboardType: TextInputType.emailAddress,
                         ),
                         SizedBox(height: 20),
-                        Container(
-                          width: double.infinity,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width - 100,
-                                child: TextFormField(
-                                  validator: (val) {
-                                    String pattern =
-                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-                                    RegExp regex = new RegExp(pattern);
-                                    if (val == null) {
-                                      return "Password cannot be empty";
-                                    } else if (!regex.hasMatch(val)) {
-                                      return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter,at least one digit and at least one special character';
-                                    }
-                                    return null;
+                        TextFormField(
+                          validator: (val) {
+                            String pattern =
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+                            RegExp regex = new RegExp(pattern);
+                            if (val == null) {
+                              return "Password cannot be empty";
+                            } else if (!regex.hasMatch(val)) {
+                              return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter,at least one digit and at least one special character';
+                            }
+                            return null;
+                          },
+                          obscureText: obscure,
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      obscure = !obscure;
+                                    });
                                   },
-                                  obscureText: obscure,
-                                  controller: passwordController,
-                                  decoration: InputDecoration(
-                                      suffixIcon: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              obscure = !obscure;
-                                            });
-                                          },
-                                          child: obscure
-                                              ? Icon(
-                                                  Icons.visibility_off,
-                                                  color: Colors.black,
-                                                  size: 25,
-                                                )
-                                              : Icon(
-                                                  Icons.visibility,
-                                                  color: Colors.black,
-                                                  size: 25,
-                                                )),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          borderSide:
-                                              BorderSide(color: AppColor)),
-                                      focusColor: AppColor,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        gapPadding: 5,
-                                        borderSide: BorderSide(color: AppColor),
-                                      ),
-                                      errorMaxLines: 4,
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          borderSide:
-                                              BorderSide(color: AppColor)),
-                                      labelText: "Enter Your Password",
-                                      labelStyle: TextStyle(color: AppColor)),
-                                  textInputAction: TextInputAction.done,
-                                  keyboardType: TextInputType.text,
-                                ),
+                                  child: obscure
+                                      ? Icon(
+                                          Icons.visibility_off,
+                                          color: Colors.black,
+                                          size: 25,
+                                        )
+                                      : Icon(
+                                          Icons.visibility,
+                                          color: Colors.black,
+                                          size: 25,
+                                        )),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15),
+                                  borderSide:
+                                      BorderSide(color: AppColor)),
+                              focusColor: AppColor,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                gapPadding: 5,
+                                borderSide: BorderSide(color: AppColor),
                               ),
-                              // IconsOutlinedButton(
-                              //     icon: Icons.eye, onPressed: onPressed)
-                            ],
-                          ),
+                              errorMaxLines: 4,
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15),
+                                  borderSide:
+                                      BorderSide(color: AppColor)),
+                              labelText: "Enter Your Password",
+                              labelStyle: TextStyle(color: AppColor)),
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.text,
                         ),
                       ],
                     )),
