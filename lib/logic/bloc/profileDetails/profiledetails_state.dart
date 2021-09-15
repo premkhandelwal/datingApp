@@ -31,20 +31,3 @@ class FailedtoUpdateInfoState extends ProfiledetailsState {}
 
 class FailedtoAddInfoState extends ProfiledetailsState {}
 
-class FetchingInfoState extends ProfiledetailsState {}
-
-class FetchedInfoState extends ProfiledetailsState {
-  final CurrentUser currentUser;
-
-  FetchedInfoState({required this.currentUser});
-}
-
-class FailedFetchInfoState extends ProfiledetailsState {}
-
-class FetchedLocationInfo extends ProfiledetailsState {
-  final String? locationInfo;
-
-  FetchedLocationInfo({required this.locationInfo});
-}
-
-class FailedFetchLocationInfoState extends ProfiledetailsState{}

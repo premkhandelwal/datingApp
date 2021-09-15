@@ -3,6 +3,8 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
@@ -10,6 +12,8 @@ abstract class BaseUserActivityProvider {
   Future<bool> userFindMatch(String matchUserUID);
   Future<List<CurrentUser>> fetchAllUsers();
   Future<List<CurrentUser>> fetchMatchedUsers();
+  Future<CurrentUser> fetchUserInfo();
+  Future<String?> fetchLocationInfo();
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
@@ -73,8 +77,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
           await collection.get();
       List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
           querySnapshot.docs;
-     
-      List<CurrentUser> usersList = await CurrentUser.toCurrentList(listSnapShots);
+
+      List<CurrentUser> usersList =
+          await CurrentUser.toCurrentList(listSnapShots);
 
       usersList.removeWhere((element) =>
           element.uid ==
@@ -95,31 +100,46 @@ class UserActivityProvider extends BaseUserActivityProvider {
           .get();
       List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
           querySnapshot.docs;
-      List<CurrentUser> usersList = await CurrentUser.toCurrentList(listSnapShots);
+      List<CurrentUser> usersList =
+          await CurrentUser.toCurrentList(listSnapShots);
       print(usersList);
       print(usersList[0].name);
       return usersList;
     } catch (e) {
       throw Exception(e);
     }
-/*       QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection
+  }
+
+  @override
+  Future<CurrentUser> fetchUserInfo() async {
+    try {
+      CurrentUser user = CurrentUser();
+      DocumentSnapshot<Map<String, dynamic>> doc = await collection
           .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
-          .collection("MatchedUsers")
           .get();
+      if (doc.exists && doc.data() != null) {
+        Map<String, dynamic> dataMap = doc.data()!;
+        user = CurrentUser.fromMap(dataMap);
+        user.image = await urlToFile(doc.data()!["profileImageUrl"],
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid));
+      }
+      SessionConstants.sessionUser = user;
+      return user;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
-          querySnapshot.docs;
-
-      List<String> ids = [];
-      listSnapShots.forEach((element) async{
-        QuerySnapshot<Map<String, dynamic>> querySnapshot1 =await  collection.doc(element.id).collection("MatchedUsers").get();
-        List<QueryDocumentSnapshot<Map<String, dynamic>>> listquerySnapshot = querySnapshot1.docs;
-      List<CurrentUser> usersList = CurrentUser.toCurrentList(listquerySnapshot);
-  
-      });
-      List<CurrentUser> usersList = CurrentUser.toCurrentList(listSnapShots);
-      print(usersList);
-      print(usersList[0].name);
-      return usersList; */
+  @override
+  Future<String?> fetchLocationInfo() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    print("position");
+    print(position);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    var first = placemarks.first;
+    return "${first.subAdministrativeArea}, ${first.administrativeArea}";
   }
 }

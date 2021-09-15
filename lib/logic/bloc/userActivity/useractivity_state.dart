@@ -37,3 +37,22 @@ class FetchedAllUsersState extends UseractivityState {
 class FailedToFetchAllUsersState extends UseractivityState {}
 
 class FetchingAllUsersState extends UseractivityState {}
+
+class FetchingInfoState extends UseractivityState {}
+
+class FetchedInfoState extends UseractivityState {
+  final CurrentUser currentUser;
+
+  FetchedInfoState({required this.currentUser});
+}
+
+class FailedFetchInfoState extends UseractivityState {}
+
+class FetchedLocationInfo extends UseractivityState {
+  final String? locationInfo;
+
+  FetchedLocationInfo({required this.locationInfo});
+}
+
+class FailedFetchLocationInfoState extends UseractivityState{}
+

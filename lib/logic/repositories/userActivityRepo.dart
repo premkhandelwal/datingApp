@@ -9,7 +9,9 @@ class UserActivityRepository extends BaseRepository {
   Future<bool> userFindMatch(String matchUserUID,) => activityProvider.userFindMatch(matchUserUID);
   Future<List<CurrentUser>> fetchMatchedUsers() => activityProvider.fetchMatchedUsers();
   Future<List<CurrentUser>> fetchAllUsers() => activityProvider.fetchAllUsers();
-
+Future<CurrentUser> fetchUserInfo() => activityProvider.fetchUserInfo();
+  Future<String?> fetchLocationInfo() =>
+      activityProvider.fetchLocationInfo();
   @override
   void dispose() {}
 }

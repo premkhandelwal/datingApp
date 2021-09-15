@@ -31,7 +31,11 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     }else if(event is FetchMatchedUsersEvent){
       yield* _mapFetchMatchedUsersEventtoState();
 
-    }
+    }else if (event is FetchInfoEvent) {
+      yield* _mapFetchInfotoState(event);
+    } else if (event is FetchLocationInfoEvent) {
+      yield* _mapFetchLocationInfotoState(event);
+    } 
   }
 
   Stream<UseractivityState> _mapUserLikedeventTostate(
@@ -73,6 +77,29 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield FetchedMatchedUsersState(users: _users);
     } catch (e) {
       yield FailedToFetchAllUsersState();
+    }
+  }
+
+  
+  Stream<UseractivityState> _mapFetchInfotoState(
+      FetchInfoEvent event) async* {
+    yield FetchingInfoState();
+    try {
+      CurrentUser currentUser = await userActivityRepository.fetchUserInfo();
+      yield FetchedInfoState(currentUser: currentUser);
+    } catch (e) {
+      yield FailedFetchInfoState();
+    }
+  }
+
+  Stream<UseractivityState> _mapFetchLocationInfotoState(
+      FetchLocationInfoEvent event) async* {
+    yield FetchingInfoState();
+    try {
+      String? locationInfo = await userActivityRepository.fetchLocationInfo();
+      yield FetchedLocationInfo(locationInfo: locationInfo);
+    } catch (e) {
+      yield FailedFetchInfoState();
     }
   }
 }

@@ -71,19 +71,9 @@ class MyApp extends StatelessWidget {
               subtitle2: TextStyle(fontSize: 18, fontFamily: 'Modernist'),
             ),
           ),
+         
           // home: ChooseSignInSignUpPage(),
-          home: BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
-              builder: (context, state) {
-            print(state);
-             if (state is FirebaseauthInitial) {
-                context.read<FirebaseauthBloc>().add(UserStateRequested());
-              } else if (state is UserLoggedIn) {
-              return HomePage();
-            } else if (state is UserLoggedOut) {
-              return ChooseSignInSignUpPage();
-            }
-            return LoggingIn();
-          }),
+          home:HomePage()
         ));
   }
 }

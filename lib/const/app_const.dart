@@ -12,8 +12,13 @@ class SessionConstants {
   static const sessionUid = "sessionUid";
   static const sessionUsername = 'sessionUsername';
   static const sessionSignedInWith = "sessionSignedInWith";
-  static const sessionAllFetchedUsers =
-      "sessionAllFetchedUsers"; //[phone Number, email]
+
+  static CurrentUser sessionUser = CurrentUser(); //[phone Number, email]
+
+  static void clear() {
+    sessionUser = CurrentUser();
+    allUsers = [];
+  }
   // statsic const profileImage
 }
 

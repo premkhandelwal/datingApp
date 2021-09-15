@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/const/shared_objects.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CurrentUser {

@@ -27,10 +27,6 @@ class ProfiledetailsBloc
       yield* _mapAddInterestInfoEventtoState(event);
     } else if (event is SubmitInfoEvent) {
       yield* _mapSubmitInfoEventtoState(event);
-    } else if (event is FetchInfoEvent) {
-      yield* _mapFetchInfotoState(event);
-    } else if (event is FetchLocationInfoEvent) {
-      yield* _mapFetchLocationInfotoState(event);
     } else if (event is UpdateInfoEvent) {
       yield* _mapUpdateInfotoState(event);
     }
@@ -88,27 +84,6 @@ class ProfiledetailsBloc
     }
   }
 
-  Stream<ProfiledetailsState> _mapFetchInfotoState(
-      FetchInfoEvent event) async* {
-    yield FetchingInfoState();
-    try {
-      CurrentUser currentUser = await profileDetailsRepository.fetchUserInfo();
-      yield FetchedInfoState(currentUser: currentUser);
-    } catch (e) {
-      yield FailedFetchInfoState();
-    }
-  }
-
-  Stream<ProfiledetailsState> _mapFetchLocationInfotoState(
-      FetchLocationInfoEvent event) async* {
-    yield FetchingInfoState();
-    try {
-      String? locationInfo = await profileDetailsRepository.fetchLocationInfo();
-      yield FetchedLocationInfo(locationInfo: locationInfo);
-    } catch (e) {
-      yield FailedFetchInfoState();
-    }
-  }
 
   Stream<ProfiledetailsState> _mapUpdateInfotoState(
       UpdateInfoEvent event) async* {

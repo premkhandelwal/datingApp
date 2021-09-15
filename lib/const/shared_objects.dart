@@ -2,7 +2,7 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedObjects {
-   static CachedSharedPreference? prefs;
+  static CachedSharedPreference? prefs;
 }
 
 class CachedSharedPreference {
@@ -12,7 +12,6 @@ class CachedSharedPreference {
     SessionConstants.sessionUid,
     SessionConstants.sessionUsername,
     SessionConstants.sessionSignedInWith,
-    SessionConstants.sessionAllFetchedUsers
   };
 
   static Map<String, dynamic> map = Map();
@@ -54,6 +53,7 @@ class CachedSharedPreference {
 
   Future<void> clearAll() async {
     await sharedPreferences?.clear();
+    SessionConstants.clear();
     map = Map();
   }
 
@@ -61,7 +61,6 @@ class CachedSharedPreference {
     await sharedPreferences?.remove(SessionConstants.sessionUsername);
     await sharedPreferences?.remove(SessionConstants.sessionUid);
     await sharedPreferences?.remove(SessionConstants.sessionSignedInWith);
-    await sharedPreferences?.remove(SessionConstants.sessionAllFetchedUsers);
     map.removeWhere((k, v) => (sessionKeyList.contains(k)));
   }
 }

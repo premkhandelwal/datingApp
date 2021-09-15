@@ -26,12 +26,6 @@ class AddInterestsInfoEvent extends ProfiledetailsEvent {
 
 class SubmitInfoEvent extends ProfiledetailsEvent{}
 
-class FetchLocationInfoEvent extends ProfiledetailsEvent{}
-
-class FetchInfoEvent extends ProfiledetailsEvent{
-  
-}
-
 class UpdateInfoEvent extends ProfiledetailsEvent{
   final CurrentUser user;
   UpdateInfoEvent({

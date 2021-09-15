@@ -22,8 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    context.read<ProfiledetailsBloc>().add(FetchLocationInfoEvent());
-    context.read<ProfiledetailsBloc>().add(FetchInfoEvent());
+    _currentUser = SessionConstants.sessionUser;
     super.initState();
   }
 
@@ -32,30 +31,23 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       body: BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
         listenWhen: (previousState, currentState) {
-          if (currentState is FetchedInfoState ||
-              currentState is FetchedLocationInfo ||
-              currentState is UpdatedInfoState) {
+          if (currentState is UpdatedInfoState) {
             return true;
           }
           return false;
         },
         listener: (context, state) async {
-          if (state is FetchedInfoState) {
+          if (state is UpdatedInfoState) {
             _currentUser = state.currentUser;
-            print(_currentUser.name);
-          } else if (state is UpdatedInfoState) {
-            _currentUser = state.currentUser;
-          } else if (state is FetchedLocationInfo) {
-            _currentLocation = state.locationInfo;
           }
         },
         builder: (context, state) {
-          if (state is FetchingInfoState) {
+          /*  if (state is InfoState) {
             return Center(
                 child: CircularProgressIndicator(
               color: Colors.pink,
             ));
-          }
+          } */
           return SafeArea(
             child: Container(
               child: Stack(
@@ -159,11 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               MainAxisAlignment.center,
                                           children: [
                                             IconButton(
-                                              onPressed: () {
-                                                context
-                                                    .read<ProfiledetailsBloc>()
-                                                    .add(FetchInfoEvent());
-                                              },
+                                              onPressed: () {},
                                               icon: Icon(
                                                 Icons.location_on,
                                                 color: Colors.white,
