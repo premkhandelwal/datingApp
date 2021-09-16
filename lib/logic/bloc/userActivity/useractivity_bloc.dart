@@ -20,7 +20,9 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   Stream<UseractivityState> mapEventToState(
     UseractivityEvent event,
   ) async* {
-    if (event is UserLikedEvent) {
+    if (event is UserStateNoneEvent) {
+      yield UseractivityInitial();
+    } else if (event is UserLikedEvent) {
       yield* _mapUserLikedeventTostate(event);
     } else if (event is UserDislikedEvent) {
       yield* _mapUserDisLikedeventTostate(event);
@@ -28,14 +30,15 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapUserMatchFoundeventTostate(event);
     } else if (event is FetchAllUsersEvent) {
       yield* _mapFetchUsersEventtoState();
-    }else if(event is FetchMatchedUsersEvent){
+    } else if (event is FetchMatchedUsersEvent) {
       yield* _mapFetchMatchedUsersEventtoState();
-
-    }else if (event is FetchInfoEvent) {
+    } else if (event is FetchInfoEvent) {
       yield* _mapFetchInfotoState(event);
     } else if (event is FetchLocationInfoEvent) {
       yield* _mapFetchLocationInfotoState(event);
-    } 
+    } else if (event is UpdateLocationInfoEvent) {
+      yield* _mapUpdateLocationInfotoState(event);
+    }
   }
 
   Stream<UseractivityState> _mapUserLikedeventTostate(
@@ -56,13 +59,16 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     print("xMatches ?");
     print(x);
     if (x) {
-      yield UserMatchFoundState(user: SessionConstants.allUsers.firstWhere((element) => element.uid == event.matchUserUID));
+      yield UserMatchFoundState(
+          user: SessionConstants.allUsers
+              .firstWhere((element) => element.uid == event.matchUserUID));
     } else {
       yield UserMatchNotFoundState();
     }
   }
 
   Stream<UseractivityState> _mapFetchUsersEventtoState() async* {
+    yield FetchingAllUsersState();
     try {
       List<CurrentUser> _users = await userActivityRepository.fetchAllUsers();
       yield FetchedAllUsersState(users: _users);
@@ -73,16 +79,15 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
 
   Stream<UseractivityState> _mapFetchMatchedUsersEventtoState() async* {
     try {
-      List<CurrentUser> _users = await userActivityRepository.fetchMatchedUsers();
+      List<CurrentUser> _users =
+          await userActivityRepository.fetchMatchedUsers();
       yield FetchedMatchedUsersState(users: _users);
     } catch (e) {
       yield FailedToFetchAllUsersState();
     }
   }
 
-  
-  Stream<UseractivityState> _mapFetchInfotoState(
-      FetchInfoEvent event) async* {
+  Stream<UseractivityState> _mapFetchInfotoState(FetchInfoEvent event) async* {
     yield FetchingInfoState();
     try {
       CurrentUser currentUser = await userActivityRepository.fetchUserInfo();
@@ -96,10 +101,21 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       FetchLocationInfoEvent event) async* {
     yield FetchingInfoState();
     try {
-      String? locationInfo = await userActivityRepository.fetchLocationInfo();
-      yield FetchedLocationInfo(locationInfo: locationInfo);
+      Map<String, num> locationInfo =
+          await userActivityRepository.fetchLocationInfo();
+      yield FetchedLocationInfoState(locationInfo: locationInfo);
     } catch (e) {
       yield FailedFetchInfoState();
     }
+  }
+
+  Stream<UseractivityState> _mapUpdateLocationInfotoState(
+      UpdateLocationInfoEvent event) async* {
+    yield UpdatingLocationInfoState();
+    try {
+      await userActivityRepository
+          .updateLocationInfo(event.locationCoordinates);
+      yield UpdatedLocInfoState();
+    } catch (e) {}
   }
 }

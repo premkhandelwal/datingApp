@@ -18,7 +18,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   Random random = Random();
   CurrentUser _currentUser = CurrentUser();
-  String? _currentLocation;
 
   @override
   void initState() {
@@ -62,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             errorBuilder: (context, exception, stacktrace) {
                               return Center(
                                   child: Text(
-                                      "Failed to load image. Please select another iamge"));
+                                      "Failed to load image"));
                             },
                             fit: BoxFit.fitWidth,
                             alignment: Alignment.topCenter,
@@ -132,8 +131,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText2!),
-                                          if (_currentLocation != null)
-                                            Text(_currentLocation!,
+                                          if (_currentUser.location != null)
+                                            Text(_currentUser.location!,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .subtitle1!),

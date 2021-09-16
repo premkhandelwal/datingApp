@@ -10,10 +10,12 @@ abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
   Future<void> userDisliked(String likedUserUID);
   Future<bool> userFindMatch(String matchUserUID);
+  Future<void> updateLocationInfo(Map<String, num> locationCoordinates);
+
   Future<List<CurrentUser>> fetchAllUsers();
   Future<List<CurrentUser>> fetchMatchedUsers();
   Future<CurrentUser> fetchUserInfo();
-  Future<String?> fetchLocationInfo();
+  Future<Map<String, num>> fetchLocationInfo();
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
@@ -21,6 +23,13 @@ class UserActivityProvider extends BaseUserActivityProvider {
       FirebaseFirestore.instance.collection("UserActivity");
 
   FirebaseStorage storage = FirebaseStorage.instance;
+
+  @override
+  Future<void> updateLocationInfo(Map<String, num> locationCoordinates) async {
+    await collection
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+        .update({"locationCoordinates": locationCoordinates});
+  }
 
   @override
   Future<void> userDisliked(String dislikedUserUID) async {
@@ -81,9 +90,22 @@ class UserActivityProvider extends BaseUserActivityProvider {
       List<CurrentUser> usersList =
           await CurrentUser.toCurrentList(listSnapShots);
 
-      usersList.removeWhere((element) =>
-          element.uid ==
-          SharedObjects.prefs?.getString(SessionConstants.sessionUid));
+      usersList.removeWhere((element) {
+        bool isDistanceGreaterthan3KM = false;
+        if (element.locationCoordinates != null) {
+          double? distanceInMeters =
+              calculateDistance(element.locationCoordinates!);
+          if (distanceInMeters != null) {
+            isDistanceGreaterthan3KM = distanceInMeters > 3;
+          }
+        }
+        if ((element.uid ==
+                SharedObjects.prefs?.getString(SessionConstants.sessionUid))) {
+          return true;
+        }
+
+        return false;
+      });
       SessionConstants.allUsers = usersList;
       return usersList;
     } catch (e) {
@@ -131,7 +153,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<String?> fetchLocationInfo() async {
+  Future<Map<String, num>> fetchLocationInfo() async {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -140,6 +162,10 @@ class UserActivityProvider extends BaseUserActivityProvider {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     var first = placemarks.first;
-    return "${first.subAdministrativeArea}, ${first.administrativeArea}";
+    String location =
+        "${first.subAdministrativeArea}, ${first.administrativeArea}";
+    SessionConstants.sessionUser.location = location;
+
+    return {"latitude": position.latitude, "longitude": position.longitude};
   }
 }

@@ -90,17 +90,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           centerWidget: Text('Your Profile'),
                           trailingWidget: Container()),
                       Container(
-                        height: MediaQuery.of(context).size.height ,
+                        height: MediaQuery.of(context).size.height + 10,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Stack(
                               children: [
-                                CircleAvatar(
-                                    radius: 70,
+                                ClipOval(
                                     child: _image != null
                                         ? Image.file(
                                             _image!,
+                                            height: 150,
+                                            width: 150,
                                             alignment: Alignment.topCenter,
                                             fit: BoxFit.cover,
                                           )

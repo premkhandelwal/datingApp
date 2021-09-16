@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
+import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
@@ -23,20 +24,10 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   void swipeLeft() {
-    context.read<UseractivityBloc>().add(
-        UserDislikedEvent(SessionConstants.allUsers[_controller.index].uid!));
-    print("person diliked");
-    print('left');
     _controller.forward(direction: SwipDirection.Left);
   }
 
   Future<void> swipeRight() async {
-    context
-        .read<UseractivityBloc>()
-        .add(UserLikedEvent(SessionConstants.allUsers[_controller.index].uid!));
-    context.read<UseractivityBloc>().add(
-        UserFindMatchEvent(SessionConstants.allUsers[_controller.index].uid!));
-    print("person liked");
     _controller.forward(direction: SwipDirection.Right);
   }
 
@@ -45,39 +36,35 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   void initState() {
     context.read<UseractivityBloc>().add(FetchInfoEvent());
-    context.read<UseractivityBloc>().add(FetchLocationInfoEvent());
-    context.read<UseractivityBloc>().add(FetchAllUsersEvent());
     super.initState();
+  }
+
+  List<Widget> cards(List<CurrentUser> listUsers) {
+    return List.generate(
+      listUsers.length,
+      (int index) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SwipeableCard(
+            personAge: age[index],
+            personBio: biography[index],
+            personName: listUsers[index].name != null
+                ? listUsers[index].name!
+                : name[index],
+            personProfession: profession[index],
+            imageUrl:
+                listUsers[index].image != null ? listUsers[index].image! : null,
+            swipeRight: swipeRight,
+            swipeLeft: swipeLeft,
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> cards(List<CurrentUser> listUsers) {
-      return List.generate(
-        listUsers.length,
-        (int index) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: SwipeableCard(
-              personAge: age[index],
-              personBio: biography[index],
-              personName: listUsers[index].name != null
-                  ? listUsers[index].name!
-                  : name[index],
-              personProfession: profession[index],
-              imageUrl: listUsers[index].image != null
-                  ? listUsers[index].image!
-                  : null,
-              swipeRight: swipeRight,
-              swipeLeft: swipeLeft,
-            ),
-          );
-        },
-      );
-    }
-
     return Scaffold(
-      bottomNavigationBar: null,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -139,107 +126,124 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 ),
               ),
               Center(
-                child: Column(
-                  children: <Widget>[
-                    BlocConsumer<UseractivityBloc, UseractivityState>(
-                      listener: (context, state) {
-                        if (state is UserMatchFoundState) {
-                          itIsAMatchPopUp(
-                              context, state.user.image!, state.user.name!);
-                        } else if (state is FetchedAllUsersState) {
-                          SessionConstants.allUsers = state.users;
-                        }
-                      },
-                      listenWhen: (previousState, currentState) {
-                        if ((previousState is UserLikedState &&
-                                currentState is UserMatchFoundState) ||
-                            currentState is FetchedAllUsersState) {
-                          return true;
-                        }
-                        return false;
-                      },
-                      builder: (context, state) {
-                        print(state);
-                        if (SessionConstants.allUsers.isNotEmpty) {
-                          return TCard(
-                            size: Size(450, 500),
-                            slideSpeed: 10,
-                            cards: cards(SessionConstants.allUsers),
-                            controller: _controller,
-                            onForward: (index, info) async {
-                              if (info.direction == SwipDirection.Right) {
-                                context.read<UseractivityBloc>().add(
-                                    UserLikedEvent(SessionConstants
-                                        .allUsers[_index].uid!));
-                                context.read<UseractivityBloc>().add(
-                                    UserFindMatchEvent(SessionConstants
-                                        .allUsers[_index].uid!));
-                              } else if (info.direction == SwipDirection.Left) {
-                                context.read<UseractivityBloc>().add(
-                                    UserDislikedEvent(SessionConstants
-                                        .allUsers[_index].uid!));
-                              }
-                              _index = index;
-                              print(info.direction);
-                              setState(() {});
-                            },
-                            onBack: (index, info) {
-                              _index = index;
-                              setState(() {});
-                            },
-                            onEnd: () {
-                              print('end');
-                            },
-                          );
-                        } else if (state is FailedToFetchAllUsersState) {
-                          return Text("Failed to fetch users");
-                        } else if (state is FetchingAllUsersState) {
-                          return CircularProgressIndicator();
-                        }
+                child: Column(children: <Widget>[
+                  BlocConsumer<UseractivityBloc, UseractivityState>(
+                    listener: (context, state) {
+                      if (state is UserMatchFoundState) {
+                        itIsAMatchPopUp(
+                            context, state.user.image!, state.user.name!);
+                        context
+                            .read<UseractivityBloc>()
+                            .add(UserStateNoneEvent());
+                      } else if (state is FetchedAllUsersState) {
+                        SessionConstants.allUsers = state.users;
+                      } else if (state is FetchedInfoState) {
+                        context
+                            .read<UseractivityBloc>()
+                            .add(FetchLocationInfoEvent());
+                      } else if (state is FetchedLocationInfoState) {
+                        context.read<UseractivityBloc>().add(
+                            UpdateLocationInfoEvent(
+                                locationCoordinates: state.locationInfo));
+                      } else if (state is UpdatedLocInfoState) {
+                        context
+                            .read<UseractivityBloc>()
+                            .add(FetchAllUsersEvent());
+                      }
+                    },
+                    builder: (context, state) {
+                      print(state);
+                      if (state is FailedToFetchAllUsersState) {
                         return Container(
-                          width: 450,
-                          height: 500,
+                            width: 450,
+                            height: 500,
+                            child:
+                                Center(child: Text("Failed to fetch users")));
+                      } else if (state is FetchingAllUsersState ||
+                          state is FetchingInfoState) {
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              swipeLeft();
-                            },
-                            iconSize: 30,
-                            color: Color(0xffF27121),
-                            icon: Icon(Icons.close)),
-                        CircleAvatar(
-                          backgroundColor: AppColor,
-                          radius: 40,
-                          child: Center(
-                            child: IconButton(
-                                onPressed: () {
-                                  swipeRight();
-                                  print('hi');
-                                },
-                                iconSize: 60,
-                                color: Colors.white,
-                                icon: Icon(Icons.favorite)),
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              _controller.back();
-                            },
-                            iconSize: 30,
-                            color: Color(0xffF27121),
-                            icon: Icon(Icons.restore)),
-                      ],
-                    )
-                  ],
-                ),
+                      } else if (SessionConstants.allUsers.isNotEmpty || state is FetchedAllUsersState) {
+                        return Column(
+                          children: [
+                            TCard(
+                              size: Size(450, 500),
+                              slideSpeed: 10,
+                              cards: cards(SessionConstants.allUsers),
+                              controller: _controller,
+                              onForward: (index, info) async {
+                                if (info.direction == SwipDirection.Right) {
+                                  context.read<UseractivityBloc>().add(
+                                      UserLikedEvent(SessionConstants
+                                          .allUsers[_index].uid!));
+                                  context.read<UseractivityBloc>().add(
+                                      UserFindMatchEvent(SessionConstants
+                                          .allUsers[_index].uid!));
+                                } else if (info.direction ==
+                                    SwipDirection.Left) {
+                                  context.read<UseractivityBloc>().add(
+                                      UserDislikedEvent(SessionConstants
+                                          .allUsers[_index].uid!));
+                                }
+                                _index = index;
+                                print(info.direction);
+                                setState(() {});
+                              },
+                              onBack: (index, info) {
+                                _index = index;
+                                setState(() {});
+                              },
+                              onEnd: () {
+                                print('end');
+                              },
+                            ),
+                            SizedBox(
+                              height: 40,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      swipeLeft();
+                                    },
+                                    iconSize: 30,
+                                    color: Color(0xffF27121),
+                                    icon: Icon(Icons.close)),
+                                CircleAvatar(
+                                  backgroundColor: AppColor,
+                                  radius: 40,
+                                  child: Center(
+                                    child: IconButton(
+                                        onPressed: () {
+                                          swipeRight();
+                                          print('hi');
+                                        },
+                                        iconSize: 60,
+                                        color: Colors.white,
+                                        icon: Icon(Icons.favorite)),
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      _controller.back();
+                                    },
+                                    iconSize: 30,
+                                    color: Color(0xffF27121),
+                                    icon: Icon(Icons.restore)),
+                              ],
+                            )
+                          ],
+                        );
+                      }
+                      return Container(
+                        width: 450,
+                        height: 500,
+                      );
+                    },
+                  ),
+                ]),
               ),
             ],
           ),

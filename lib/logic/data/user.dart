@@ -19,6 +19,7 @@ class CurrentUser {
   String? imageDownloadUrl;
   User? firebaseUser;
   List<String>? interests;
+  Map<String, num>? locationCoordinates; //{Latitude:0,Longitude:0}
   CurrentUser(
       {this.uid,
       this.name,
@@ -32,22 +33,8 @@ class CurrentUser {
       this.location,
       this.firebaseUser,
       this.imageDownloadUrl,
+      this.locationCoordinates,
       this.interests});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'profession': profession,
-      'bio': bio,
-      'age': age,
-      'birthDate': birthDate,
-      'gender': gender?.index,
-      'interestedin': interestedin?.index,
-      'location': location,
-      'uid': uid,
-      'interests': interests
-    };
-  }
 
   factory CurrentUser.fromMap(Map<String, dynamic> map) {
     int? gender = map['gender'] ?? null;
@@ -66,24 +53,30 @@ class CurrentUser {
           map['profileImageUrl'] != null ? map['profileImageUrl'] : null,
       interests:
           map['interests'] != null ? List<String>.from(map['interests']) : [],
+      locationCoordinates: map['locationCoordinates'] != null
+          ? Map<String, num>.from(map['locationCoordinates'])
+          : {},
     );
   }
 
   static Future<List<CurrentUser>> toCurrentList(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshots) async{
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshots) async {
     List<CurrentUser> users = [];
     for (var snapshot in snapshots) {
-      
       users.add(CurrentUser.fromMap(snapshot.data()));
       users[users.length - 1].uid = snapshot.id;
-      if(snapshot.data()["profileImageUrl"] != null){
-       users[users.length - 1].image = await urlToFile(snapshot.data()["profileImageUrl"],snapshot.id);
+      if (snapshot.data()["profileImageUrl"] != null) {
+        users[users.length - 1].image =
+            await urlToFile(snapshot.data()["profileImageUrl"], snapshot.id);
+      }
+      if (snapshot.data()["locationCoordinates"] != null) {
+        Map<String, num> locationCoordainates =
+            Map<String, num>.from(snapshot.data()["locationCoordinates"]);
+        users[users.length - 1].location = await coordinatestoLoc(locationCoordainates);
       }
     }
     return users;
   }
-
-  String toJson() => json.encode(toMap());
 
   factory CurrentUser.fromJson(String source) =>
       CurrentUser.fromMap(json.decode(source));

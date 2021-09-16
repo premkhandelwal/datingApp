@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
@@ -67,6 +69,31 @@ int calculateAge(DateTime birthDate) {
     }
   }
   return age;
+}
+
+Future<String> coordinatestoLoc(Map<String, num> coordinates) async {
+  if (coordinates["latitude"] != null && coordinates["longitude"] != null) {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        coordinates["latitude"]!.toDouble(),
+        coordinates["longitude"]!.toDouble());
+    var first = placemarks.first;
+    return "${first.subAdministrativeArea}, ${first.administrativeArea}";
+  }
+  return "";
+}
+
+double? calculateDistance(Map<String, num> userLocation) {
+  if (userLocation["latitude"] != null && userLocation["longitude"] != null) {
+    double distanceInMeters = Geolocator.distanceBetween(
+        userLocation["latitude"]!.toDouble(),
+        userLocation["longitude"]!.toDouble(),
+        SessionConstants.sessionUser.locationCoordinates!["latitude"]!
+            .toDouble(),
+        SessionConstants.sessionUser.locationCoordinates!["longitude"]!
+            .toDouble());
+    return distanceInMeters/1000;
+  }
+  return null;
 }
 
 void changePageTo({required BuildContext context, required Widget widget}) {

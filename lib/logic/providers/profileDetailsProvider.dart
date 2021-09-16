@@ -19,7 +19,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
   @override
   Future<void> updateUserInfo(CurrentUser user) async {
     Reference ref = storage.ref().child(
-        "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
+        "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/profileImage");
     if (user.image != null) {
       UploadTask uploadTask = ref.putFile(user.image!);
       uploadTask.whenComplete(() async {
@@ -42,7 +42,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
   Future<void> submitUserInfo(CurrentUser user) async {
     try {
       Reference ref = storage.ref().child(
-          "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
+          "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/profileImage");
       if (user.image != null) {
         UploadTask uploadTask = ref.putFile(user.image!);
         uploadTask.whenComplete(() async {

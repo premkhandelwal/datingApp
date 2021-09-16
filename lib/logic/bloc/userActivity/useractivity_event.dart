@@ -3,32 +3,38 @@ part of 'useractivity_bloc.dart';
 @immutable
 abstract class UseractivityEvent {}
 
+class UserStateNoneEvent extends UseractivityEvent{}
+
 class UserLikedEvent extends UseractivityEvent {
   final String likedUserUID;
 
-  UserLikedEvent( this.likedUserUID);
+  UserLikedEvent(this.likedUserUID);
 }
 
 class UserDislikedEvent extends UseractivityEvent {
   final String dislikedUserUID;
 
-  UserDislikedEvent( this.dislikedUserUID);
+  UserDislikedEvent(this.dislikedUserUID);
 }
 
 class UserFindMatchEvent extends UseractivityEvent {
   final String matchUserUID;
   UserFindMatchEvent(
-     this.matchUserUID,
+    this.matchUserUID,
   );
 }
 
-class FetchMatchedUsersEvent extends UseractivityEvent{}
+class FetchMatchedUsersEvent extends UseractivityEvent {}
 
-class FetchAllUsersEvent extends UseractivityEvent{}
+class FetchAllUsersEvent extends UseractivityEvent {}
 
+class FetchLocationInfoEvent extends UseractivityEvent {}
 
-class FetchLocationInfoEvent extends UseractivityEvent{}
+class FetchInfoEvent extends UseractivityEvent {}
 
-class FetchInfoEvent extends UseractivityEvent{
-  
+class UpdateLocationInfoEvent extends UseractivityEvent {
+  final Map<String, num> locationCoordinates;
+  UpdateLocationInfoEvent({
+    required this.locationCoordinates,
+  });
 }

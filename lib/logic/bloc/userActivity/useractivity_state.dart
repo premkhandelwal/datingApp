@@ -48,11 +48,17 @@ class FetchedInfoState extends UseractivityState {
 
 class FailedFetchInfoState extends UseractivityState {}
 
-class FetchedLocationInfo extends UseractivityState {
-  final String? locationInfo;
+class FetchedLocationInfoState extends UseractivityState {
+  final Map<String,num> locationInfo;
 
-  FetchedLocationInfo({required this.locationInfo});
+  FetchedLocationInfoState({required this.locationInfo});
 }
 
 class FailedFetchLocationInfoState extends UseractivityState{}
+
+class FailedUpdateLocInfoState extends UseractivityState {}
+
+class UpdatedLocInfoState extends UseractivityState {}
+
+class UpdatingLocationInfoState extends UseractivityState{}
 
