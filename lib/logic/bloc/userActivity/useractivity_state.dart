@@ -1,7 +1,7 @@
 part of 'useractivity_bloc.dart';
 
-@immutable
-abstract class UseractivityState {}
+
+ class UseractivityState {}
 
 class UseractivityInitial extends UseractivityState {}
 
@@ -62,3 +62,4 @@ class UpdatedLocInfoState extends UseractivityState {}
 
 class UpdatingLocationInfoState extends UseractivityState{}
 
+class AppliedFiltersState extends UseractivityState{}

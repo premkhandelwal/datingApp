@@ -1,7 +1,9 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterModalBottomSheet extends StatefulWidget {
   FilterModalBottomSheet({
@@ -23,6 +25,11 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
     dropdownValue = location[0];
   }
 
+  Map<FilterEvent, bool> appliedFilters = {
+    AgeFilterChangedEvent(maxAge: 0,minAge: 0): false,
+    GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
+    DistanceFilterChangedEvent(thresholdDist: 0): false,
+  };
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,6 +92,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     InkWell(
                       onTap: () {
                         setState(() {
+                          appliedFilters[GenderFilterChangedEvent(interestedIn: _selectedGender)] = true;
                           _selectedGender = GENDER.female;
                         });
                       },
@@ -118,6 +126,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     InkWell(
                       onTap: () {
                         setState(() {
+                          appliedFilters[GenderFilterChangedEvent(interestedIn: _selectedGender)] = true;
                           _selectedGender = GENDER.male;
                         });
                       },
@@ -146,6 +155,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     InkWell(
                       onTap: () {
                         setState(() {
+                          appliedFilters[GenderFilterChangedEvent(interestedIn: _selectedGender)] = true;
                           _selectedGender = GENDER.other;
                         });
                       },
@@ -180,7 +190,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            /* SizedBox(height: 20),
             Row(
               children: [
                 SectionHeading(text: 'Location'),
@@ -200,7 +210,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   dropdownValue = val!;
                 });
               },
-            ),
+            ), */
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,6 +233,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 activeColor: AppColor,
                 onChanged: (val) {
                   setState(() {
+                    appliedFilters[DistanceFilterChangedEvent(thresholdDist: val)] = true;
                     widget.distance = val;
                   });
                 }),
@@ -245,6 +256,8 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 activeColor: AppColor,
                 onChanged: (val) {
                   setState(() {
+                    appliedFilters[AgeFilterChangedEvent(minAge: val.start ,maxAge: val.end)] = true;
+
                     widget.ageRange = val;
                   });
                 }),
@@ -256,6 +269,11 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   print(widget.distance);
                   print(widget.ageRange);
                   print(dropdownValue);
+                  appliedFilters.forEach((key, value) {
+                    if (value) {
+                      context.read<FilterBloc>().add(key);
+                    }
+                  });
                   Navigator.of(context).pop();
                 })
           ],

@@ -1,7 +1,7 @@
 part of 'useractivity_bloc.dart';
 
-@immutable
-abstract class UseractivityEvent {}
+
+ class UseractivityEvent {}
 
 class UserStateNoneEvent extends UseractivityEvent{}
 
@@ -38,3 +38,5 @@ class UpdateLocationInfoEvent extends UseractivityEvent {
     required this.locationCoordinates,
   });
 }
+
+class AppliedFiltersEvent extends UseractivityEvent{}

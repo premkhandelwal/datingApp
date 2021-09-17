@@ -161,10 +161,18 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 Center(child: Text("Failed to fetch users")));
                       } else if (state is FetchingAllUsersState ||
                           state is FetchingInfoState) {
-                        return Center(
-                          child: CircularProgressIndicator(),
+                        return Container(
+                          width: 450,
+                          height: 500,
+                          child: Center(child: CircularProgressIndicator()),
                         );
-                      } else if (SessionConstants.allUsers.isNotEmpty || state is FetchedAllUsersState) {
+                      } else if (SessionConstants.allUsers.isEmpty) {
+                        return Container(
+                            width: 450,
+                            height: 500,
+                            child: Center(child: Text("No users found")));
+                      } else if (SessionConstants.allUsers.isNotEmpty ||
+                          state is FetchedAllUsersState || state is AppliedFiltersState) {
                         return Column(
                           children: [
                             TCard(

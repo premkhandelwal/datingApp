@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:meta/meta.dart';
 
@@ -12,9 +13,26 @@ part 'useractivity_state.dart';
 
 class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   final UserActivityRepository userActivityRepository;
+  final FilterBloc filterBloc;
+  StreamSubscription? filterSubscription;
   UseractivityBloc({
     required this.userActivityRepository,
-  }) : super(UseractivityInitial());
+    required this.filterBloc,
+  }) : super(UseractivityInitial()) {
+    print("heeeeelo");
+    filterSubscription = filterBloc.stream.listen((state) {
+      print("state $state");
+      if (state is AppliedFilters) {
+        add(AppliedFiltersEvent());
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    filterSubscription?.cancel();
+    return super.close();
+  }
 
   @override
   Stream<UseractivityState> mapEventToState(
@@ -38,6 +56,8 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapFetchLocationInfotoState(event);
     } else if (event is UpdateLocationInfoEvent) {
       yield* _mapUpdateLocationInfotoState(event);
+    } else if (event is AppliedFiltersEvent) {
+      yield AppliedFiltersState();
     }
   }
 

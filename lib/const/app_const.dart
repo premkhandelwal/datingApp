@@ -25,7 +25,7 @@ class SessionConstants {
 }
 
 const Color AppColor = Color(0xffE94057);
-enum GENDER { NotSelected, male, female, other }
+enum GENDER { NotSelected, male, female, other, both }
 enum INTERESTEDIN { Male, Female, Both }
 
 Future<File> urlToFile(String imageUrl, String? uid) async {
