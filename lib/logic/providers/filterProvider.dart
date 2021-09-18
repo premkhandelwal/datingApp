@@ -1,25 +1,29 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/data/user.dart';
 
 abstract class BaseFilterProvider {
-  void interestedInChanged(GENDER gender);
-  void distanceFilterChanged(num thresholdDist);
-  void ageFilterChanged(num minAge, num maxAge);
+  List<CurrentUser> interestedInChanged(GENDER gender);
+  List<CurrentUser> distanceFilterChanged(num thresholdDist);
+  List<CurrentUser> ageFilterChanged(num minAge, num maxAge);
 }
 
 class FilterProvider extends BaseFilterProvider {
   @override
-  void ageFilterChanged(num minAge, num maxAge) async {
-    SessionConstants.allUsers.retainWhere((user) {
+  List<CurrentUser> ageFilterChanged(num minAge, num maxAge) {
+    List<CurrentUser> filteredUsers = SessionConstants.allUsers;
+    filteredUsers.retainWhere((user) {
       if (user.age != null) {
         return (minAge <= user.age! && user.age! <= maxAge);
       }
       return true;
     });
+    return filteredUsers;
   }
 
   @override
-  void distanceFilterChanged(num thresholdDist) {
-    SessionConstants.allUsers.removeWhere((user) {
+  List<CurrentUser> distanceFilterChanged(num thresholdDist) {
+    List<CurrentUser> filteredUsers = SessionConstants.allUsers;
+    filteredUsers.removeWhere((user) {
       if (user.locationCoordinates != null) {
         num? distance = calculateDistance(user.locationCoordinates!);
         if (distance != null) {
@@ -29,15 +33,18 @@ class FilterProvider extends BaseFilterProvider {
       }
       return false;
     });
+    return filteredUsers;
   }
 
   @override
-  void interestedInChanged(GENDER interestedIn) async {
+  List<CurrentUser> interestedInChanged(GENDER interestedIn)  {
+    List<CurrentUser> filteredUsers = SessionConstants.allUsers;
     if (interestedIn != GENDER.both) {
-      SessionConstants.allUsers.retainWhere((user) {
+      filteredUsers.retainWhere((user) {
         print(user.gender);
         return user.gender == interestedIn;
       });
     }
+    return filteredUsers;
   }
 }

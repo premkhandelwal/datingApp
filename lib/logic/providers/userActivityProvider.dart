@@ -100,7 +100,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
           }
         }
         if ((element.uid ==
-                SharedObjects.prefs?.getString(SessionConstants.sessionUid))|| isDistanceGreaterthan3KM) {
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid))) {
           return true;
         }
 

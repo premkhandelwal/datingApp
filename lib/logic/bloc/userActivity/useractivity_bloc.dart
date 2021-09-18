@@ -13,26 +13,10 @@ part 'useractivity_state.dart';
 
 class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   final UserActivityRepository userActivityRepository;
-  final FilterBloc filterBloc;
-  StreamSubscription? filterSubscription;
   UseractivityBloc({
     required this.userActivityRepository,
-    required this.filterBloc,
-  }) : super(UseractivityInitial()) {
-    print("heeeeelo");
-    filterSubscription = filterBloc.stream.listen((state) {
-      print("state $state");
-      if (state is AppliedFilters) {
-        add(AppliedFiltersEvent());
-      }
-    });
-  }
+  }) : super(UseractivityInitial());
 
-  @override
-  Future<void> close() {
-    filterSubscription?.cancel();
-    return super.close();
-  }
 
   @override
   Stream<UseractivityState> mapEventToState(

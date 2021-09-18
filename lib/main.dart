@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => UseractivityBloc(
-              filterBloc: FilterBloc(filterRepository: filterRepository),
                 userActivityRepository: userActivityRepository),
           ),
           BlocProvider(

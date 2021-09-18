@@ -32,19 +32,19 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
 
   Stream<FilterState> _mapAgeFilterEventtoState(
       AgeFilterChangedEvent event) async* {
-    filterRepository.ageFilterChanged(event.minAge, event.maxAge);
-    yield AppliedFilters();
+    List<CurrentUser> filteredUsers = filterRepository.ageFilterChanged(event.minAge, event.maxAge);
+    yield AppliedFilters(user: filteredUsers);
   }
 
   Stream<FilterState> _mapDistanceFilterEventtoState(
       DistanceFilterChangedEvent event) async* {
-    filterRepository.distanceFilterChanged(event.thresholdDist);
-    yield AppliedFilters();
+    List<CurrentUser> filteredUsers = filterRepository.distanceFilterChanged(event.thresholdDist);
+    yield AppliedFilters(user: filteredUsers);
   }
 
   Stream<FilterState> _mapGenderFilterEventtoState(
       GenderFilterChangedEvent event) async* {
-    filterRepository.interestedInChanged(event.interestedIn);
-    yield AppliedFilters();
+    List<CurrentUser> filteredUsers = filterRepository.interestedInChanged(event.interestedIn);
+    yield AppliedFilters(user: filteredUsers);
   }
 }
