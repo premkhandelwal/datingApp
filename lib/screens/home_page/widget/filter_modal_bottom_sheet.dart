@@ -296,11 +296,11 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   print(widget.distance);
                   print(widget.ageRange);
                   print(dropdownValue);
-                      context.read<FilterBloc>().add(GenderFilterChangedEvent(interestedIn: GENDER.male));
-                 /*  SessionConstants.appliedFilters.forEach((key, value) {
+                  SessionConstants.appliedFilters.forEach((key, value) {
                     if (value) {
+                      context.read<FilterBloc>().add(key);
                     }
-                  }); */
+                  });
 
                   Navigator.of(context).pop();
                 })

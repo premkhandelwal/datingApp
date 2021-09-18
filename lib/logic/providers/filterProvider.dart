@@ -10,7 +10,7 @@ abstract class BaseFilterProvider {
 class FilterProvider extends BaseFilterProvider {
   @override
   List<CurrentUser> ageFilterChanged(num minAge, num maxAge) {
-    List<CurrentUser> filteredUsers = SessionConstants.allUsers;
+    List<CurrentUser> filteredUsers = SessionConstants.filteredUsers;
     filteredUsers.retainWhere((user) {
       if (user.age != null) {
         return (minAge <= user.age! && user.age! <= maxAge);
@@ -22,7 +22,7 @@ class FilterProvider extends BaseFilterProvider {
 
   @override
   List<CurrentUser> distanceFilterChanged(num thresholdDist) {
-    List<CurrentUser> filteredUsers = SessionConstants.allUsers;
+    List<CurrentUser> filteredUsers = SessionConstants.filteredUsers;
     filteredUsers.removeWhere((user) {
       if (user.locationCoordinates != null) {
         num? distance = calculateDistance(user.locationCoordinates!);
@@ -37,8 +37,8 @@ class FilterProvider extends BaseFilterProvider {
   }
 
   @override
-  List<CurrentUser> interestedInChanged(GENDER interestedIn)  {
-    List<CurrentUser> filteredUsers = SessionConstants.allUsers;
+  List<CurrentUser> interestedInChanged(GENDER interestedIn) {
+    List<CurrentUser> filteredUsers = SessionConstants.filteredUsers;
     if (interestedIn != GENDER.both) {
       filteredUsers.retainWhere((user) {
         print(user.gender);

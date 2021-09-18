@@ -107,6 +107,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
         return false;
       });
       SessionConstants.allUsers = usersList;
+      SessionConstants.filteredUsers =
+                              SessionConstants.allUsers;
       return usersList;
     } catch (e) {
       throw Exception(e);

@@ -31,7 +31,9 @@ class SwipeableSingleCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
                 )
-              : Container(color: Colors.amber,),
+              : Container(
+                  color: Colors.amber,
+                ),
         ),
         Positioned(
           left: 8,

@@ -43,25 +43,32 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();
+    SwipeableCard newMethod(int index, List<CurrentUser> listUsers) {
+      return SwipeableCard(
+        key: key1,
+        personAge: age[index],
+        personBio: biography[index],
+        personName: listUsers[index].name != null
+            ? listUsers[index].name!
+            : name[index],
+        personProfession: profession[index],
+        imageUrl:
+            listUsers[index].image != null ? listUsers[index].image! : null,
+        swipeRight: swipeRight,
+        swipeLeft: swipeLeft,
+      );
+    }
+
+    allUsers = SessionConstants.filteredUsers;
+
     List<Widget> cards(List<CurrentUser> listUsers) {
       return List.generate(
         listUsers.length,
         (int index) {
           return ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: SwipeableCard(
-              personAge: age[index],
-              personBio: biography[index],
-              personName: listUsers[index].name != null
-                  ? listUsers[index].name!
-                  : name[index],
-              personProfession: profession[index],
-              imageUrl: listUsers[index].image != null
-                  ? listUsers[index].image!
-                  : null,
-              swipeRight: swipeRight,
-              swipeLeft: swipeLeft,
-            ),
+            child: newMethod(index, listUsers),
           );
         },
       );
@@ -76,6 +83,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         }
       },
       child: Scaffold(
+        key: key1,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -161,6 +169,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           context
                               .read<UseractivityBloc>()
                               .add(FetchAllUsersEvent());
+                        } else if (state is AppliedFiltersState) {
+                          if (key1.currentState != null)
+                            key1.currentState!.setState(() {
+                              allUsers = [];
+                              allUsers = SessionConstants.filteredUsers;
+                            });
                         }
                       },
                       builder: (context, state) {
@@ -183,8 +197,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               width: 450,
                               height: 500,
                               child: Center(child: Text("No users found")));
-                        } else if (
-                            state is FetchedAllUsersState ||
+                        } else if (state is FetchedAllUsersState ||
                             state is AppliedFiltersState) {
                           return Column(
                             children: [

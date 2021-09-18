@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 class SessionConstants {
   static List<CurrentUser> allUsers = [];
+  static List<CurrentUser> filteredUsers = [];
   static Map<FilterEvent, bool> appliedFilters = {
     AgeFilterChangedEvent(maxAge: 0, minAge: 0): false,
     GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
