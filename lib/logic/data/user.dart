@@ -19,6 +19,9 @@ class CurrentUser {
   String? imageDownloadUrl;
   User? firebaseUser;
   List<String>? interests;
+  bool? agenotinFilters;
+  bool? distancenotinFilters;
+  bool? gendernotinFilters;
   Map<String, num>? locationCoordinates; //{Latitude:0,Longitude:0}
   CurrentUser(
       {this.uid,
@@ -34,6 +37,7 @@ class CurrentUser {
       this.firebaseUser,
       this.imageDownloadUrl,
       this.locationCoordinates,
+      this.agenotinFilters,
       this.interests});
 
   factory CurrentUser.fromMap(Map<String, dynamic> map) {
@@ -72,7 +76,8 @@ class CurrentUser {
       if (snapshot.data()["locationCoordinates"] != null) {
         Map<String, num> locationCoordainates =
             Map<String, num>.from(snapshot.data()["locationCoordinates"]);
-        users[users.length - 1].location = await coordinatestoLoc(locationCoordainates);
+        users[users.length - 1].location =
+            await coordinatestoLoc(locationCoordainates);
       }
     }
     return users;

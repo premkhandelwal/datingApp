@@ -1,50 +1,61 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/data/user.dart';
 
 abstract class BaseFilterProvider {
-  List<CurrentUser> interestedInChanged(GENDER gender);
-  List<CurrentUser> distanceFilterChanged(num thresholdDist);
-  List<CurrentUser> ageFilterChanged(num minAge, num maxAge);
+  void interestedInChanged(GENDER gender);
+  void distanceFilterChanged(num thresholdDist);
+  void ageFilterChanged(num minAge, num maxAge);
+  void clearAllFilters();
 }
 
 class FilterProvider extends BaseFilterProvider {
   @override
-  List<CurrentUser> ageFilterChanged(num minAge, num maxAge) {
-    List<CurrentUser> filteredUsers = SessionConstants.filteredUsers;
-    filteredUsers.retainWhere((user) {
+  void ageFilterChanged(num minAge, num maxAge) {
+    SessionConstants.allUsers.forEach((user) {
+      user.agenotinFilters = null;
+
       if (user.age != null) {
-        return (minAge <= user.age! && user.age! <= maxAge);
+        if (minAge > user.age! || user.age! > maxAge) {
+          user.agenotinFilters = true;
+        }
       }
-      return true;
     });
-    return filteredUsers;
   }
 
   @override
-  List<CurrentUser> distanceFilterChanged(num thresholdDist) {
-    List<CurrentUser> filteredUsers = SessionConstants.filteredUsers;
-    filteredUsers.removeWhere((user) {
+  void distanceFilterChanged(num thresholdDist) {
+    SessionConstants.allUsers.forEach((user) {
       if (user.locationCoordinates != null) {
         num? distance = calculateDistance(user.locationCoordinates!);
+        user.distancenotinFilters = null;
+
         if (distance != null) {
-          return distance > thresholdDist;
+          if (distance > thresholdDist) {
+            user.distancenotinFilters = true;
+          }
+          ;
         }
-        return false;
       }
-      return false;
     });
-    return filteredUsers;
   }
 
   @override
-  List<CurrentUser> interestedInChanged(GENDER interestedIn) {
-    List<CurrentUser> filteredUsers = SessionConstants.filteredUsers;
-    if (interestedIn != GENDER.both) {
-      filteredUsers.retainWhere((user) {
-        print(user.gender);
-        return user.gender == interestedIn;
-      });
-    }
-    return filteredUsers;
+  void interestedInChanged(GENDER interestedIn) {
+    SessionConstants.allUsers.forEach((user) {
+      user.gendernotinFilters = null;
+      if (interestedIn != GENDER.both) {
+        if (user.gender != interestedIn) {
+          user.gendernotinFilters = true;
+        }
+      }
+    });
+  }
+
+  @override
+  void clearAllFilters() {
+    SessionConstants.allUsers.forEach((user) {
+      user.gendernotinFilters = null;
+      user.agenotinFilters = null;
+      user.distancenotinFilters = null;
+    });
   }
 }

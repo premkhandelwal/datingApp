@@ -12,8 +12,6 @@ import 'package:dating_app/logic/repositories/filterRepo.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
-import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
-import 'package:dating_app/screens/auth/logginInScreen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 
 void main() async {

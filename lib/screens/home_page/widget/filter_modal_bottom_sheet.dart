@@ -1,7 +1,6 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
-import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +23,9 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
     widget.distance = 1;
     widget.ageRange = RangeValues(18, 22);
     dropdownValue = location[0];
+    SessionConstants.appliedFilters = {};
+    context.read<FilterBloc>().add(FilterClearedEvent());
+    Navigator.pop(context);
   }
 
   void applyFilters() {
@@ -191,7 +193,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                         child: AnimatedContainer(
                           width: _selectedGender == GENDER.other ? 120 : 90,
                           decoration: BoxDecoration(
-                              color: _selectedGender == GENDER.other
+                              color: _selectedGender == GENDER.both
                                   ? AppColor
                                   : Colors.white),
                           padding: EdgeInsets.all(20),

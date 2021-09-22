@@ -4,7 +4,6 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
-import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
@@ -34,42 +33,37 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   TCardController _controller = TCardController();
   int _index = 0;
-  List<CurrentUser> allUsers = [];
   @override
   void initState() {
     context.read<UseractivityBloc>().add(FetchInfoEvent());
     super.initState();
   }
 
+  List<CurrentUser> filteredUsers = [];
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();
-    SwipeableCard newMethod(int index, List<CurrentUser> listUsers) {
-      return SwipeableCard(
-        key: key1,
-        personAge: age[index],
-        personBio: biography[index],
-        personName: listUsers[index].name != null
-            ? listUsers[index].name!
-            : name[index],
-        personProfession: profession[index],
-        imageUrl:
-            listUsers[index].image != null ? listUsers[index].image! : null,
-        swipeRight: swipeRight,
-        swipeLeft: swipeLeft,
-      );
-    }
-
-    allUsers = SessionConstants.filteredUsers;
 
     List<Widget> cards(List<CurrentUser> listUsers) {
       return List.generate(
         listUsers.length,
         (int index) {
           return ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: newMethod(index, listUsers),
-          );
+              borderRadius: BorderRadius.circular(20),
+              child: SwipeableCard(
+                personAge: age[index],
+                personBio: biography[index],
+                personName: listUsers[index].name != null
+                    ? listUsers[index].name!
+                    : name[index],
+                personProfession: profession[index],
+                imageUrl: listUsers[index].image != null
+                    ? listUsers[index].image!
+                    : null,
+                swipeRight: swipeRight,
+                swipeLeft: swipeLeft,
+              ));
         },
       );
     }
@@ -77,9 +71,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return BlocListener<FilterBloc, FilterState>(
       listener: (context, state) {
         if (state is AppliedFilters) {
-          allUsers = state.user;
-          setState(() {});
+          setState(() {
+            
+          });
           context.read<UseractivityBloc>().add(AppliedFiltersEvent());
+        }else if(state is ClearedFilters){
+          setState(() {
+            
+          });
+          context.read<UseractivityBloc>().add(ClearedFiltersEvent());
+
         }
       },
       child: Scaffold(
@@ -156,7 +157,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               .read<UseractivityBloc>()
                               .add(UserStateNoneEvent());
                         } else if (state is FetchedAllUsersState) {
-                          allUsers = state.users;
+                          SessionConstants.allUsers = state.users;
                         } else if (state is FetchedInfoState) {
                           context
                               .read<UseractivityBloc>()
@@ -170,11 +171,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               .read<UseractivityBloc>()
                               .add(FetchAllUsersEvent());
                         } else if (state is AppliedFiltersState) {
-                          if (key1.currentState != null)
-                            key1.currentState!.setState(() {
-                              allUsers = [];
-                              allUsers = SessionConstants.filteredUsers;
-                            });
+                          filteredUsers =
+                              new List.from(SessionConstants.allUsers);
+                          filteredUsers.removeWhere((user) =>
+                              user.gendernotinFilters == true ||
+                              user.distancenotinFilters == true ||
+                              user.agenotinFilters == true);
                         }
                       },
                       builder: (context, state) {
@@ -186,38 +188,41 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               child:
                                   Center(child: Text("Failed to fetch users")));
                         } else if (state is FetchingAllUsersState ||
-                            state is FetchingInfoState) {
+                            state is FetchingInfoState || state is UpdatingLocationInfoState) {
                           return Container(
                             width: 450,
                             height: 500,
                             child: Center(child: CircularProgressIndicator()),
                           );
-                        } else if (allUsers.isEmpty) {
+                        } else if (SessionConstants.allUsers.isEmpty || (state is AppliedFiltersState && filteredUsers.isEmpty)) {
                           return Container(
                               width: 450,
                               height: 500,
                               child: Center(child: Text("No users found")));
                         } else if (state is FetchedAllUsersState ||
-                            state is AppliedFiltersState) {
+                            state is AppliedFiltersState || state is ClearedFiltersState) {
                           return Column(
                             children: [
                               TCard(
                                 size: Size(450, 500),
                                 slideSpeed: 10,
-                                cards: cards(allUsers),
+                                cards: cards(state is AppliedFiltersState
+                                    ? filteredUsers
+                                    : SessionConstants.allUsers),
                                 controller: _controller,
                                 onForward: (index, info) async {
                                   if (info.direction == SwipDirection.Right) {
                                     context.read<UseractivityBloc>().add(
-                                        UserLikedEvent(allUsers[_index].uid!));
+                                        UserLikedEvent(SessionConstants
+                                            .allUsers[_index].uid!));
                                     context.read<UseractivityBloc>().add(
-                                        UserFindMatchEvent(
-                                            allUsers[_index].uid!));
+                                        UserFindMatchEvent(SessionConstants
+                                            .allUsers[_index].uid!));
                                   } else if (info.direction ==
                                       SwipDirection.Left) {
                                     context.read<UseractivityBloc>().add(
-                                        UserDislikedEvent(
-                                            allUsers[_index].uid!));
+                                        UserDislikedEvent(SessionConstants
+                                            .allUsers[_index].uid!));
                                   }
                                   _index = index;
                                   print(info.direction);

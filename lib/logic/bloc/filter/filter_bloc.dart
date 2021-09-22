@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:meta/meta.dart';
-
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/repositories/filterRepo.dart';
 
 part 'filter_event.dart';
@@ -27,24 +24,31 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
       yield* _mapDistanceFilterEventtoState(event);
     } else if (event is GenderFilterChangedEvent) {
       yield* _mapGenderFilterEventtoState(event);
+    } else if (event is FilterClearedEvent) {
+      yield* _mapClearFiltertoState();
     }
   }
 
   Stream<FilterState> _mapAgeFilterEventtoState(
       AgeFilterChangedEvent event) async* {
-    List<CurrentUser> filteredUsers = filterRepository.ageFilterChanged(event.minAge, event.maxAge);
-    yield AppliedFilters(user: filteredUsers);
+    filterRepository.ageFilterChanged(event.minAge, event.maxAge);
+    yield AppliedFilters();
   }
 
   Stream<FilterState> _mapDistanceFilterEventtoState(
       DistanceFilterChangedEvent event) async* {
-    List<CurrentUser> filteredUsers = filterRepository.distanceFilterChanged(event.thresholdDist);
-    yield AppliedFilters(user: filteredUsers);
+    filterRepository.distanceFilterChanged(event.thresholdDist);
+    yield AppliedFilters();
   }
 
   Stream<FilterState> _mapGenderFilterEventtoState(
       GenderFilterChangedEvent event) async* {
-    List<CurrentUser> filteredUsers = filterRepository.interestedInChanged(event.interestedIn);
-    yield AppliedFilters(user: filteredUsers);
+    filterRepository.interestedInChanged(event.interestedIn);
+    yield AppliedFilters();
+  }
+
+  Stream<FilterState> _mapClearFiltertoState() async* {
+    filterRepository.clearAllFilters();
+    yield ClearedFilters();
   }
 }

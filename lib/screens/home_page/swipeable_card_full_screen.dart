@@ -18,10 +18,10 @@ class SwipeableCardFullScreen extends StatelessWidget {
     required this.swipeLeft,
     required this.swipeRight,
   }) : super(key: key);
-  final Function swipeLeft, swipeRight;
+  final Function? swipeLeft, swipeRight;
   final File? image;
-  final String personName, personBio, personProfession;
-  final int personAge;
+  final String? personName, personBio, personProfession;
+  final int? personAge;
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +255,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                     await Future.delayed(
                                         Duration(milliseconds: 200));
                                     print('hi');
-                                    swipeLeft();
+                                    swipeLeft!;
                                     print('hi');
                                   },
                                   iconSize: 60,
@@ -276,7 +276,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                       Navigator.of(context).pop();
                                       await Future.delayed(
                                           Duration(milliseconds: 200));
-                                      swipeRight();
+                                      swipeRight!;
                                     },
                                     iconSize: 60,
                                     color: Colors.white,

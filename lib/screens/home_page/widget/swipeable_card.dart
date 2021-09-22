@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 
 
-class SwipeableCard extends StatefulWidget {
+class SwipeableCard extends StatelessWidget {
   final File? imageUrl;
   final String personName, personBio, personProfession;
   final int personAge;
@@ -24,22 +24,7 @@ class SwipeableCard extends StatefulWidget {
     required this.swipeRight,
   }) : super(key: key);
 
-  @override
-  _SwipeableCardState createState() => _SwipeableCardState();
-}
-
-class _SwipeableCardState extends State<SwipeableCard> {
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
-  @override
-  void didUpdateWidget(covariant SwipeableCard oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -48,21 +33,21 @@ class _SwipeableCardState extends State<SwipeableCard> {
         openBuilder: (BuildContext context,
             void Function({Object? returnValue}) action) {
           return SwipeableCardFullScreen(
-            image: widget.imageUrl,
-            personProfession: widget.personProfession,
-            personBio: widget.personBio,
-            personName: widget.personName,
-            personAge: widget.personAge,
-            swipeRight: widget.swipeRight,
-            swipeLeft: widget.swipeLeft,
+            image: imageUrl,
+            personProfession: personProfession,
+            personBio: personBio,
+            personName: personName,
+            personAge: personAge,
+            swipeRight: swipeRight,
+            swipeLeft: swipeLeft,
           );
         },
         closedBuilder: (BuildContext context, void Function() action) {
           return SwipeableSingleCard(
-              imageUrl: widget.imageUrl,
-              personAge: widget.personAge,
-              personName: widget.personName,
-              personProfession: widget.personProfession);
+              imageUrl: imageUrl,
+              personAge: personAge,
+              personName: personName,
+              personProfession: personProfession);
         },
       ),
     );

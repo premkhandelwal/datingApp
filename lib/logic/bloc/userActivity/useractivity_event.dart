@@ -40,3 +40,4 @@ class UpdateLocationInfoEvent extends UseractivityEvent {
 }
 
 class AppliedFiltersEvent extends UseractivityEvent{}
+class ClearedFiltersEvent extends UseractivityEvent{}

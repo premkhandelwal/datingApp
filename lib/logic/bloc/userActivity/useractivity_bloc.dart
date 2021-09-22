@@ -1,11 +1,7 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:meta/meta.dart';
-
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 
 part 'useractivity_event.dart';
@@ -42,6 +38,8 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapUpdateLocationInfotoState(event);
     } else if (event is AppliedFiltersEvent) {
       yield AppliedFiltersState();
+    } else if (event is ClearedFiltersEvent) {
+      yield ClearedFiltersState();
     }
   }
 
