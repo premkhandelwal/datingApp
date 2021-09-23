@@ -23,7 +23,6 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
   Country _selectedCountry =
       Country(isoCode: "IN", iso3Code: 'IND', phoneCode: "91", name: 'India');
 
-
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -120,8 +119,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                         ),
                       ),
                       Expanded(
-                        child: TextFormField( 
-                          
+                        child: TextFormField(
                           validator: (val) {
                             if (val == null) {
                               return "Phone Number cannot be empty";
@@ -144,23 +142,41 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   ),
                 ),
                 Spacer(),
-                BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
+                BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
+                  listener: (context, state) {
+                    if (state is OtpRetrievalFailed) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Error"),
+                          content: Text("${state.errorMessage}"),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Ok"))
+                          ],
+                        ),
+                      );
+                    }
+                  },
                   builder: (context, state) {
                     if (state is OtpSent) {
                       return CircularProgressIndicator();
                     } else if (state is OtpRetrievalTimedOut) {
                       return Text("Otp retrieval timed out");
-                    } else if (state is OtpRetrievalFailed) {
-                      return Text("${state.errorMessage}");
-                    }
+                    } 
                     return CommonButton(
                         text: 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context.read<FirebaseauthBloc>()
+                            context
+                                .read<FirebaseauthBloc>()
                                 .add(OtpSendRequested(
                                   codeAutoRetrievalTimeout: (id) {
-                                    context.read<FirebaseauthBloc>()
+                                    context
+                                        .read<FirebaseauthBloc>()
                                         .add(OtpRetrievalTimeOut());
                                   },
                                   verificationFailed: (exception) {
