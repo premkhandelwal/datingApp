@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
-import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
@@ -68,7 +67,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       );
     }
 
-    return BlocListener<FilterBloc, FilterState>(
+    return /* BlocListener<FilterBloc, FilterState>(
       listener: (context, state) {
         if (state is AppliedFilters) {
           setState(() {
@@ -83,7 +82,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
         }
       },
-      child: Scaffold(
+      child: */ Scaffold(
         key: key1,
         body: SafeArea(
           child: Padding(
@@ -199,9 +198,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               width: 450,
                               height: 500,
                               child: Center(child: Text("No users found")));
-                        } else if (state is FetchedAllUsersState ||
-                            state is AppliedFiltersState || state is ClearedFiltersState) {
-                          return Column(
+                        }                           return Column(
                             children: [
                               TCard(
                                 size: Size(450, 500),
@@ -276,11 +273,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             ],
                           );
                         }
-                        return Container(
-                          width: 450,
-                          height: 500,
-                        );
-                      },
+                       
+                      
                     ),
                   ]),
                 ),
@@ -288,7 +282,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

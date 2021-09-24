@@ -1,6 +1,6 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
-import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
+import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +24,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
     widget.ageRange = RangeValues(18, 22);
     dropdownValue = location[0];
     SessionConstants.appliedFilters = {};
-    context.read<FilterBloc>().add(FilterClearedEvent());
+    context.read<UseractivityBloc>().add(FilterClearedEvent());
     Navigator.pop(context);
   }
 
@@ -300,7 +300,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   print(dropdownValue);
                   SessionConstants.appliedFilters.forEach((key, value) {
                     if (value) {
-                      context.read<FilterBloc>().add(key);
+                      context.read<UseractivityBloc>().add(key);
                     }
                   });
 

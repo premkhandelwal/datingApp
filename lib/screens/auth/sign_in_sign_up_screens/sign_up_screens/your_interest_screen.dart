@@ -95,10 +95,6 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   },
                 ),
               ),
-              Text(
-                'Selected $_selectedInterests',
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
               CommonButton(
                   text: 'Continue',
                   onPressed: () {

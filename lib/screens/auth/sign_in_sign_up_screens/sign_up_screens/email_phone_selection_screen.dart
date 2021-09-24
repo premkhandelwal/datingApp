@@ -42,6 +42,8 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
                         ));
                   },
                   text: "Continue with email",
+                  textSize: 18,
+
                 ),
                 SizedBox(height: 40),
                 OutlinedButton(

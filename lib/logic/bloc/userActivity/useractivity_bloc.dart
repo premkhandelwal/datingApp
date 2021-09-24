@@ -36,7 +36,16 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapFetchLocationInfotoState(event);
     } else if (event is UpdateLocationInfoEvent) {
       yield* _mapUpdateLocationInfotoState(event);
-    } else if (event is AppliedFiltersEvent) {
+    }else if (event is AgeFilterChangedEvent) {
+      yield* _mapAgeFilterEventtoState(event);
+    } else if (event is DistanceFilterChangedEvent) {
+      yield* _mapDistanceFilterEventtoState(event);
+    } else if (event is GenderFilterChangedEvent) {
+      yield* _mapGenderFilterEventtoState(event);
+    } else if (event is FilterClearedEvent) {
+      yield* _mapClearFiltertoState();
+    } 
+    else if (event is AppliedFiltersEvent) {
       yield AppliedFiltersState();
     } else if (event is ClearedFiltersEvent) {
       yield ClearedFiltersState();
@@ -120,4 +129,28 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield UpdatedLocInfoState();
     } catch (e) {}
   }
+
+  Stream<UseractivityState> _mapAgeFilterEventtoState(
+      AgeFilterChangedEvent event) async* {
+    userActivityRepository.ageFilterChanged(event.minAge, event.maxAge);
+    yield AppliedFiltersState();
+  }
+
+  Stream<UseractivityState> _mapDistanceFilterEventtoState(
+      DistanceFilterChangedEvent event) async* {
+    userActivityRepository.distanceFilterChanged(event.thresholdDist);
+    yield AppliedFiltersState();
+  }
+
+  Stream<UseractivityState> _mapGenderFilterEventtoState(
+      GenderFilterChangedEvent event) async* {
+    userActivityRepository.interestedInChanged(event.interestedIn);
+    yield AppliedFiltersState();
+  }
+
+  Stream<UseractivityState> _mapClearFiltertoState() async* {
+    userActivityRepository.clearAllFilters();
+    yield ClearedFiltersState();
+  }
+
 }

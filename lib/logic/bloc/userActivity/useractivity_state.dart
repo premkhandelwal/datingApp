@@ -64,3 +64,8 @@ class UpdatingLocationInfoState extends UseractivityState{}
 
 class AppliedFiltersState extends UseractivityState{}
 class ClearedFiltersState extends UseractivityState{}
+
+class ApplyingFilters extends UseractivityState {}
+
+
+class FailedToApplyFilters extends UseractivityState {}

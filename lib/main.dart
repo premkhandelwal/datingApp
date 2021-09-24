@@ -4,11 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
-import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
-import 'package:dating_app/logic/repositories/filterRepo.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
@@ -22,7 +20,6 @@ void main() async {
     firebaseAuthRepository: FirebaseAuthRepository(),
     userActivityRepository: UserActivityRepository(),
     profileDetailsRepository: ProfileDetailsRepository(),
-    filterRepository: FilterRepository(),
   ));
 }
 
@@ -30,13 +27,11 @@ class MyApp extends StatelessWidget {
   final FirebaseAuthRepository firebaseAuthRepository;
   final UserActivityRepository userActivityRepository;
   final ProfileDetailsRepository profileDetailsRepository;
-  final FilterRepository filterRepository;
   const MyApp({
     Key? key,
     required this.firebaseAuthRepository,
     required this.userActivityRepository,
     required this.profileDetailsRepository,
-    required this.filterRepository,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -55,11 +50,7 @@ class MyApp extends StatelessWidget {
               profileDetailsRepository: profileDetailsRepository,
             ),
           ),
-          BlocProvider(
-            create: (context) => FilterBloc(
-              filterRepository: filterRepository,
-            ),
-          )
+          
         ],
         child: MaterialApp(
             title: 'Dating App',

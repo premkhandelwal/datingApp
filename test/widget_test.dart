@@ -5,7 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:dating_app/logic/repositories/filterRepo.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
@@ -21,7 +20,6 @@ void main() {
         firebaseAuthRepository: FirebaseAuthRepository(),
         userActivityRepository: UserActivityRepository(),
         profileDetailsRepository: ProfileDetailsRepository(),
-        filterRepository: FilterRepository(),
         ));
 
     // Verify that our counter starts at 0.

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dating_app/logic/bloc/filter/filter_bloc.dart';
+import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 class SessionConstants {
   static List<CurrentUser> allUsers = [];
   static List<CurrentUser> filteredUsers = [];
-  static Map<FilterEvent, bool> appliedFilters = {
+  static Map<UseractivityEvent, bool> appliedFilters = {
     AgeFilterChangedEvent(maxAge: 0, minAge: 0): false,
     GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
     DistanceFilterChangedEvent(thresholdDist: 0): false,
