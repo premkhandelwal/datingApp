@@ -7,7 +7,7 @@ class UserActivityRepository extends BaseRepository {
   UserActivityProvider activityProvider = UserActivityProvider();
   Future<void> userLiked(String likedUserUID) => activityProvider.userLiked(likedUserUID);
   Future<void> userDisliked(String dislikedUserUID) => activityProvider.userDisliked(dislikedUserUID);
-  Future<bool> userFindMatch(String matchUserUID,) => activityProvider.userFindMatch(matchUserUID);
+  Future<CurrentUser?> userFindMatch(String matchUserUID,) => activityProvider.userFindMatch(matchUserUID);
     Future<void> updateLocationInfo(Map<String, num> locationCoordinates) =>
       activityProvider.updateLocationInfo(locationCoordinates);
   Future<List<CurrentUser>> fetchMatchedUsers() => activityProvider.fetchMatchedUsers();
@@ -15,12 +15,12 @@ class UserActivityRepository extends BaseRepository {
 Future<CurrentUser> fetchUserInfo() => activityProvider.fetchUserInfo();
   Future<Map<String,num>> fetchLocationInfo() =>
       activityProvider.fetchLocationInfo();
-      void interestedInChanged(GENDER interestedIn) =>
-      activityProvider.interestedInChanged(interestedIn);
-  void distanceFilterChanged(num threshHoldDist) =>
-      activityProvider.distanceFilterChanged(threshHoldDist);
-  void ageFilterChanged(num minAge, num maxAge) =>
-      activityProvider.ageFilterChanged(minAge, maxAge);
+      Future<List<CurrentUser>> interestedInChanged(GENDER interestedIn) async =>
+    await  activityProvider.interestedInChanged(interestedIn);
+  Future<List<CurrentUser>> distanceFilterChanged(num threshHoldDist) async =>
+     await activityProvider.distanceFilterChanged(threshHoldDist);
+  Future<List<CurrentUser>> ageFilterChanged(num minAge, num maxAge) async =>
+     await  activityProvider.ageFilterChanged(minAge, maxAge);
   void clearAllFilters() => activityProvider.clearAllFilters();
   @override
   void dispose() {}

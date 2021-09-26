@@ -34,14 +34,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   int _index = 0;
   @override
   void initState() {
+    filteredUsers = [];
     context.read<UseractivityBloc>().add(FetchInfoEvent());
     super.initState();
   }
 
   List<CurrentUser> filteredUsers = [];
-
+  List<CurrentUser> allUsers = [];
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();
 
     List<Widget> cards(List<CurrentUser> listUsers) {
@@ -67,221 +69,201 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       );
     }
 
-    return /* BlocListener<FilterBloc, FilterState>(
-      listener: (context, state) {
-        if (state is AppliedFilters) {
-          setState(() {
-            
-          });
-          context.read<UseractivityBloc>().add(AppliedFiltersEvent());
-        }else if(state is ClearedFilters){
-          setState(() {
-            
-          });
-          context.read<UseractivityBloc>().add(ClearedFiltersEvent());
-
-        }
-      },
-      child: */ Scaffold(
-        key: key1,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                Flexible(
-                  child: CustomAppBar(
-                    context: context,
-                    canGoBack: false,
-                    centerWidget: Container(
-                      height: 50,
-                      child: Column(
-                        children: [
-                          Text(
-                            'Discover',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                          Text(
-                            'Chicago, II',
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                        ],
-                      ),
-                    ),
-                    trailingWidget: Row(
+    return Scaffold(
+      key: key1,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Flexible(
+                child: CustomAppBar(
+                  context: context,
+                  canGoBack: false,
+                  centerWidget: Container(
+                    height: 50,
+                    child: Column(
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.filter_alt,
-                            color: AppColor,
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                enableDrag: true,
-                                isScrollControlled: true,
-                                context: context,
-                                backgroundColor: Colors.white.withOpacity(0),
-                                builder: (ctx) => FilterModalBottomSheet());
-                          },
+                        Text(
+                          'Discover',
+                          style: Theme.of(context).textTheme.bodyText2,
                         ),
-                        IconButton(
-                            icon: Icon(
-                              Icons.logout_outlined,
-                              color: AppColor,
-                            ),
-                            onPressed: () {
-                              context
-                                  .read<FirebaseauthBloc>()
-                                  .add(SignOutRequested());
-
-                              WidgetsBinding.instance
-                                  ?.addPostFrameCallback((_) {
-                                changePageWithoutBack(
-                                    context: context,
-                                    widget: ChooseSignInSignUpPage());
-                              });
-                            }),
+                        Text(
+                          'Chicago, II',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
                       ],
                     ),
                   ),
+                  trailingWidget: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.filter_alt,
+                          color: AppColor,
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                              enableDrag: true,
+                              isScrollControlled: true,
+                              context: context,
+                              backgroundColor: Colors.white.withOpacity(0),
+                              builder: (ctx) => FilterModalBottomSheet());
+                        },
+                      ),
+                      IconButton(
+                          icon: Icon(
+                            Icons.logout_outlined,
+                            color: AppColor,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<FirebaseauthBloc>()
+                                .add(SignOutRequested());
+
+                            WidgetsBinding.instance?.addPostFrameCallback((_) {
+                              changePageWithoutBack(
+                                  context: context,
+                                  widget: ChooseSignInSignUpPage());
+                            });
+                          }),
+                    ],
+                  ),
                 ),
-                Center(
-                  child: Column(children: <Widget>[
-                    BlocConsumer<UseractivityBloc, UseractivityState>(
+              ),
+              Center(
+                child: Column(children: <Widget>[
+                  BlocConsumer<UseractivityBloc, UseractivityState>(
                       listener: (context, state) {
-                        if (state is UserMatchFoundState) {
-                          itIsAMatchPopUp(
-                              context, state.user.image!, state.user.name!);
-                          context
-                              .read<UseractivityBloc>()
-                              .add(UserStateNoneEvent());
-                        } else if (state is FetchedAllUsersState) {
-                          SessionConstants.allUsers = state.users;
-                        } else if (state is FetchedInfoState) {
-                          context
-                              .read<UseractivityBloc>()
-                              .add(FetchLocationInfoEvent());
-                        } else if (state is FetchedLocationInfoState) {
-                          context.read<UseractivityBloc>().add(
-                              UpdateLocationInfoEvent(
-                                  locationCoordinates: state.locationInfo));
-                        } else if (state is UpdatedLocInfoState) {
-                          context
-                              .read<UseractivityBloc>()
-                              .add(FetchAllUsersEvent());
-                        } else if (state is AppliedFiltersState) {
-                          filteredUsers =
-                              new List.from(SessionConstants.allUsers);
-                          filteredUsers.removeWhere((user) =>
-                              user.gendernotinFilters == true ||
-                              user.distancenotinFilters == true ||
-                              user.agenotinFilters == true);
-                        }
-                      },
-                      builder: (context, state) {
-                        print(state);
-                        if (state is FailedToFetchAllUsersState) {
-                          return Container(
-                              width: 450,
-                              height: 500,
-                              child:
-                                  Center(child: Text("Failed to fetch users")));
-                        } else if (state is FetchingAllUsersState ||
-                            state is FetchingInfoState || state is UpdatingLocationInfoState) {
-                          return Container(
-                            width: 450,
-                            height: 500,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        } else if (SessionConstants.allUsers.isEmpty || (state is AppliedFiltersState && filteredUsers.isEmpty)) {
-                          return Container(
-                              width: 450,
-                              height: 500,
-                              child: Center(child: Text("No users found")));
-                        }                           return Column(
-                            children: [
-                              TCard(
-                                size: Size(450, 500),
-                                slideSpeed: 10,
-                                cards: cards(state is AppliedFiltersState
+                    if (state is UserMatchFoundState) {
+                      itIsAMatchPopUp(
+                          context, state.user.image!, state.user.name!);
+                      context
+                          .read<UseractivityBloc>()
+                          .add(UserStateNoneEvent());
+                    } else if (state is FetchedAllUsersState) {
+                      allUsers = List.from(state.users);
+                    } else if (state is FetchedInfoState) {
+                      context
+                          .read<UseractivityBloc>()
+                          .add(FetchLocationInfoEvent());
+                    } else if (state is FetchedLocationInfoState) {
+                      context.read<UseractivityBloc>().add(
+                          UpdateLocationInfoEvent(
+                              locationCoordinates: state.locationInfo));
+                    } else if (state is UpdatedLocInfoState) {
+                      context
+                          .read<UseractivityBloc>()
+                          .add(FetchAllUsersEvent());
+                    } else if (state is AppliedFiltersState) {
+                      if (filteredUsers == []) {
+                        filteredUsers = new List.from(allUsers);
+                      }
+                      setState(() {});
+                      allUsers = List.from(state.usersList);
+                    }
+                  }, builder: (context, state) {
+                    print(state);
+                    if (state is FailedToFetchAllUsersState) {
+                      return Container(
+                          width: 450,
+                          height: 500,
+                          child: Center(child: Text("Failed to fetch users")));
+                    } else if (state is FetchingAllUsersState ||
+                        state is FetchingInfoState ||
+                        state is UpdatingLocationInfoState ||
+                        state is ApplyingFilters) {
+                      return Container(
+                        width: 450,
+                        height: 500,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    } else if (allUsers.isEmpty ||
+                        (state is AppliedFiltersState && allUsers.isEmpty)) {
+                      return Container(
+                          width: 450,
+                          height: 500,
+                          child: Center(child: Text("No users found")));
+                    }
+                    return Column(
+                      children: [
+                        TCard(
+                          size: Size(450, screenHeight * 0.6),
+                          slideSpeed: 10,
+                          cards: cards(
+                              /* state is AppliedFiltersState
                                     ? filteredUsers
-                                    : SessionConstants.allUsers),
-                                controller: _controller,
-                                onForward: (index, info) async {
-                                  if (info.direction == SwipDirection.Right) {
-                                    context.read<UseractivityBloc>().add(
-                                        UserLikedEvent(SessionConstants
-                                            .allUsers[_index].uid!));
-                                    context.read<UseractivityBloc>().add(
-                                        UserFindMatchEvent(SessionConstants
-                                            .allUsers[_index].uid!));
-                                  } else if (info.direction ==
-                                      SwipDirection.Left) {
-                                    context.read<UseractivityBloc>().add(
-                                        UserDislikedEvent(SessionConstants
-                                            .allUsers[_index].uid!));
-                                  }
-                                  _index = index;
-                                  print(info.direction);
-                                  setState(() {});
+                                    :  */
+                              allUsers),
+                          controller: _controller,
+                          onForward: (index, info) async {
+                            if (info.direction == SwipDirection.Right) {
+                              context
+                                  .read<UseractivityBloc>()
+                                  .add(UserLikedEvent(allUsers[_index].uid!));
+                              context.read<UseractivityBloc>().add(
+                                  UserFindMatchEvent(allUsers[_index].uid!));
+                            } else if (info.direction == SwipDirection.Left) {
+                              context.read<UseractivityBloc>().add(
+                                  UserDislikedEvent(allUsers[_index].uid!));
+                            }
+                            _index = index;
+                            print(info.direction);
+                            // setState(() {});
+                          },
+                          onBack: (index, info) {
+                            _index = index;
+                            // setState(() {});
+                          },
+                          onEnd: () {
+                            print('end');
+                          },
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  swipeLeft();
                                 },
-                                onBack: (index, info) {
-                                  _index = index;
-                                  setState(() {});
-                                },
-                                onEnd: () {
-                                  print('end');
-                                },
+                                iconSize: 30,
+                                color: Color(0xffF27121),
+                                icon: Icon(Icons.close)),
+                            CircleAvatar(
+                              backgroundColor: AppColor,
+                              radius: screenHeight * 0.045,
+                              child: Center(
+                                child: IconButton(
+                                    onPressed: () {
+                                      swipeRight();
+                                      print('hi');
+                                    },
+                                    iconSize: screenHeight * 0.05,
+                                    color: Colors.white,
+                                    icon: Icon(Icons.favorite)),
                               ),
-                              SizedBox(
-                                height: 40,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        swipeLeft();
-                                      },
-                                      iconSize: 30,
-                                      color: Color(0xffF27121),
-                                      icon: Icon(Icons.close)),
-                                  CircleAvatar(
-                                    backgroundColor: AppColor,
-                                    radius: 40,
-                                    child: Center(
-                                      child: IconButton(
-                                          onPressed: () {
-                                            swipeRight();
-                                            print('hi');
-                                          },
-                                          iconSize: 60,
-                                          color: Colors.white,
-                                          icon: Icon(Icons.favorite)),
-                                    ),
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        _controller.back();
-                                      },
-                                      iconSize: 30,
-                                      color: Color(0xffF27121),
-                                      icon: Icon(Icons.restore)),
-                                ],
-                              )
-                            ],
-                          );
-                        }
-                       
-                      
-                    ),
-                  ]),
-                ),
-              ],
-            ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  _controller.back();
+                                },
+                                iconSize: 30,
+                                color: Color(0xffF27121),
+                                icon: Icon(Icons.restore)),
+                          ],
+                        )
+                      ],
+                    );
+                  }),
+                ]),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

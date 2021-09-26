@@ -11,8 +11,6 @@ import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SessionConstants {
-  static List<CurrentUser> allUsers = [];
-  static List<CurrentUser> filteredUsers = [];
   static Map<UseractivityEvent, bool> appliedFilters = {
     AgeFilterChangedEvent(maxAge: 0, minAge: 0): false,
     GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
@@ -26,7 +24,6 @@ class SessionConstants {
 
   static void clear() {
     sessionUser = CurrentUser();
-    allUsers = [];
     appliedFilters = {
       AgeFilterChangedEvent(maxAge: 0, minAge: 0): false,
       GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
@@ -38,7 +35,6 @@ class SessionConstants {
 
 const Color AppColor = Color(0xffE94057);
 enum GENDER { NotSelected, male, female, other, both }
-enum INTERESTEDIN { Male, Female, Both }
 
 Future<File> urlToFile(String imageUrl, String? uid) async {
   try {

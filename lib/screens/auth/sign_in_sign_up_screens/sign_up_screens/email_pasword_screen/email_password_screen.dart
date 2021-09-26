@@ -22,6 +22,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailIdController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  TextEditingController confirmpasswordController = new TextEditingController();
   bool obscure = true;
   @override
   Widget build(BuildContext context) {
@@ -93,14 +94,14 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           keyboardType: TextInputType.emailAddress,
                         ),
                         SizedBox(height: 20),
-                        TextFormField(
+                         TextFormField(
                           validator: (val) {
                             String pattern =
                                 r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
                             RegExp regex = new RegExp(pattern);
                             if (val == null) {
                               return "Password cannot be empty";
-                            } else if (!regex.hasMatch(val)) {
+                            } else if (!regex.hasMatch(val) && widget.authSide == "Sign Up") {
                               return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter,at least one digit and at least one special character';
                             }
                             return null;
@@ -146,7 +147,59 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                               labelStyle: TextStyle(color: AppColor)),
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.text,
-                        ),
+                        ) ,
+                        SizedBox(height: 20),
+
+                        widget.authSide == "Sign Up" ?TextFormField(
+                          validator: (val) {
+                            
+                            if (val != passwordController.text) {
+                              return "Password does not match";
+                            } 
+                            return null;
+                          },
+                          obscureText: obscure,
+                          controller: confirmpasswordController,
+                          decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      obscure = !obscure;
+                                    });
+                                  },
+                                  child: obscure
+                                      ? Icon(
+                                          Icons.visibility_off,
+                                          color: Colors.black,
+                                          size: 25,
+                                        )
+                                      : Icon(
+                                          Icons.visibility,
+                                          color: Colors.black,
+                                          size: 25,
+                                        )),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15),
+                                  borderSide:
+                                      BorderSide(color: AppColor)),
+                              focusColor: AppColor,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                gapPadding: 5,
+                                borderSide: BorderSide(color: AppColor),
+                              ),
+                              errorMaxLines: 4,
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15),
+                                  borderSide:
+                                      BorderSide(color: AppColor)),
+                              labelText: "Confirm Your Password",
+                              labelStyle: TextStyle(color: AppColor)),
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.text,
+                        ) : Container(),
                       ],
                     )),
                 Spacer(),

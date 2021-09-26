@@ -13,7 +13,6 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     required this.userActivityRepository,
   }) : super(UseractivityInitial());
 
-
   @override
   Stream<UseractivityState> mapEventToState(
     UseractivityEvent event,
@@ -36,7 +35,7 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapFetchLocationInfotoState(event);
     } else if (event is UpdateLocationInfoEvent) {
       yield* _mapUpdateLocationInfotoState(event);
-    }else if (event is AgeFilterChangedEvent) {
+    } else if (event is AgeFilterChangedEvent) {
       yield* _mapAgeFilterEventtoState(event);
     } else if (event is DistanceFilterChangedEvent) {
       yield* _mapDistanceFilterEventtoState(event);
@@ -44,11 +43,6 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapGenderFilterEventtoState(event);
     } else if (event is FilterClearedEvent) {
       yield* _mapClearFiltertoState();
-    } 
-    else if (event is AppliedFiltersEvent) {
-      yield AppliedFiltersState();
-    } else if (event is ClearedFiltersEvent) {
-      yield ClearedFiltersState();
     }
   }
 
@@ -66,13 +60,12 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
 
   Stream<UseractivityState> _mapUserMatchFoundeventTostate(
       UserFindMatchEvent event) async* {
-    bool x = await userActivityRepository.userFindMatch(event.matchUserUID);
+    CurrentUser? x =
+        await userActivityRepository.userFindMatch(event.matchUserUID);
     print("xMatches ?");
     print(x);
-    if (x) {
-      yield UserMatchFoundState(
-          user: SessionConstants.allUsers
-              .firstWhere((element) => element.uid == event.matchUserUID));
+    if (x != null) {
+      yield UserMatchFoundState(user: x);
     } else {
       yield UserMatchNotFoundState();
     }
@@ -132,25 +125,32 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
 
   Stream<UseractivityState> _mapAgeFilterEventtoState(
       AgeFilterChangedEvent event) async* {
-    userActivityRepository.ageFilterChanged(event.minAge, event.maxAge);
-    yield AppliedFiltersState();
+    yield ApplyingFilters();
+    List<CurrentUser> users = await userActivityRepository.ageFilterChanged(
+        event.minAge, event.maxAge);
+    yield AppliedFiltersState(usersList: users);
   }
 
   Stream<UseractivityState> _mapDistanceFilterEventtoState(
       DistanceFilterChangedEvent event) async* {
-    userActivityRepository.distanceFilterChanged(event.thresholdDist);
-    yield AppliedFiltersState();
+    yield ApplyingFilters();
+
+    List<CurrentUser> users =
+        await userActivityRepository.distanceFilterChanged(event.thresholdDist);
+    yield AppliedFiltersState(usersList: users);
   }
 
   Stream<UseractivityState> _mapGenderFilterEventtoState(
       GenderFilterChangedEvent event) async* {
-    userActivityRepository.interestedInChanged(event.interestedIn);
-    yield AppliedFiltersState();
+    yield ApplyingFilters();
+
+    List<CurrentUser> users =
+        await userActivityRepository.interestedInChanged(event.interestedIn);
+    yield AppliedFiltersState(usersList: users);
   }
 
   Stream<UseractivityState> _mapClearFiltertoState() async* {
     userActivityRepository.clearAllFilters();
     yield ClearedFiltersState();
   }
-
 }

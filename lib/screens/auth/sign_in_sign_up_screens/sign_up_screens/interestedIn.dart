@@ -1,21 +1,20 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/interestedIn.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/your_interest_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class GenderSelectionScreen extends StatefulWidget {
-  GenderSelectionScreen({Key? key}) : super(key: key);
+class InterestedInScreen extends StatefulWidget {
+  InterestedInScreen({Key? key}) : super(key: key);
 
   @override
-  _GenderSelectionScreenState createState() => _GenderSelectionScreenState();
+  _InterestedInScreenState createState() => _InterestedInScreenState();
 }
 
-class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
+class _InterestedInScreenState extends State<InterestedInScreen> {
   var _selected = GENDER.NotSelected;
 
   @override
@@ -33,11 +32,11 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                 trailingWidget: Container(),
               ),
               SizedBox(height: 20),
-              Text('I am a '),
+              Text('Interested In'),
               Spacer(),
               Column(
                 children: [
-                  GenderSelectionTile(
+                  InterestedInTile(
                     tileText: 'Man',
                     isThisTile: _selected == GENDER.male ? true : false,
                     onPress: () {
@@ -46,7 +45,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       });
                     },
                   ),
-                  GenderSelectionTile(
+                  InterestedInTile(
                     tileText: 'Woman',
                     isThisTile: _selected == GENDER.female ? true : false,
                     onPress: () {
@@ -55,12 +54,12 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       });
                     },
                   ),
-                  GenderSelectionTile(
-                    tileText: 'Other',
-                    isThisTile: _selected == GENDER.other ? true : false,
+                  InterestedInTile(
+                    tileText: 'Both',
+                    isThisTile: _selected == GENDER.both ? true : false,
                     onPress: () {
                       setState(() {
-                        _selected = GENDER.other;
+                        _selected = GENDER.both;
                       });
                     },
                   ),
@@ -72,7 +71,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   onPressed: _selected == GENDER.NotSelected
                       ? () {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Please select your gender'),
+                            content: Text('Please select interested gender'),
                             backgroundColor: AppColor,
                           ));
                         }
@@ -81,10 +80,10 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                               .read<ProfiledetailsBloc>()
                               .add(AddGenderInfoEvent(
                                   user: CurrentUser(
-                                gender: _selected,
+                                interestedin: _selected,
                               )));
                           changePageTo(
-                              context: context, widget: InterestedInScreen());
+                              context: context, widget: YourInterestScreen());
                         })
             ],
           ),
@@ -94,11 +93,11 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
   }
 }
 
-class GenderSelectionTile extends StatelessWidget {
+class InterestedInTile extends StatelessWidget {
   final VoidCallback onPress;
   final bool isThisTile;
   final String tileText;
-  const GenderSelectionTile({
+  const InterestedInTile({
     Key? key,
     required this.onPress,
     required this.isThisTile,

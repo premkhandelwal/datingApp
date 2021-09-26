@@ -1,7 +1,6 @@
 part of 'useractivity_bloc.dart';
 
-
- class UseractivityState {}
+class UseractivityState {}
 
 class UseractivityInitial extends UseractivityState {}
 
@@ -49,23 +48,28 @@ class FetchedInfoState extends UseractivityState {
 class FailedFetchInfoState extends UseractivityState {}
 
 class FetchedLocationInfoState extends UseractivityState {
-  final Map<String,num> locationInfo;
+  final Map<String, num> locationInfo;
 
   FetchedLocationInfoState({required this.locationInfo});
 }
 
-class FailedFetchLocationInfoState extends UseractivityState{}
+class FailedFetchLocationInfoState extends UseractivityState {}
 
 class FailedUpdateLocInfoState extends UseractivityState {}
 
 class UpdatedLocInfoState extends UseractivityState {}
 
-class UpdatingLocationInfoState extends UseractivityState{}
+class UpdatingLocationInfoState extends UseractivityState {}
 
-class AppliedFiltersState extends UseractivityState{}
-class ClearedFiltersState extends UseractivityState{}
+class AppliedFiltersState extends UseractivityState {
+  final List<CurrentUser> usersList;
+  AppliedFiltersState({
+    required this.usersList,
+  });
+}
+
+class ClearedFiltersState extends UseractivityState {}
 
 class ApplyingFilters extends UseractivityState {}
-
 
 class FailedToApplyFilters extends UseractivityState {}

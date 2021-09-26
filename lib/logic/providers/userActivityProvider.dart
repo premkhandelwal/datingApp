@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
   Future<void> userDisliked(String likedUserUID);
-  Future<bool> userFindMatch(String matchUserUID);
+  Future<CurrentUser?> userFindMatch(String matchUserUID);
   Future<void> updateLocationInfo(Map<String, num> locationCoordinates);
 
   Future<List<CurrentUser>> fetchAllUsers();
@@ -17,9 +17,9 @@ abstract class BaseUserActivityProvider {
   Future<CurrentUser> fetchUserInfo();
   Future<Map<String, num>> fetchLocationInfo();
 
-  void interestedInChanged(GENDER gender);
-  void distanceFilterChanged(num thresholdDist);
-  void ageFilterChanged(num minAge, num maxAge);
+  Future<List<CurrentUser>> interestedInChanged(GENDER gender);
+  Future<List<CurrentUser>> distanceFilterChanged(num thresholdDist);
+  Future<List<CurrentUser>> ageFilterChanged(num minAge, num maxAge);
   void clearAllFilters();
 }
 
@@ -46,7 +46,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<bool> userFindMatch(String matchUserUID) async {
+  Future<CurrentUser?> userFindMatch(String matchUserUID) async {
     bool exist = false;
     await collection
         .doc(matchUserUID)
@@ -71,8 +71,14 @@ class UserActivityProvider extends BaseUserActivityProvider {
             .set({selfUid!: DateTime.now()});
       }
     });
-
-    return exist;
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await collection.doc(matchUserUID).get();
+    if (doc.exists && doc.data() != null) {
+      Map<String, dynamic> dataMap = doc.data()!;
+      CurrentUser user = CurrentUser.fromMap(dataMap);
+      return user;
+    }
+    return null;
   }
 
   @override
@@ -111,8 +117,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
 
         return false;
       });
-      SessionConstants.allUsers = usersList;
-      
+      // SessionConstants.allUsers = usersList;
+
       return usersList;
     } catch (e) {
       throw Exception(e);
@@ -176,53 +182,75 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  void ageFilterChanged(num minAge, num maxAge) {
-    SessionConstants.allUsers.forEach((user) {
-      user.agenotinFilters = null;
+  Future<List<CurrentUser>> ageFilterChanged(num minAge, num maxAge) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection.get();
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+        querySnapshot.docs;
 
+    List<CurrentUser> usersList =
+        await CurrentUser.toCurrentList(listSnapShots);
+    usersList.removeWhere((user) {
       if (user.age != null) {
         if (minAge > user.age! || user.age! > maxAge) {
-          user.agenotinFilters = true;
+          // user.agenotinFilters = true;
+          return true;
         }
       }
+      return false;
     });
+    return usersList;
   }
 
   @override
-  void distanceFilterChanged(num thresholdDist) {
-    SessionConstants.allUsers.forEach((user) {
+  Future<List<CurrentUser>> distanceFilterChanged(num thresholdDist) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection.get();
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+        querySnapshot.docs;
+
+    List<CurrentUser> usersList =
+        await CurrentUser.toCurrentList(listSnapShots);
+    usersList.removeWhere((user) {
       if (user.locationCoordinates != null) {
         num? distance = calculateDistance(user.locationCoordinates!);
-        user.distancenotinFilters = null;
 
         if (distance != null) {
           if (distance > thresholdDist) {
-            user.distancenotinFilters = true;
+            return true;
           }
-          ;
         }
       }
+      return false;
+
     });
+    return usersList;
   }
 
   @override
-  void interestedInChanged(GENDER interestedIn) {
-    SessionConstants.allUsers.forEach((user) {
-      user.gendernotinFilters = null;
+  Future<List<CurrentUser>> interestedInChanged(GENDER interestedIn) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection.get();
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+        querySnapshot.docs;
+
+    List<CurrentUser> usersList =
+        await CurrentUser.toCurrentList(listSnapShots);
+    usersList.removeWhere((user) {
       if (interestedIn != GENDER.both) {
         if (user.gender != interestedIn) {
-          user.gendernotinFilters = true;
+          return true;
         }
       }
+      return false;
+
     });
+    return usersList;
   }
 
   @override
   void clearAllFilters() {
-    SessionConstants.allUsers.forEach((user) {
+    /* SessionConstants.allUsers.forEach((user) {
       user.gendernotinFilters = null;
       user.agenotinFilters = null;
       user.distancenotinFilters = null;
-    });
+    }); */
   }
 }

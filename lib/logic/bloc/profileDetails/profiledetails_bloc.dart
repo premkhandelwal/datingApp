@@ -23,6 +23,8 @@ class ProfiledetailsBloc
       yield* _mapAddBasicInfoEventtoState(event);
     } else if (event is AddGenderInfoEvent) {
       yield* _mapAddGenderInfoEventtoState(event);
+    } else if (event is AddInterestedInInfoEvent) {
+      yield* _mapAddInterestedInInfoEventtoState(event);
     } else if (event is AddInterestsInfoEvent) {
       yield* _mapAddInterestInfoEventtoState(event);
     } else if (event is SubmitInfoEvent) {
@@ -55,6 +57,18 @@ class ProfiledetailsBloc
       currentUser.gender = event.user.gender;
       // await profileDetailsRepository.addGenderInfo(event.user);
       yield AddedGenderInfoState();
+    } catch (e) {
+      yield FailedtoAddInfoState();
+    }
+  }
+
+  Stream<ProfiledetailsState> _mapAddInterestedInInfoEventtoState(
+      AddInterestedInInfoEvent event) async* {
+    try {
+      yield AddingInfoState();
+      currentUser.interestedin = event.user.interestedin;
+      // await profileDetailsRepository.addGenderInfo(event.user);
+      yield AddedInterestedInInfoState();
     } catch (e) {
       yield FailedtoAddInfoState();
     }

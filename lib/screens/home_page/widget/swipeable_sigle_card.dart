@@ -97,7 +97,7 @@ class SwipeableSingleCard extends StatelessWidget {
                   ),
                 ),
                 filter: ImageFilter.blur(
-                    sigmaX: 20.0, sigmaY: 20.0, tileMode: TileMode.clamp),
+                    sigmaX: 70.0, sigmaY: 70.0, tileMode: TileMode.clamp),
               ),
             ),
           ),

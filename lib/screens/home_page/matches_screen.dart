@@ -179,7 +179,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     _matchedUsersList = state.users;
                     print(_matchedUsersList);
                     for (var i = 0; i < _matchedUsersList.length; i++) {
-                      int index =
+                      /* int index =
                           SessionConstants.allUsers.indexWhere((element) {
                         return element.uid == _matchedUsersList[i].uid;
                       });
@@ -188,7 +188,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       _matchedUsersList[i].age =
                           SessionConstants.allUsers[index].age;
                       _matchedUsersList[i].image =
-                          SessionConstants.allUsers[index].image;
+                          SessionConstants.allUsers[index].image; */
                     }
                   }
                 }, builder: (context, state) {

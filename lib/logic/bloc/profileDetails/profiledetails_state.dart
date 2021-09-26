@@ -8,6 +8,7 @@ class ProfiledetailsInitial extends ProfiledetailsState {}
 class AddedBasicInfoState extends ProfiledetailsState {}
 
 class AddedGenderInfoState extends ProfiledetailsState {}
+class AddedInterestedInInfoState extends ProfiledetailsState {}
 
 class AddedInterestsInfoState extends ProfiledetailsState {}
 

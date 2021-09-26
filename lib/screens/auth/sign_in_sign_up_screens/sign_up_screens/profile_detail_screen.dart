@@ -23,16 +23,15 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   DateTime _selectedDate = DateTime.now();
   TextEditingController name = new TextEditingController();
   TextEditingController profession = new TextEditingController();
-   File? _image;
+  File? _image;
 
   Future<File?> _addImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-      _image = File(pickedFile.path);
+        _image = File(pickedFile.path);
       });
-        
     }
     return null;
   }
@@ -77,26 +76,31 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(25.0),
-                        child: _image != null ?Image.file(
-                          _image!,
-                          alignment: Alignment.topCenter,
-                          fit: BoxFit.cover,
-                        ):Image.asset(
-                          'assets/images/female_model_2.png',
-                          alignment: Alignment.topCenter,
-                          fit: BoxFit.cover,
-                        ),
+                        child: _image != null
+                            ? Image.file(
+                                _image!,
+                                alignment: Alignment.topCenter,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/images/female_model_2.png',
+                                alignment: Alignment.topCenter,
+                                fit: BoxFit.cover,
+                              ),
                       )),
                   Positioned(
                     bottom: -15,
-                    right: -15,
+                    right: -5,
                     child: Container(
-                      padding: EdgeInsets.all(8),
+                      height: 50,
+                      width: 50,
+                      padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           color: AppColor,
-                          borderRadius: BorderRadius.circular(25.0),
-                          border: Border.all(color: Colors.white, width: 4)),
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: Colors.white, width: 2)),
                       child: IconButton(
+                        
                         onPressed: _addImage,
                         icon: Icon(Icons.camera_alt_rounded),
                         color: Colors.white,

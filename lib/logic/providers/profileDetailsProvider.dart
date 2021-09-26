@@ -56,6 +56,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
             "birthDate": user.birthDate,
             "gender": user.gender!.index,
             "interests": user.interests,
+            "interestedIn" : user.interestedin,
             "profileImageUrl":
                 user.imageDownloadUrl != null ? user.imageDownloadUrl : null
           });

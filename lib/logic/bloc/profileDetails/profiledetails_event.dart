@@ -17,6 +17,13 @@ class AddGenderInfoEvent extends ProfiledetailsEvent {
   });
 }
 
+class AddInterestedInInfoEvent extends ProfiledetailsEvent {
+  final CurrentUser user;
+  AddInterestedInInfoEvent({
+    required this.user,
+  });
+}
+
 class AddInterestsInfoEvent extends ProfiledetailsEvent {
   final CurrentUser user;
   AddInterestsInfoEvent({
