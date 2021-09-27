@@ -57,8 +57,12 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       yield* _maplinkEmailwithPhoneeventtoState(event);
     } else if (event is LinkPhoneNumberWithEmailEvent) {
       yield* _maplinkPhonewithEmaileventtoState(event);
-    } else if (state is UserLoggedOut) {
-      
+    } else if (event is EmailVerificationRequested) {
+      yield* __mapEmailVerificationRequested();
+    } else if (event is EmailVerificationStateRequested) {
+      yield* __mapEmailVerificationStateRequested();
+    } else if (event is SignedInforFirstTimeEvent) {
+      yield* __mapSignedInFirstTimeState();
     }
   }
 
@@ -175,6 +179,46 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       }
     } catch (e) {
       yield FailedtoLinkedPhoneNumberEmail();
+    }
+  }
+
+  Stream<FirebaseauthState> __mapEmailVerificationRequested() async* {
+    try {
+      bool verificationSent = await firebaseAuthRepo.sendverificationEmail();
+      if (verificationSent) {
+        yield EmailVerificationSentState();
+      } else {
+        yield FailedtoSendEmailVerificationState();
+      }
+    } catch (e) {
+      yield FailedtoSendEmailVerificationState();
+    }
+  }
+
+  Stream<FirebaseauthState> __mapEmailVerificationStateRequested() async* {
+    try {
+      bool isEmailVerified = await firebaseAuthRepo.isEmailVerified();
+      if (isEmailVerified) {
+        yield EmailVerifiedState();
+      } else {
+        yield EmailNotVerifiedState();
+      }
+    } catch (e) {
+      yield EmailNotVerifiedState();
+    }
+  }
+
+  Stream<FirebaseauthState> __mapSignedInFirstTimeState() async* {
+    try {
+      bool isuserDocExists =
+          await firebaseAuthRepo.isuserDocExists();
+      if (isuserDocExists) {
+        yield NotSignedInForFirstTimeState();
+      } else {
+        yield SignedInForFirstTimeState();
+      }
+    } catch (e) {
+      yield FailedtogetSignInForFirstTimeState();
     }
   }
 }

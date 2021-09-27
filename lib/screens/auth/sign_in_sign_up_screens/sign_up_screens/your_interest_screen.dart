@@ -95,19 +95,50 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   },
                 ),
               ),
-              CommonButton(
-                  text: 'Continue',
-                  onPressed: () {
-                    context
-                        .read<ProfiledetailsBloc>()
-                        .add(AddInterestsInfoEvent(
-                            user: CurrentUser(
-                          interests: _selectedInterests,
-                        )));
-                    context.read<ProfiledetailsBloc>().add(SubmitInfoEvent());
-                    changePageTo(
-                        context: context, widget: SearchFriendsScreen());
-                  })
+              BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
+                listener: (context, state) {
+                  if(state is FailedtoAddInfoState){
+                    showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("Error"),
+                                content: Text(
+                                  "Failed to add your information",
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(ctx);
+                                        
+                                      },
+                                      child: Text("Ok"))
+                                ],
+                              ));
+                  }else if(state is SubmittedInfoState){
+                     changePageTo(
+                            context: context, widget: SearchFriendsScreen());
+                  }
+                },
+                builder: (context, state) {
+                  if (state is AddingInfoState || state is SubmittingInfoState || state is  AddedInterestedInInfoState) {
+                    return CircularProgressIndicator();
+                  }
+                  return CommonButton(
+                      text: 'Continue',
+                      onPressed: () {
+                        context
+                            .read<ProfiledetailsBloc>()
+                            .add(AddInterestsInfoEvent(
+                                user: CurrentUser(
+                              interests: _selectedInterests,
+                            )));
+                        context
+                            .read<ProfiledetailsBloc>()
+                            .add(SubmitInfoEvent());
+                       
+                      });
+                },
+              )
             ],
           ),
         ),

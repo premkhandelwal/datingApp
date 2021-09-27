@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,9 +23,12 @@ abstract class BaseAuthProvider {
       PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout);
   Future<bool> linkEmailWithPhoneNumber(String emailId, String password);
   Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
+  Future<bool> sendverificationEmail();
+  Future<bool> isEmailVerified();
+  Future<bool> isuserDocExists();
 }
 
-class FirebaseAuthProvider extends BaseAuthProvider  with ChangeNotifier{
+class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   FirebaseAuth get getInstance => _firebaseAuth;
@@ -37,6 +42,22 @@ class FirebaseAuthProvider extends BaseAuthProvider  with ChangeNotifier{
     return _firebaseAuth.authStateChanges().listen((event) {
       print(event);
     });
+  }
+
+  @override
+  Future<bool> isuserDocExists() async {
+    CollectionReference<Map<String, dynamic>> collection =
+        FirebaseFirestore.instance.collection("UserActivity");
+    print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
+  Stream<DocumentSnapshot<Map<String, dynamic>>> doc =  await collection
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid)).snapshots();
+    
+
+  
+    if (await doc.isEmpty) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -112,6 +133,16 @@ class FirebaseAuthProvider extends BaseAuthProvider  with ChangeNotifier{
   }
 
   @override
+  Future<bool> sendverificationEmail() async {
+    if (_firebaseAuth.currentUser != null) {
+      await _firebaseAuth.currentUser?.sendEmailVerification();
+
+      return true;
+    }
+    return false;
+  }
+
+  @override
   Future<void> sendOTP(
       String phoneNumber,
       PhoneCodeSent codeSent,
@@ -129,5 +160,13 @@ class FirebaseAuthProvider extends BaseAuthProvider  with ChangeNotifier{
       print("hello");
       print(e);
     }
+  }
+
+  @override
+  Future<bool> isEmailVerified() async {
+    if (_firebaseAuth.currentUser != null) {
+      return _firebaseAuth.currentUser!.emailVerified;
+    }
+    return false;
   }
 }

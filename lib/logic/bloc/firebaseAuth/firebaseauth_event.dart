@@ -75,4 +75,11 @@ class LinkPhoneNumberWithEmailEvent extends FirebaseauthEvent {
   });
 }
 
+
 class SignOutRequested extends FirebaseauthEvent {}
+
+class EmailVerificationRequested extends FirebaseauthEvent{}
+
+class EmailVerificationStateRequested extends FirebaseauthEvent{}
+
+class SignedInforFirstTimeEvent extends FirebaseauthEvent{}

@@ -50,11 +50,12 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
           await collection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .set({
+                
             "name": user.name,
             "age": user.age,
             "profession": user.profession,
             "birthDate": user.birthDate,
-            "gender": user.gender!.index,
+            "gender": user.gender?.index,
             "interests": user.interests,
             "interestedIn" : user.interestedin,
             "profileImageUrl":

@@ -5,17 +5,19 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:flutter/material.dart';
 
 class SwipeableSingleCard extends StatelessWidget {
-  const SwipeableSingleCard({
-    Key? key,
-    required this.imageUrl,
-    required this.personName,
-    required this.personAge,
-    required this.personProfession,
-  }) : super(key: key);
+  const SwipeableSingleCard(
+      {Key? key,
+      required this.imageUrl,
+      required this.personName,
+      required this.personAge,
+      required this.personProfession,
+      required this.personDistance})
+      : super(key: key);
 
   final File? imageUrl;
   final String personName, personProfession;
   final int personAge;
+  final num? personDistance;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class SwipeableSingleCard extends StatelessWidget {
                   size: 18,
                 ),
                 Text(
-                  '1 KM',
+                  '${personDistance != null ? personDistance!.toInt() : 5} KM',
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!

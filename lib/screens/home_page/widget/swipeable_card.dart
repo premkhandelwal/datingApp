@@ -11,6 +11,7 @@ class SwipeableCard extends StatelessWidget {
   final File? imageUrl;
   final String personName, personBio, personProfession;
   final int personAge;
+  final num? personDistance;
   final Function swipeLeft, swipeRight;
 
   const SwipeableCard({
@@ -20,6 +21,7 @@ class SwipeableCard extends StatelessWidget {
     required this.personBio,
     required this.personProfession,
     required this.personAge,
+    required this.personDistance,
     required this.swipeLeft,
     required this.swipeRight,
   }) : super(key: key);
@@ -44,6 +46,7 @@ class SwipeableCard extends StatelessWidget {
         },
         closedBuilder: (BuildContext context, void Function() action) {
           return SwipeableSingleCard(
+            personDistance: personDistance,
               imageUrl: imageUrl,
               personAge: personAge,
               personName: personName,

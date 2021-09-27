@@ -56,8 +56,21 @@ class UserSignedUp extends FirebaseauthState {
   });
 }
 
+class EmailVerificationSentState extends FirebaseauthState{} 
+
+class FailedtoSendEmailVerificationState extends FirebaseauthState{} 
+
+class EmailVerifiedState extends FirebaseauthState{} 
+
+class EmailNotVerifiedState extends FirebaseauthState{} 
+
 class LinkedEmailWithPhoneNumber extends FirebaseauthState {}
 
 class LinkedPhoneNumberWithEmail extends FirebaseauthState {}
 
 class FailedtoLinkedPhoneNumberEmail extends FirebaseauthState {}
+
+class SignedInForFirstTimeState extends FirebaseauthState{}
+
+class NotSignedInForFirstTimeState extends FirebaseauthState{}
+class FailedtogetSignInForFirstTimeState extends FirebaseauthState{}

@@ -53,6 +53,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           return ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SwipeableCard(
+                personDistance: listUsers[index].distance != null
+                    ? listUsers[index].distance!
+                    : null,
                 personAge: age[index],
                 personBio: biography[index],
                 personName: listUsers[index].name != null

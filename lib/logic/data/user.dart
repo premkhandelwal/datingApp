@@ -12,6 +12,7 @@ class CurrentUser {
   String? bio;
   String? location;
   num? age;
+  num? distance;
   DateTime? birthDate;
   GENDER? gender;
   GENDER? interestedin;
@@ -26,6 +27,7 @@ class CurrentUser {
       this.profession,
       this.bio,
       this.age,
+      this.distance,
       this.image,
       this.birthDate,
       this.gender,

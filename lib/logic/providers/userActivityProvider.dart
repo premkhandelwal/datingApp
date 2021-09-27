@@ -28,9 +28,11 @@ class UserActivityProvider extends BaseUserActivityProvider {
       FirebaseFirestore.instance.collection("UserActivity");
 
   FirebaseStorage storage = FirebaseStorage.instance;
+ 
 
   @override
   Future<void> updateLocationInfo(Map<String, num> locationCoordinates) async {
+    SessionConstants.sessionUser.locationCoordinates = locationCoordinates;
     await collection
         .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .update({"locationCoordinates": locationCoordinates});
@@ -102,16 +104,17 @@ class UserActivityProvider extends BaseUserActivityProvider {
           await CurrentUser.toCurrentList(listSnapShots);
 
       usersList.removeWhere((element) {
-        bool isDistanceGreaterthan3KM = false;
+        bool isDistanceGreaterthan5KM = false;
         if (element.locationCoordinates != null) {
-          double? distanceInMeters =
+          double? distanceInKilometers =
               calculateDistance(element.locationCoordinates!);
-          if (distanceInMeters != null) {
-            isDistanceGreaterthan3KM = distanceInMeters > 3;
+          element.distance = distanceInKilometers;
+          if (distanceInKilometers != null) {
+            isDistanceGreaterthan5KM = distanceInKilometers > 5;
           }
         }
         if ((element.uid ==
-            SharedObjects.prefs?.getString(SessionConstants.sessionUid))) {
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid))|| isDistanceGreaterthan5KM) {
           return true;
         }
 
@@ -136,8 +139,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
           querySnapshot.docs;
       List<CurrentUser> usersList =
           await CurrentUser.toCurrentList(listSnapShots);
-      print(usersList);
-      print(usersList[0].name);
       return usersList;
     } catch (e) {
       throw Exception(e);
@@ -220,7 +221,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
         }
       }
       return false;
-
     });
     return usersList;
   }
@@ -240,7 +240,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
         }
       }
       return false;
-
     });
     return usersList;
   }
