@@ -31,6 +31,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
+      buildWhen: (p, c) {
+        if (c is FirebaseauthInitial ||
+            c is UserLoggedOut ||
+            c is UserLoggedIn) {
+          return true;
+        }
+        return false;
+      },
       builder: (context, state) {
         print(state);
         if (state is FirebaseauthInitial) {
@@ -39,7 +47,7 @@ class _HomePageState extends State<HomePage> {
         } else if (state is UserLoggedOut) {
           return ChooseSignInSignUpPage();
         }
-          return persistentTabView(context);
+        return persistentTabView(context);
       },
     );
   }

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:dating_app/const/app_const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';

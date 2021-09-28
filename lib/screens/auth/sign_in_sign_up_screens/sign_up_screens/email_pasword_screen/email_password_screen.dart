@@ -2,11 +2,8 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/email_phone_selection_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
-import 'package:dating_app/screens/home_page/profile_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +18,6 @@ class EmailPasswordScreen extends StatefulWidget {
   @override
   _EmailPasswordScreenState createState() => _EmailPasswordScreenState();
 }
-
 
 class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -238,7 +234,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                 onPressed: () {
                                   changePageWithoutBack(
                                       context: context,
-                                                                         widget: EmailPasswordScreen(authSide: "Sign In"));
+                                      widget: EmailPasswordScreen(
+                                          authSide: "Sign In"));
                                 },
                                 child: Text("Ok"))
                           ],
@@ -249,11 +246,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           SessionConstants.sessionSignedInWith, "email");
                       SharedObjects.prefs?.setString(
                           SessionConstants.sessionUid, state.userUID);
-                      /* changePageWithoutBack(
-                          context: context,
-                          widget: isSignedInforFirstTime
-                              ? ProfilePage()
-                              : HomePage()); */
+                      
                       context
                           .read<FirebaseauthBloc>()
                           .add(SignedInforFirstTimeEvent());
@@ -266,7 +259,9 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       changePageWithoutBack(
                           context: context, widget: ProfileDetailPage()); */
                     } else if (state is NotSignedInForFirstTimeState) {
-                     changePageWithoutBack(context: context, widget: HomePage());
+                      
+                      changePageWithoutBack(
+                          context: context, widget: HomePage());
                     } else if (state is EmailVerifiedState) {
                       changePageWithoutBack(
                           context: context, widget: ProfileDetailPage());
@@ -281,6 +276,9 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
+                                  changePageWithoutBack(
+                                      context: context,
+                                      widget: ChooseSignInSignUpPage());
                                   context
                                       .read<FirebaseauthBloc>()
                                       .add(EmailVerificationStateRequested());

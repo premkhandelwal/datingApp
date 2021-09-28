@@ -7,12 +7,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 abstract class BaseProfileDetailProvider {
   Future<void> updateUserInfo(CurrentUser user);
   Future<void> submitUserInfo(CurrentUser user);
- 
 }
 
 class ProfileDetailsProvider extends BaseProfileDetailProvider {
   CollectionReference<Map<String, dynamic>> collection =
       FirebaseFirestore.instance.collection("UserActivity");
+
+  CollectionReference<Map<String, dynamic>> dataLessCollection =
+      FirebaseFirestore.instance.collection("DataLessUsers");
 
   FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -45,22 +47,24 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
           "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/profileImage");
       if (user.image != null) {
         UploadTask uploadTask = ref.putFile(user.image!);
-        uploadTask.whenComplete(() async {
+        await uploadTask.whenComplete(() async {
           user.imageDownloadUrl = await ref.getDownloadURL();
           await collection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .set({
-                
             "name": user.name,
             "age": user.age,
             "profession": user.profession,
             "birthDate": user.birthDate,
             "gender": user.gender?.index,
             "interests": user.interests,
-            "interestedIn" : user.interestedin,
+            "interestedIn": user.interestedin,
             "profileImageUrl":
                 user.imageDownloadUrl != null ? user.imageDownloadUrl : null
           });
+          await dataLessCollection
+              .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+              .delete();
         }).catchError((onError) {
           print(onError);
         });
@@ -69,6 +73,4 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
       throw Exception(e);
     }
   }
-
-  
 }

@@ -55,7 +55,7 @@ class SwipeableSingleCard extends StatelessWidget {
                   size: 18,
                 ),
                 Text(
-                  '${personDistance != null ? personDistance!.toInt() : 5} KM',
+                  personDistance != null ? '${personDistance!.toInt()} KM': "-",
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!
@@ -86,14 +86,14 @@ class SwipeableSingleCard extends StatelessWidget {
                         style: Theme.of(context)
                             .textTheme
                             .bodyText2!
-                            .copyWith(color: Colors.white, fontSize: 24),
+                            .copyWith(color: Colors.black, fontSize: 24),
                       ),
                       Text(
                         '$personProfession',
                         style: Theme.of(context)
                             .textTheme
                             .subtitle1!
-                            .copyWith(color: Colors.white),
+                            .copyWith(color: Colors.black),
                       ),
                     ],
                   ),

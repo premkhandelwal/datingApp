@@ -29,6 +29,9 @@ abstract class BaseAuthProvider {
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
+  CollectionReference<Map<String, dynamic>> collection =
+      FirebaseFirestore.instance.collection("DataLessUsers");
+
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   FirebaseAuth get getInstance => _firebaseAuth;
@@ -46,15 +49,12 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
 
   @override
   Future<bool> isuserDocExists() async {
-    CollectionReference<Map<String, dynamic>> collection =
-        FirebaseFirestore.instance.collection("UserActivity");
-    print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
-  Stream<DocumentSnapshot<Map<String, dynamic>>> doc =  await collection
-        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid)).snapshots();
-    
+    String path = collection.doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid)).path;
+    DocumentSnapshot<Map<String, dynamic>> doc = await collection
+        .doc("$path")
+        .get();
 
-  
-    if (await doc.isEmpty) {
+    if (doc.exists) {
       return true;
     }
     return false;
@@ -88,6 +88,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
       String emailId, String password) async {
     UserCredential credential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: emailId, password: password);
+    await collection.doc(credential.user!.uid).set({});
     return CurrentUser(firebaseUser: credential.user);
   }
 
