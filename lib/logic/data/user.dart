@@ -40,6 +40,7 @@ class CurrentUser {
 
   factory CurrentUser.fromMap(Map<String, dynamic> map) {
     int? gender = map['gender'] ?? null;
+    int? interestedIn = map['interestedIn'] ?? null;
     // int interestedIn = map['interestedin'];
     return CurrentUser(
       uid: map['uid'] != null ? map['uid'] : null,
@@ -49,6 +50,7 @@ class CurrentUser {
       age: map['age'] != null ? map['age'] : null,
       birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
       gender: gender != null ? GENDER.values[gender] : GENDER.NotSelected,
+      interestedin: interestedIn != null ? GENDER.values[interestedIn] : GENDER.NotSelected,
       // interestedin: INTERESTEDIN.values[interestedIn],
       location: map['location'] ?? map['location'],
       imageDownloadUrl:

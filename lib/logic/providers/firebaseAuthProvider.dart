@@ -25,7 +25,7 @@ abstract class BaseAuthProvider {
   Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
   Future<bool> sendverificationEmail();
   Future<bool> isEmailVerified();
-  Future<bool> isuserDocExists();
+  Future<bool> isuserDocExists(String uid);
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
@@ -48,10 +48,10 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   }
 
   @override
-  Future<bool> isuserDocExists() async {
-    String path = collection.doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid)).path;
+  Future<bool> isuserDocExists(String uid) async {
+   
     DocumentSnapshot<Map<String, dynamic>> doc = await collection
-        .doc("$path")
+        .doc("$uid")
         .get();
 
     if (doc.exists) {

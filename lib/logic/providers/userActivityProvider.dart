@@ -35,7 +35,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
     SessionConstants.sessionUser.locationCoordinates = locationCoordinates;
     await collection
         .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
-        .set({"locationCoordinates": locationCoordinates});
+        .update({"locationCoordinates": locationCoordinates});
   }
 
   @override

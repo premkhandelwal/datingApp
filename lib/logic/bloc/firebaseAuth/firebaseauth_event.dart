@@ -69,17 +69,21 @@ class LinkEmailWithPhoneNumberEvent extends FirebaseauthEvent {
 class LinkPhoneNumberWithEmailEvent extends FirebaseauthEvent {
   final String smsCode;
   final String verificationId;
-  LinkPhoneNumberWithEmailEvent( {
+  LinkPhoneNumberWithEmailEvent({
     required this.smsCode,
     required this.verificationId,
   });
 }
 
-
 class SignOutRequested extends FirebaseauthEvent {}
 
-class EmailVerificationRequested extends FirebaseauthEvent{}
+class EmailVerificationRequested extends FirebaseauthEvent {}
 
-class EmailVerificationStateRequested extends FirebaseauthEvent{}
+class EmailVerificationStateRequested extends FirebaseauthEvent {}
 
-class SignedInforFirstTimeEvent extends FirebaseauthEvent{}
+class SignedInforFirstTimeEvent extends FirebaseauthEvent {
+  final String uid;
+  SignedInforFirstTimeEvent({
+    required this.uid,
+  });
+}

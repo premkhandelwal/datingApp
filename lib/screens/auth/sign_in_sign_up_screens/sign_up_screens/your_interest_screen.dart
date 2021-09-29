@@ -1,9 +1,11 @@
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/screens/search_friends_screen/search_friends_Screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
@@ -97,30 +99,35 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
               ),
               BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
                 listener: (context, state) {
-                  if(state is FailedtoAddInfoState){
+                  if (state is FailedtoAddInfoState) {
+                    SharedObjects.prefs
+                        ?.setString(SessionConstants.sessionSignedInWith, "");
+                    SharedObjects.prefs
+                        ?.setString(SessionConstants.sessionUid, "");
+                    
                     showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                                title: Text("Error"),
-                                content: Text(
-                                  "Failed to add your information",
-                                ),
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(ctx);
-                                        
-                                      },
-                                      child: Text("Ok"))
-                                ],
-                              ));
-                  }else if(state is SubmittedInfoState){
-                     changePageTo(
-                            context: context, widget: SearchFriendsScreen());
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                              title: Text("Error"),
+                              content: Text(
+                                "Failed to add your information",
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                    },
+                                    child: Text("Ok"))
+                              ],
+                            ));
+                  } else if (state is SubmittedInfoState) {
+                    changePageTo(
+                        context: context, widget: SearchFriendsScreen());
                   }
                 },
                 builder: (context, state) {
-                  if (state is AddingInfoState || state is SubmittingInfoState || state is  AddedInterestedInInfoState) {
+                  if (state is AddingInfoState ||
+                      state is SubmittingInfoState) {
                     return CircularProgressIndicator();
                   }
                   return CommonButton(
@@ -135,7 +142,6 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                         context
                             .read<ProfiledetailsBloc>()
                             .add(SubmitInfoEvent());
-                       
                       });
                 },
               )

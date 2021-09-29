@@ -24,7 +24,9 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   TextEditingController emailIdController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController confirmpasswordController = new TextEditingController();
-  bool obscure = true;
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+  String sessionUid = "";
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -108,16 +110,16 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             }
                             return null;
                           },
-                          obscureText: obscure,
+                          obscureText: obscurePassword,
                           controller: passwordController,
                           decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      obscure = !obscure;
+                                      obscurePassword = !obscurePassword;
                                     });
                                   },
-                                  child: obscure
+                                  child: obscurePassword
                                       ? Icon(
                                           Icons.visibility_off,
                                           color: Colors.black,
@@ -155,16 +157,17 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                   }
                                   return null;
                                 },
-                                obscureText: obscure,
+                                obscureText: obscureConfirmPassword,
                                 controller: confirmpasswordController,
                                 decoration: InputDecoration(
                                     suffixIcon: GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            obscure = !obscure;
+                                            obscureConfirmPassword =
+                                                !obscureConfirmPassword;
                                           });
                                         },
-                                        child: obscure
+                                        child: obscureConfirmPassword
                                             ? Icon(
                                                 Icons.visibility_off,
                                                 color: Colors.black,
@@ -225,31 +228,30 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                     } else if (state is EmailVerificationSentState) {
                       showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text("Error"),
+                        builder: (ctx) => AlertDialog(
+                          title: Text("Message"),
                           content: Text(
                               "An email verification link has been sent to your email id. Please verify your email to continue."),
                           actions: [
                             ElevatedButton(
                                 onPressed: () {
-                                  changePageWithoutBack(
-                                      context: context,
-                                      widget: EmailPasswordScreen(
-                                          authSide: "Sign In"));
+                                  Navigator.pop(ctx);
+                                   if (widget.authSide == "Sign Up") {
+                                    context.read<FirebaseauthBloc>().add(SignOutRequested());
+                                    changePageWithoutBack(
+                                  context: context,
+                                  widget:EmailPasswordScreen(authSide: "Sign In"));
+                                  }
                                 },
                                 child: Text("Ok"))
                           ],
                         ),
                       );
                     } else if (state is UserLoggedIn) {
-                      SharedObjects.prefs?.setString(
-                          SessionConstants.sessionSignedInWith, "email");
-                      SharedObjects.prefs?.setString(
-                          SessionConstants.sessionUid, state.userUID);
-                      
+                      sessionUid = state.userUID;
                       context
                           .read<FirebaseauthBloc>()
-                          .add(SignedInforFirstTimeEvent());
+                          .add(SignedInforFirstTimeEvent(uid: state.userUID));
                       print(state.userUID);
                     } else if (state is SignedInForFirstTimeState) {
                       context
@@ -259,29 +261,31 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       changePageWithoutBack(
                           context: context, widget: ProfileDetailPage()); */
                     } else if (state is NotSignedInForFirstTimeState) {
-                      
+                      SharedObjects.prefs?.setString(
+                          SessionConstants.sessionSignedInWith, "email");
+                      SharedObjects.prefs
+                          ?.setString(SessionConstants.sessionUid, sessionUid);
                       changePageWithoutBack(
                           context: context, widget: HomePage());
                     } else if (state is EmailVerifiedState) {
+                      SharedObjects.prefs?.setString(
+                          SessionConstants.sessionSignedInWith, "email");
+                      SharedObjects.prefs
+                          ?.setString(SessionConstants.sessionUid, sessionUid);
                       changePageWithoutBack(
                           context: context, widget: ProfileDetailPage());
                     } else if (state is EmailNotVerifiedState) {
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: Text("Error"),
+                          title: Text("Message"),
                           content: Text(
                               "An email verification link has been sent to your email id. Please verify your email to continue."),
                           actions: [
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
-                                  changePageWithoutBack(
-                                      context: context,
-                                      widget: ChooseSignInSignUpPage());
-                                  context
-                                      .read<FirebaseauthBloc>()
-                                      .add(EmailVerificationStateRequested());
+                                 
                                 },
                                 child: Text("Ok"))
                           ],

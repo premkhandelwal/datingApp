@@ -62,7 +62,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     } else if (event is EmailVerificationStateRequested) {
       yield* __mapEmailVerificationStateRequested();
     } else if (event is SignedInforFirstTimeEvent) {
-      yield* __mapSignedInFirstTimeState();
+      yield* __mapSignedInFirstTimeState(event);
     }
   }
 
@@ -208,10 +208,10 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     }
   }
 
-  Stream<FirebaseauthState> __mapSignedInFirstTimeState() async* {
+  Stream<FirebaseauthState> __mapSignedInFirstTimeState(SignedInforFirstTimeEvent event) async* {
     try {
       bool isuserDocExists =
-          await firebaseAuthRepo.isuserDocExists();
+          await firebaseAuthRepo.isuserDocExists(event.uid);
       if (isuserDocExists) {
         yield SignedInForFirstTimeState();
       } else {

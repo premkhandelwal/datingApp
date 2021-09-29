@@ -78,7 +78,7 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
                       : () {
                           context
                               .read<ProfiledetailsBloc>()
-                              .add(AddGenderInfoEvent(
+                              .add(AddInterestedInInfoEvent(
                                   user: CurrentUser(
                                 interestedin: _selected,
                               )));
