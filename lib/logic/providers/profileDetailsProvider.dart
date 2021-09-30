@@ -33,7 +33,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
           "profession": user.profession,
           "bio": user.bio,
           "interests": user.interests,
-            "interestedIn": user.interestedin?.index,
+          "interestedIn": user.interestedin?.index,
           "profileImageUrl":
               user.imageDownloadUrl != null ? user.imageDownloadUrl : null
         });

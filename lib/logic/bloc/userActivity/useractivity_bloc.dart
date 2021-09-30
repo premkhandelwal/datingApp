@@ -25,8 +25,10 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapUserDisLikedeventTostate(event);
     } else if (event is UserFindMatchEvent) {
       yield* _mapUserMatchFoundeventTostate(event);
+    } else if (event is FetchAllUsersWithAppliedFiltersEvent) {
+      yield* _mapFetchUserswithFiltersEventtoState();
     } else if (event is FetchAllUsersEvent) {
-      yield* _mapFetchUsersEventtoState();
+      yield* _mapFetchUserEventtoState();
     } else if (event is FetchMatchedUsersEvent) {
       yield* _mapFetchMatchedUsersEventtoState();
     } else if (event is FetchInfoEvent) {
@@ -71,7 +73,16 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     }
   }
 
-  Stream<UseractivityState> _mapFetchUsersEventtoState() async* {
+  Stream<UseractivityState> _mapFetchUserswithFiltersEventtoState() async* {
+    yield FetchingAllUsersState();
+    try {
+      List<CurrentUser> _users = await userActivityRepository.fetchAllUsersWithAppliedFilters();
+      yield FetchedAllUsersState(users: _users);
+    } catch (e) {
+      yield FailedToFetchAllUsersState();
+    }
+  }
+  Stream<UseractivityState> _mapFetchUserEventtoState() async* {
     yield FetchingAllUsersState();
     try {
       List<CurrentUser> _users = await userActivityRepository.fetchAllUsers();

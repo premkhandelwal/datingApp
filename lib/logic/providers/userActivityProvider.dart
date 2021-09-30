@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
+import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoding/geocoding.dart';
@@ -13,6 +14,7 @@ abstract class BaseUserActivityProvider {
   Future<void> updateLocationInfo(Map<String, num> locationCoordinates);
 
   Future<List<CurrentUser>> fetchAllUsers();
+  Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters();
   Future<List<CurrentUser>> fetchMatchedUsers();
   Future<CurrentUser> fetchUserInfo();
   Future<Map<String, num>> fetchLocationInfo();
@@ -28,7 +30,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
       FirebaseFirestore.instance.collection("UserActivity");
 
   FirebaseStorage storage = FirebaseStorage.instance;
- 
 
   @override
   Future<void> updateLocationInfo(Map<String, num> locationCoordinates) async {
@@ -73,12 +74,15 @@ class UserActivityProvider extends BaseUserActivityProvider {
             .set({selfUid!: DateTime.now()});
       }
     });
-    DocumentSnapshot<Map<String, dynamic>> doc =
-        await collection.doc(matchUserUID).get();
-    if (doc.exists && doc.data() != null) {
-      Map<String, dynamic> dataMap = doc.data()!;
-      CurrentUser user = CurrentUser.fromMap(dataMap);
-      return user;
+    if (exist) {
+      DocumentSnapshot<Map<String, dynamic>> doc =
+          await collection.doc(matchUserUID).get();
+      if (doc.exists && doc.data() != null) {
+        Map<String, dynamic> dataMap = doc.data()!;
+        CurrentUser user = CurrentUser.fromMap(dataMap);
+        user.image = await urlToFile(dataMap["profileImageUrl"], user.uid);
+        return user;
+      }
     }
     return null;
   }
@@ -93,7 +97,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<List<CurrentUser>> fetchAllUsers() async {
+  Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters() async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await collection.get();
@@ -105,6 +109,12 @@ class UserActivityProvider extends BaseUserActivityProvider {
 
       usersList.removeWhere((element) {
         bool isDistanceGreaterthan5KM = false;
+        SessionConstants.appliedFilters = {
+          if (SessionConstants.sessionUser.interestedin != null)
+            GenderFilterChangedEvent(
+                interestedIn: SessionConstants.sessionUser.interestedin!): true,
+          DistanceFilterChangedEvent(thresholdDist: 5): true
+        };
         if (element.locationCoordinates != null) {
           double? distanceInKilometers =
               calculateDistance(element.locationCoordinates!);
@@ -114,7 +124,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
           }
         }
         if ((element.uid ==
-            SharedObjects.prefs?.getString(SessionConstants.sessionUid))|| isDistanceGreaterthan5KM) {
+                SharedObjects.prefs?.getString(SessionConstants.sessionUid)) ||
+            isDistanceGreaterthan5KM ||
+            element.gender != SessionConstants.sessionUser.interestedin) {
           return true;
         }
 
@@ -251,5 +263,21 @@ class UserActivityProvider extends BaseUserActivityProvider {
       user.agenotinFilters = null;
       user.distancenotinFilters = null;
     }); */
+  }
+
+  @override
+  Future<List<CurrentUser>> fetchAllUsers() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await collection.get();
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+          querySnapshot.docs;
+
+      List<CurrentUser> usersList =
+          await CurrentUser.toCurrentList(listSnapShots);
+      return usersList;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

@@ -20,11 +20,13 @@ class MatchesScreen extends StatefulWidget {
 class _MatchesScreenState extends State<MatchesScreen> {
   @override
   void initState() {
+    context.read<UseractivityBloc>().add(FetchAllUsersEvent());
     context.read<UseractivityBloc>().add(FetchMatchedUsersEvent());
     super.initState();
   }
 
   List<CurrentUser> _matchedUsersList = [];
+  List<CurrentUser> _allUsersList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -178,17 +180,19 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     _matchedUsersList = state.users;
                     print(_matchedUsersList);
                     for (var i = 0; i < _matchedUsersList.length; i++) {
-                      /* int index =
-                          SessionConstants.allUsers.indexWhere((element) {
+                      int index =
+                          _allUsersList.indexWhere((element) {
                         return element.uid == _matchedUsersList[i].uid;
                       });
                       _matchedUsersList[i].name =
-                          SessionConstants.allUsers[index].name;
+                        _allUsersList[index].name;
                       _matchedUsersList[i].age =
-                          SessionConstants.allUsers[index].age;
+                          _allUsersList[index].age;
                       _matchedUsersList[i].image =
-                          SessionConstants.allUsers[index].image; */
+                          _allUsersList[index].image;
                     }
+                  } else if (state is FetchedAllUsersState) {
+                    _allUsersList = state.users;
                   }
                 }, builder: (context, state) {
                   if (_matchedUsersList.isNotEmpty) {

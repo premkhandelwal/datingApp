@@ -10,7 +10,7 @@ class FilterModalBottomSheet extends StatefulWidget {
     Key? key,
   }) : super(key: key);
   RangeValues ageRange = const RangeValues(18, 22);
-  double distance = 1;
+  double distance = 5;
   @override
   _FilterModalBottomSheetState createState() => _FilterModalBottomSheetState();
 }
@@ -20,7 +20,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
   var _selectedGender = GENDER.NotSelected;
   void clearFilter() {
     _selectedGender = GENDER.NotSelected;
-    widget.distance = 1;
+    widget.distance = 5;
     widget.ageRange = RangeValues(18, 22);
     dropdownValue = location[0];
     SessionConstants.appliedFilters = {};

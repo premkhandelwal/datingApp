@@ -26,6 +26,8 @@ class UserFindMatchEvent extends UseractivityEvent {
 
 class FetchMatchedUsersEvent extends UseractivityEvent {}
 
+class FetchAllUsersWithAppliedFiltersEvent extends UseractivityEvent {}
+
 class FetchAllUsersEvent extends UseractivityEvent {}
 
 class FetchLocationInfoEvent extends UseractivityEvent {}

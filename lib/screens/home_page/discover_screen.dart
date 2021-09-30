@@ -157,7 +157,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     } else if (state is UpdatedLocInfoState) {
                       context
                           .read<UseractivityBloc>()
-                          .add(FetchAllUsersEvent());
+                          .add(FetchAllUsersWithAppliedFiltersEvent());
                     } else if (state is AppliedFiltersState) {
                       if (filteredUsers == []) {
                         filteredUsers = new List.from(allUsers);
