@@ -9,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class BaseAuthProvider {
-  String? getCurrentUserUID();
+  Future<String?> getCurrentUserUID();
   Future<CurrentUser> signUpWithEmailPassword(String emailId, String password);
   Future<CurrentUser?> signInWithEmailPassword(String emailId, String password);
   //Future<String> signUpWithPhoneNumber(String phoneNumber);
@@ -29,16 +29,31 @@ abstract class BaseAuthProvider {
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
-  CollectionReference<Map<String, dynamic>> collection =
+  CollectionReference<Map<String, dynamic>> datalessCollection =
       FirebaseFirestore.instance.collection("DataLessUsers");
+  CollectionReference<Map<String, dynamic>> collection =
+      FirebaseFirestore.instance.collection("UserActivity");
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   FirebaseAuth get getInstance => _firebaseAuth;
 
   @override
-  String? getCurrentUserUID() {
-    return _firebaseAuth.currentUser?.uid;
+  Future<String?> getCurrentUserUID() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.reload();
+
+      if (_firebaseAuth.currentUser?.uid != null) {
+        collection
+            .doc(_firebaseAuth.currentUser!.uid)
+            .update({"lastLogin": DateTime.now()});
+      }
+      return _firebaseAuth.currentUser?.uid;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-disabled') {
+        return null;
+      }
+    }
   }
 
   StreamSubscription<User?> onAuthStateChanged() {
@@ -49,10 +64,8 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
 
   @override
   Future<bool> isuserDocExists(String uid) async {
-   
-    DocumentSnapshot<Map<String, dynamic>> doc = await collection
-        .doc("$uid")
-        .get();
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await datalessCollection.doc("$uid").get();
 
     if (doc.exists) {
       return true;
@@ -66,7 +79,9 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     try {
       UserCredential? userCredential = await _firebaseAuth
           .signInWithEmailAndPassword(email: emailId, password: password);
-
+      collection
+          .doc(userCredential.user!.uid)
+          .update({"lastLogin": DateTime.now()});
       return CurrentUser(firebaseUser: userCredential.user);
     } catch (e) {
       throw Exception(e);
@@ -88,7 +103,9 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
       String emailId, String password) async {
     UserCredential credential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: emailId, password: password);
-    await collection.doc(credential.user!.uid).set({});
+    await datalessCollection
+        .doc(credential.user!.uid)
+        .set({"timeStamp": DateTime.now()});
     return CurrentUser(firebaseUser: credential.user);
   }
 
@@ -127,6 +144,8 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
             smsCode); // Creates a credential by taking verificationId and smsCode recieved via OTP
     UserCredential result =
         await _firebaseAuth.signInWithCredential(credential);
+    collection.doc(result.user!.uid).update({"lastLogin": DateTime.now()});
+
     if (result.user?.uid != null) {
       return credential;
     } //Pass the credential created, to the signInWithCredential()

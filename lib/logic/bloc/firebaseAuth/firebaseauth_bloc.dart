@@ -67,10 +67,14 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   }
 
   Stream<FirebaseauthState> _mapUserStatetoState() async* {
-    String? currentUserUID = firebaseAuthRepo.getCurrentUserUID();
-    if (currentUserUID != null) {
-      yield UserLoggedIn(userUID: currentUserUID);
-    } else {
+    try {
+      String? currentUserUID = await firebaseAuthRepo.getCurrentUserUID();
+      if (currentUserUID != null) {
+        yield UserLoggedIn(userUID: currentUserUID);
+      } else {
+        yield UserLoggedOut();
+      }
+    } catch (e) {
       yield UserLoggedOut();
     }
   }
@@ -139,7 +143,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       AuthCredential? authCredential =
           await firebaseAuthRepo.verifyOTP(event.smsCode, event.verificationId);
       if (authCredential != null) {
-        String? uid = firebaseAuthRepo.getCurrentUserUID();
+        String? uid = await firebaseAuthRepo.getCurrentUserUID();
         yield OtpVerified(authCredential: authCredential, userUID: uid);
       } else {
         yield OtpNotVerified();
@@ -208,10 +212,10 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
     }
   }
 
-  Stream<FirebaseauthState> __mapSignedInFirstTimeState(SignedInforFirstTimeEvent event) async* {
+  Stream<FirebaseauthState> __mapSignedInFirstTimeState(
+      SignedInforFirstTimeEvent event) async* {
     try {
-      bool isuserDocExists =
-          await firebaseAuthRepo.isuserDocExists(event.uid);
+      bool isuserDocExists = await firebaseAuthRepo.isuserDocExists(event.uid);
       if (isuserDocExists) {
         yield SignedInForFirstTimeState();
       } else {

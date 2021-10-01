@@ -42,7 +42,7 @@ class SwipeableSingleCard extends StatelessWidget {
           top: 8,
           child: Container(
             height: 40,
-            width: 61,
+            width: 100,
             decoration: BoxDecoration(
                 color: AppColor.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(10)),

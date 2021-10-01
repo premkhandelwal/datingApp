@@ -81,7 +81,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
       if (doc.exists && doc.data() != null) {
         Map<String, dynamic> dataMap = doc.data()!;
         CurrentUser user = CurrentUser.fromMap(dataMap);
-        user.image = await urlToFile(dataMap["profileImageUrl"], user.uid);
+        user.image = doc.data()!["profileImageUrl"] ? await urlToFile(dataMap["profileImageUrl"], user.uid) : null;
         return user;
       }
     }
@@ -129,14 +129,12 @@ class UserActivityProvider extends BaseUserActivityProvider {
         }
         print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
         if ((element.uid ==
-                    SharedObjects.prefs
-                        ?.getString(SessionConstants.sessionUid)) ||
-                isDistanceGreaterthan5KM ||
-                (SessionConstants.sessionUser.interestedin != GENDER.both &&
-                    element.gender != SessionConstants.sessionUser.interestedin) ||
+                SharedObjects.prefs?.getString(SessionConstants.sessionUid)) ||
+            isDistanceGreaterthan5KM ||
+            (SessionConstants.sessionUser.interestedin != GENDER.both &&
+                element.gender != SessionConstants.sessionUser.interestedin) ||
             (element.age != null &&
-                (element.age! < _minAge || element.age! > _maxAge))
-            ) {
+                (element.age! < _minAge || element.age! > _maxAge))) {
           return true;
         }
 
@@ -177,8 +175,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
       if (doc.exists && doc.data() != null) {
         Map<String, dynamic> dataMap = doc.data()!;
         user = CurrentUser.fromMap(dataMap);
-        user.image = await urlToFile(doc.data()!["profileImageUrl"],
-            SharedObjects.prefs?.getString(SessionConstants.sessionUid));
+        user.image = doc.data()!["profileImageUrl"] != null ?await urlToFile(doc.data()!["profileImageUrl"],
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid)):null;
       }
       SessionConstants.sessionUser = user;
       return user;
@@ -226,7 +224,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
       }
       if (user.locationCoordinates != null) {
         num? distance = calculateDistance(user.locationCoordinates!);
-
+        user.distance = distance;
         if (distance != null) {
           if (distance > thresholdDist && thresholdDist <= 80) {
             return true;

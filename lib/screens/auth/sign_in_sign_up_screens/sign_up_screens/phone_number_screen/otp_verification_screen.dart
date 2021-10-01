@@ -209,7 +209,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
-                                          changePageTo(
+                                          changePageWithoutBack(
                                               context: context,
                                               widget: PhoneNumberPage(
                                                   authSide: widget.authSide));

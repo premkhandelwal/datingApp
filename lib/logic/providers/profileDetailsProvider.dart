@@ -46,8 +46,9 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
     try {
       Reference ref = storage.ref().child(
           "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/profileImage");
+      UploadTask uploadTask;
       if (user.image != null) {
-        UploadTask uploadTask = ref.putFile(user.image!);
+        uploadTask = ref.putFile(user.image!);
         await uploadTask.whenComplete(() async {
           user.imageDownloadUrl = await ref.getDownloadURL();
           await collection
@@ -69,6 +70,22 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
         }).catchError((onError) {
           print(onError);
         });
+      } else {
+        await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .set({
+          "name": user.name,
+          "age": user.age,
+          "profession": user.profession,
+          "birthDate": user.birthDate,
+          "gender": user.gender?.index,
+          "interests": user.interests,
+          "interestedIn": user.interestedin?.index,
+          "profileImageUrl": null
+        });
+        await dataLessCollection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .delete();
       }
     } catch (e) {
       throw Exception(e);

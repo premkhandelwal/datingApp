@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthRepository extends BaseRepository {
   FirebaseAuthProvider authprovider = FirebaseAuthProvider();
   FirebaseAuth get getInstance => authprovider.getInstance;
-  String? getCurrentUserUID() => authprovider.getCurrentUserUID();
+  Future<String?> getCurrentUserUID() async =>  await authprovider.getCurrentUserUID();
   Future<CurrentUser?> signInWithEmailPassword(
           String emailId, String password) =>
       authprovider.signInWithEmailPassword(emailId, password);

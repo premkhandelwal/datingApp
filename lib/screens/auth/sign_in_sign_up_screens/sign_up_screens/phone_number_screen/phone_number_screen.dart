@@ -159,13 +159,26 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                           ],
                         ),
                       );
+                    }else if(state is OtpRetrievalTimedOut){
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text("Error"),
+                          content: Text("Otp retrieval timed out"),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(ctx);
+                                },
+                                child: Text("Ok"))
+                          ],
+                        ),
+                      );
                     }
                   },
                   builder: (context, state) {
                     if (state is OtpSent) {
                       return CircularProgressIndicator();
-                    } else if (state is OtpRetrievalTimedOut) {
-                      return Text("Otp retrieval timed out");
                     } 
                     return CommonButton(
                         text: 'Continue',

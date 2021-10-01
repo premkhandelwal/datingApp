@@ -47,6 +47,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();
 
     List<Widget> cards(List<CurrentUser> listUsers) {
+      listUsers.sort((user1, user2) {
+        if (user1.distance != null && user2.distance != null) {
+          return user1.distance!.compareTo(user2.distance!);
+        }
+        return 0;
+      });
       return List.generate(
         listUsers.length,
         (int index) {
