@@ -11,11 +11,9 @@ import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SessionConstants {
-  static Map<UseractivityEvent, bool> appliedFilters = {
-    AgeFilterChangedEvent(maxAge: 0, minAge: 0): false,
-    GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
-    DistanceFilterChangedEvent(thresholdDist: 0): false,
-  };
+  static FilterChangedEvent? appliedFilters = FilterChangedEvent(
+      maxAge: 0, minAge: 0, interestedIn: GENDER.NotSelected, thresholdDist: 0);
+
   static const sessionUid = "sessionUid";
   static const sessionUsername = 'sessionUsername';
   static const sessionSignedInWith = "sessionSignedInWith";
@@ -24,11 +22,7 @@ class SessionConstants {
 
   static void clear() {
     sessionUser = CurrentUser();
-    appliedFilters = {
-      AgeFilterChangedEvent(maxAge: 0, minAge: 0): false,
-      GenderFilterChangedEvent(interestedIn: GENDER.NotSelected): false,
-      DistanceFilterChangedEvent(thresholdDist: 0): false
-    };
+    appliedFilters = FilterChangedEvent(maxAge: 0, minAge: 0,interestedIn: GENDER.NotSelected,thresholdDist: 0);
   }
   // statsic const profileImage
 }

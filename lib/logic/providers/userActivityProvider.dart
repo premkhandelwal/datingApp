@@ -19,9 +19,10 @@ abstract class BaseUserActivityProvider {
   Future<CurrentUser> fetchUserInfo();
   Future<Map<String, num>> fetchLocationInfo();
 
-  Future<List<CurrentUser>> interestedInChanged(GENDER gender);
-  Future<List<CurrentUser>> distanceFilterChanged(num thresholdDist);
-  Future<List<CurrentUser>> ageFilterChanged(num minAge, num maxAge);
+  // Future<List<CurrentUser>> interestedInChanged(GENDER gender);
+  // Future<List<CurrentUser>> distanceFilterChanged(List<CurrentUser> usersList,num thresholdDist);
+  Future<List<CurrentUser>> filterChanged(
+      num minAge, num maxAge, num thresholdDist, GENDER interestedIn);
   void clearAllFilters();
 }
 
@@ -106,15 +107,18 @@ class UserActivityProvider extends BaseUserActivityProvider {
 
       List<CurrentUser> usersList =
           await CurrentUser.toCurrentList(listSnapShots);
-
+      num _minAge = SessionConstants.sessionUser.age! - 3 <= 18
+          ? 18
+          : SessionConstants.sessionUser.age! - 3;
+      num _maxAge = SessionConstants.sessionUser.age! + 3;
+      SessionConstants.appliedFilters = FilterChangedEvent(
+          minAge: _minAge,
+          maxAge: _maxAge,
+          thresholdDist: 5,
+          interestedIn: SessionConstants.sessionUser.interestedin!);
       usersList.removeWhere((element) {
         bool isDistanceGreaterthan5KM = false;
-        SessionConstants.appliedFilters = {
-          if (SessionConstants.sessionUser.interestedin != null)
-            GenderFilterChangedEvent(
-                interestedIn: SessionConstants.sessionUser.interestedin!): true,
-          DistanceFilterChangedEvent(thresholdDist: 5): true
-        };
+
         if (element.locationCoordinates != null) {
           double? distanceInKilometers =
               calculateDistance(element.locationCoordinates!);
@@ -123,10 +127,16 @@ class UserActivityProvider extends BaseUserActivityProvider {
             isDistanceGreaterthan5KM = distanceInKilometers > 5;
           }
         }
+        print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
         if ((element.uid ==
-                SharedObjects.prefs?.getString(SessionConstants.sessionUid)) ||
-            isDistanceGreaterthan5KM ||
-            element.gender != SessionConstants.sessionUser.interestedin) {
+                    SharedObjects.prefs
+                        ?.getString(SessionConstants.sessionUid)) ||
+                isDistanceGreaterthan5KM ||
+                (SessionConstants.sessionUser.interestedin != GENDER.both &&
+                    element.gender != SessionConstants.sessionUser.interestedin) ||
+            (element.age != null &&
+                (element.age! < _minAge || element.age! > _maxAge))
+            ) {
           return true;
         }
 
@@ -195,7 +205,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<List<CurrentUser>> ageFilterChanged(num minAge, num maxAge) async {
+  Future<List<CurrentUser>> filterChanged(
+      num minAge, num maxAge, num thresholdDist, GENDER interestedIn) async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection.get();
     List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
         querySnapshot.docs;
@@ -203,9 +214,27 @@ class UserActivityProvider extends BaseUserActivityProvider {
     List<CurrentUser> usersList =
         await CurrentUser.toCurrentList(listSnapShots);
     usersList.removeWhere((user) {
+      if (user.uid ==
+          SharedObjects.prefs?.getString(SessionConstants.sessionUid)) {
+        return true;
+      }
       if (user.age != null) {
         if (minAge > user.age! || user.age! > maxAge) {
           // user.agenotinFilters = true;
+          return true;
+        }
+      }
+      if (user.locationCoordinates != null) {
+        num? distance = calculateDistance(user.locationCoordinates!);
+
+        if (distance != null) {
+          if (distance > thresholdDist && thresholdDist <= 80) {
+            return true;
+          }
+        }
+      }
+      if (interestedIn != GENDER.both) {
+        if (user.gender != interestedIn) {
           return true;
         }
       }
@@ -214,14 +243,12 @@ class UserActivityProvider extends BaseUserActivityProvider {
     return usersList;
   }
 
-  @override
-  Future<List<CurrentUser>> distanceFilterChanged(num thresholdDist) async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection.get();
-    List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
-        querySnapshot.docs;
-
-    List<CurrentUser> usersList =
-        await CurrentUser.toCurrentList(listSnapShots);
+  /* @override
+  Future<List<CurrentUser>> distanceFilterChanged(List<CurrentUser> usersList,num thresholdDist) async {
+    
+    if (thresholdDist >= 80) {
+      return usersList;
+    }
     usersList.removeWhere((user) {
       if (user.locationCoordinates != null) {
         num? distance = calculateDistance(user.locationCoordinates!);
@@ -246,16 +273,12 @@ class UserActivityProvider extends BaseUserActivityProvider {
     List<CurrentUser> usersList =
         await CurrentUser.toCurrentList(listSnapShots);
     usersList.removeWhere((user) {
-      if (interestedIn != GENDER.both) {
-        if (user.gender != interestedIn) {
-          return true;
-        }
-      }
+      
       return false;
     });
     return usersList;
   }
-
+ */
   @override
   void clearAllFilters() {
     /* SessionConstants.allUsers.forEach((user) {

@@ -44,27 +44,21 @@ class UpdateLocationInfoEvent extends UseractivityEvent {
 class AppliedFiltersEvent extends UseractivityEvent{}
 class ClearedFiltersEvent extends UseractivityEvent{}
 
-class AgeFilterChangedEvent extends UseractivityEvent {
+class FilterChangedEvent extends UseractivityEvent {
   final num minAge;
   final num maxAge;
-  AgeFilterChangedEvent({
+  final GENDER interestedIn;
+  final num thresholdDist;
+
+  FilterChangedEvent({
     required this.minAge,
     required this.maxAge,
-  });
-}
-
-class GenderFilterChangedEvent extends UseractivityEvent {
-  final GENDER interestedIn;
-  GenderFilterChangedEvent({
     required this.interestedIn,
+    required this.thresholdDist,
+
   });
 }
 
-class DistanceFilterChangedEvent extends UseractivityEvent {
-  final num thresholdDist;
-  DistanceFilterChangedEvent({
-    required this.thresholdDist,
-  });
-}
+
 
 class FilterClearedEvent extends UseractivityEvent {}

@@ -23,13 +23,18 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
     widget.distance = 5;
     widget.ageRange = RangeValues(18, 22);
     dropdownValue = location[0];
-    SessionConstants.appliedFilters = {};
+    SessionConstants.appliedFilters = null;
     context.read<UseractivityBloc>().add(FilterClearedEvent());
     Navigator.pop(context);
   }
 
   void applyFilters() {
-    SessionConstants.appliedFilters.forEach((key, value) {
+    widget.ageRange = RangeValues(
+        SessionConstants.appliedFilters!.minAge.toDouble(),
+        SessionConstants.appliedFilters!.maxAge.toDouble());
+    widget.distance = SessionConstants.appliedFilters!.thresholdDist.toDouble();
+    _selectedGender = SessionConstants.appliedFilters!.interestedIn;
+    /*  SessionConstants.appliedFilters.forEach((key, value) {
       if (value) {
         if (key is AgeFilterChangedEvent) {
           widget.ageRange =
@@ -42,7 +47,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
           widget.distance = key.thresholdDist.toDouble();
         }
       }
-    });
+    }); */
   }
 
   @override
@@ -114,9 +119,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                       onTap: () {
                         setState(() {
                           _selectedGender = GENDER.female;
-                          SessionConstants.appliedFilters[
-                              GenderFilterChangedEvent(
-                                  interestedIn: GENDER.female)] = true;
+                          // SessionConstants.appliedFilters!.interestedIn = _selectedGender;
                         });
                       },
                       child: ClipRRect(
@@ -150,9 +153,9 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                       onTap: () {
                         setState(() {
                           _selectedGender = GENDER.male;
-                          SessionConstants.appliedFilters[
+                          /* SessionConstants.appliedFilters[
                               GenderFilterChangedEvent(
-                                  interestedIn: GENDER.male)] = true;
+                                  interestedIn: GENDER.male)] = true; */
                         });
                       },
                       child: AnimatedContainer(
@@ -181,9 +184,9 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                       onTap: () {
                         setState(() {
                           _selectedGender = GENDER.both;
-                          SessionConstants.appliedFilters[
+                          /*  SessionConstants.appliedFilters[
                               GenderFilterChangedEvent(
-                                  interestedIn: GENDER.both)] = true;
+                                  interestedIn: GENDER.both)] = true; */
                         });
                       },
                       child: ClipRRect(
@@ -260,8 +263,8 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 activeColor: AppColor,
                 onChanged: (val) {
                   setState(() {
-                    SessionConstants.appliedFilters[
-                        DistanceFilterChangedEvent(thresholdDist: val)] = true;
+                    /*  SessionConstants.appliedFilters[
+                        DistanceFilterChangedEvent(thresholdDist: val)] = true; */
                     widget.distance = val;
                   });
                 }),
@@ -284,8 +287,8 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 activeColor: AppColor,
                 onChanged: (val) {
                   setState(() {
-                    SessionConstants.appliedFilters[AgeFilterChangedEvent(
-                        minAge: val.start, maxAge: val.end)] = true;
+                    /*   SessionConstants.appliedFilters[AgeFilterChangedEvent(
+                        minAge: val.start, maxAge: val.end)] = true; */
 
                     widget.ageRange = val;
                   });
@@ -298,12 +301,22 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   print(widget.distance);
                   print(widget.ageRange);
                   print(dropdownValue);
-                  SessionConstants.appliedFilters.forEach((key, value) {
+                  SessionConstants.appliedFilters = FilterChangedEvent(
+                      minAge: widget.ageRange.start,
+                      maxAge: widget.ageRange.end,
+                      interestedIn: _selectedGender,
+                      thresholdDist: widget.distance);
+                  context.read<UseractivityBloc>().add(FilterChangedEvent(
+                      minAge: widget.ageRange.start,
+                      maxAge: widget.ageRange.end,
+                      interestedIn: _selectedGender,
+                      thresholdDist: widget.distance));
+                  /*  SessionConstants.appliedFilters.forEach((key, value) {
                     if (value) {
                       context.read<UseractivityBloc>().add(key);
                     }
                   });
-
+ */
                   Navigator.of(context).pop();
                 })
           ],
