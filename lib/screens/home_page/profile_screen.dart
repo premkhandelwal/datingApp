@@ -22,9 +22,43 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     _currentUser = SessionConstants.sessionUser;
+    _controller.addListener(() {
+      // reached bottom
+      if (_controller.offset >= _controller.position.maxScrollExtent &&
+          !_controller.position.outOfRange) {
+        setState(() => isBottom = true);
+      }
+      _controller.position.isScrollingNotifier.addListener(() {
+        if (!_controller.position.isScrollingNotifier.value) {
+          print('scroll is stopped');
+          setState(() => isScrolling = false);
+        } else {
+          print('scroll is started');
+          setState(() => isScrolling = true);
+        }
+      });
+
+      // IS SCROLLING
+//         if (_controller.offset >= _controller.position.minScrollExtent &&
+//             _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
+//           setState(() {
+//             isBottom = false;
+//           });
+//         }
+
+      // REACHED TOP
+      if (_controller.offset <= _controller.position.minScrollExtent &&
+          !_controller.position.outOfRange) {
+        setState(() => isBottom = false);
+      }
+    });
     super.initState();
   }
 
+  bool isBottom = false;
+  bool isScrolling = false;
+
+  ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,8 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             _currentUser.image!,
                             errorBuilder: (context, exception, stacktrace) {
                               return Center(
-                                  child: Text(
-                                      "Failed to load image"));
+                                  child: Text("Failed to load image"));
                             },
                             fit: BoxFit.fitWidth,
                             alignment: Alignment.topCenter,
@@ -147,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 BorderRadius.circular(10)),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.start,
                                           children: [
                                             IconButton(
                                               onPressed: () {},
@@ -188,35 +221,54 @@ class _ProfilePageState extends State<ProfilePage> {
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
-                                  Container(
-                                    height: 100,
-                                    child: _currentUser.interests != null
-                                        ? GridView.builder(
+                                  _currentUser.interests != null
+                                      ? Container(
+                                          height: 70,
+                                          child: GridView.builder(
+                                            controller: _controller,
+                                            shrinkWrap: false,
+                                            scrollDirection: Axis.vertical,
                                             itemCount:
                                                 _currentUser.interests?.length,
                                             gridDelegate:
                                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              mainAxisSpacing: 1,
-                                            ),
+                                                    crossAxisCount: 3,
+                                                    mainAxisSpacing: 0.1,
+                                                    childAspectRatio: 1.3),
                                             itemBuilder: (BuildContext context,
                                                 int index) {
                                               return Container(
-                                                  child: Row(
+                                                  child: Column(
                                                 children: [
+                                                  SizedBox(height: 20),
                                                   Text(
-                                                    _currentUser
-                                                        .interests![index],
+                                                    "${_currentUser.interests![index]}",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .subtitle2,
-                                                  )
+                                                  ),
+                                                  index == 1 &&
+                                                          (_currentUser
+                                                                  .interests!
+                                                                  .length) >
+                                                              3 &&
+                                                          !isScrolling
+                                                      ? GestureDetector(
+                                                          child: Text(
+                                                            "Scroll For More",
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color:
+                                                                    Colors.red),
+                                                          ),
+                                                        )
+                                                      : Text("")
                                                 ],
                                               ));
                                             },
-                                          )
-                                        : Container(),
-                                  ),
+                                          ),
+                                        )
+                                      : Container(),
                                   SizedBox(height: 30),
                                   Row(
                                     mainAxisAlignment:

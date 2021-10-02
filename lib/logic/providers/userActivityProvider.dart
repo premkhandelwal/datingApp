@@ -6,6 +6,7 @@ import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart';
 
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
@@ -44,9 +45,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
   Future<void> userDisliked(String dislikedUserUID) async {
     await collection
         .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
-        .collection("DislikedUsers")
+        .collection("InteractedUsers")
         .doc(dislikedUserUID)
-        .set({dislikedUserUID: DateTime.now()});
+        .set({"liked": false, "matched": false});
   }
 
   @override
@@ -73,6 +74,18 @@ class UserActivityProvider extends BaseUserActivityProvider {
             .collection("MatchedUsers")
             .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
             .set({selfUid!: DateTime.now()});
+
+        await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .collection("InteractedUsers")
+            .doc(matchUserUID)
+            .set({"liked": true, "matched": true});
+
+        await collection
+            .doc(matchUserUID)
+            .collection("InteractedUsers")
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .set({"liked": true, "matched": true});
       }
     });
     if (exist) {
@@ -81,7 +94,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
       if (doc.exists && doc.data() != null) {
         Map<String, dynamic> dataMap = doc.data()!;
         CurrentUser user = CurrentUser.fromMap(dataMap);
-        user.image = doc.data()!["profileImageUrl"] ? await urlToFile(dataMap["profileImageUrl"], user.uid) : null;
+        user.image = doc.data()!["profileImageUrl"] != null
+            ? await urlToFile(dataMap["profileImageUrl"], user.uid)
+            : null;
         return user;
       }
     }
@@ -95,6 +110,11 @@ class UserActivityProvider extends BaseUserActivityProvider {
         .collection("LikedUsers")
         .doc(likedUserUID)
         .set({likedUserUID: DateTime.now()});
+    await collection
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+        .collection("InteractedUsers")
+        .doc(likedUserUID)
+        .set({"liked": true, "matched": false});
   }
 
   @override
@@ -116,7 +136,20 @@ class UserActivityProvider extends BaseUserActivityProvider {
           maxAge: _maxAge,
           thresholdDist: 5,
           interestedIn: SessionConstants.sessionUser.interestedin!);
+
+      for (var i = 0; i < usersList.length; i++) {
+        DocumentSnapshot<Map<String, dynamic>> doc = await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .collection("InteractedUsers")
+            .doc(usersList[i].uid)
+            .get();
+        if (doc.exists) {
+          usersList.removeAt(i);
+        }
+      }
       usersList.removeWhere((element) {
+        print(
+            "sessionUid: ${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
         bool isDistanceGreaterthan5KM = false;
 
         if (element.locationCoordinates != null) {
@@ -159,6 +192,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
           querySnapshot.docs;
       List<CurrentUser> usersList =
           await CurrentUser.toCurrentList(listSnapShots);
+      usersList.removeWhere((user) =>
+          user.uid ==
+          SharedObjects.prefs?.getString(SessionConstants.sessionUid));
       return usersList;
     } catch (e) {
       throw Exception(e);
@@ -175,8 +211,10 @@ class UserActivityProvider extends BaseUserActivityProvider {
       if (doc.exists && doc.data() != null) {
         Map<String, dynamic> dataMap = doc.data()!;
         user = CurrentUser.fromMap(dataMap);
-        user.image = doc.data()!["profileImageUrl"] != null ?await urlToFile(doc.data()!["profileImageUrl"],
-            SharedObjects.prefs?.getString(SessionConstants.sessionUid)):null;
+        user.image = doc.data()!["profileImageUrl"] != null
+            ? await urlToFile(doc.data()!["profileImageUrl"],
+                SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            : null;
       }
       SessionConstants.sessionUser = user;
       return user;
@@ -211,7 +249,22 @@ class UserActivityProvider extends BaseUserActivityProvider {
 
     List<CurrentUser> usersList =
         await CurrentUser.toCurrentList(listSnapShots);
+
+    for (var i = 0; i < usersList.length; i++) {
+      DocumentSnapshot<Map<String, dynamic>> doc = await collection
+          .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+          .collection("InteractedUsers")
+          .doc(usersList[i].uid)
+          .get();
+      if (doc.exists) {
+        usersList.removeAt(i);
+      }
+    }
+
     usersList.removeWhere((user) {
+      print(
+          "sessionUid: ${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
+
       if (user.uid ==
           SharedObjects.prefs?.getString(SessionConstants.sessionUid)) {
         return true;

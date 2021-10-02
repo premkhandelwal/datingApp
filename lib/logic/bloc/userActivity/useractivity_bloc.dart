@@ -74,7 +74,7 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     try {
       List<CurrentUser> _users =
           await userActivityRepository.fetchAllUsersWithAppliedFilters();
-      yield FetchedAllUsersState(users: _users);
+      yield FetchedAllUserswithFiltersState(users: _users);
     } catch (e) {
       yield FailedToFetchAllUsersState();
     }

@@ -98,7 +98,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                         Text(
-                          'Chicago, II',
+                          SessionConstants.sessionUser.location != null ? '${SessionConstants.sessionUser.location}' : "",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ],
@@ -150,7 +150,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       context
                           .read<UseractivityBloc>()
                           .add(UserStateNoneEvent());
-                    } else if (state is FetchedAllUsersState) {
+                    } else if (state is FetchedAllUserswithFiltersState) {
                       allUsers = List.from(state.users);
                     } else if (state is FetchedInfoState) {
                       context

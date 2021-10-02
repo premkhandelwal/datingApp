@@ -180,22 +180,21 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     _matchedUsersList = state.users;
                     print(_matchedUsersList);
                     for (var i = 0; i < _matchedUsersList.length; i++) {
-                      int index =
-                          _allUsersList.indexWhere((element) {
+                      int index = _allUsersList.indexWhere((element) {
                         return element.uid == _matchedUsersList[i].uid;
                       });
-                      _matchedUsersList[i].name =
-                        _allUsersList[index].name;
-                      _matchedUsersList[i].age =
-                          _allUsersList[index].age;
-                      _matchedUsersList[i].image =
-                          _allUsersList[index].image;
+                      _matchedUsersList[i].name = _allUsersList[index].name;
+                      _matchedUsersList[i].age = _allUsersList[index].age;
+                      _matchedUsersList[i].image = _allUsersList[index].image;
                     }
                   } else if (state is FetchedAllUsersState) {
                     _allUsersList = state.users;
                   }
                 }, builder: (context, state) {
-                  if (_matchedUsersList.isNotEmpty) {
+                  if (state is FetchingAllUsersState ||
+                      state is FetchingMatchedUsersState || state is FetchedAllUsersState) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (_matchedUsersList.isNotEmpty || state is FetchedMatchedUsersState) {
                     return Expanded(
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 300),

@@ -27,6 +27,14 @@ class FetchedMatchedUsersState extends UseractivityState {
 
 class FailedtoMatchUsersState extends UseractivityState {}
 
+
+
+class FetchedAllUserswithFiltersState extends UseractivityState {
+  final List<CurrentUser> users;
+
+  FetchedAllUserswithFiltersState({required this.users});
+}
+
 class FetchedAllUsersState extends UseractivityState {
   final List<CurrentUser> users;
 
