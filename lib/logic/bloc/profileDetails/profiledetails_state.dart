@@ -8,6 +8,7 @@ class ProfiledetailsInitial extends ProfiledetailsState {}
 class AddedBasicInfoState extends ProfiledetailsState {}
 
 class AddedGenderInfoState extends ProfiledetailsState {}
+
 class AddedInterestedInInfoState extends ProfiledetailsState {}
 
 class AddedInterestsInfoState extends ProfiledetailsState {}
@@ -32,3 +33,13 @@ class FailedtoUpdateInfoState extends ProfiledetailsState {}
 
 class FailedtoAddInfoState extends ProfiledetailsState {}
 
+class DataLoadingInProgressState extends ProfiledetailsState {}
+
+class ShowMoreState extends ProfiledetailsState {
+  final bool isBio;
+  final bool isInterests;
+  ShowMoreState({
+    required this.isBio,
+    required this.isInterests,
+  });
+}

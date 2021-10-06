@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => UseractivityBloc(
-                userActivityRepository: userActivityRepository),
+                userActivityRepository: userActivityRepository,),
           ),
           BlocProvider(
             create: (context) => ProfiledetailsBloc(
@@ -55,7 +55,6 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
             title: 'Dating App',
             theme: ThemeData(
-              accentColor: AppColor.withOpacity(0.1),
               primaryColor: AppColor,
               scaffoldBackgroundColor: Colors.white,
               textTheme: TextTheme(
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
                     fontFamily: 'Modernist'),
                 subtitle1: TextStyle(fontSize: 14, fontFamily: 'Modernist'),
                 subtitle2: TextStyle(fontSize: 18, fontFamily: 'Modernist'),
-              ),
+              ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColor.withOpacity(0.1)),
             ),
 
             // home: ChooseSignInSignUpPage(),

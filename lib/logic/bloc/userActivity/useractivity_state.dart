@@ -1,6 +1,8 @@
 part of 'useractivity_bloc.dart';
 
-class UseractivityState {}
+class UseractivityState {
+  
+}
 
 class UseractivityInitial extends UseractivityState {}
 

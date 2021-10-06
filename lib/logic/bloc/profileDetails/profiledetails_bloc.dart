@@ -11,9 +11,8 @@ class ProfiledetailsBloc
     extends Bloc<ProfiledetailsEvent, ProfiledetailsState> {
   final ProfileDetailsRepository profileDetailsRepository;
   CurrentUser currentUser = CurrentUser();
-  ProfiledetailsBloc({
-    required this.profileDetailsRepository,
-  }) : super(ProfiledetailsInitial());
+  ProfiledetailsBloc({required this.profileDetailsRepository})
+      : super((ProfiledetailsInitial()));
 
   @override
   Stream<ProfiledetailsState> mapEventToState(
@@ -31,6 +30,10 @@ class ProfiledetailsBloc
       yield* _mapSubmitInfoEventtoState(event);
     } else if (event is UpdateInfoEvent) {
       yield* _mapUpdateInfotoState(event);
+    } else if (event is DataLoadingInProgress) {
+      yield DataLoadingInProgressState();
+    } else if (event is ShowMore) {
+      yield* _mapShowMoretoState(event);
     }
   }
 
@@ -98,15 +101,18 @@ class ProfiledetailsBloc
     }
   }
 
-
   Stream<ProfiledetailsState> _mapUpdateInfotoState(
       UpdateInfoEvent event) async* {
     yield UpdatingInfoState();
     try {
-    await profileDetailsRepository.updateUserInfo(event.user);
+      await profileDetailsRepository.updateUserInfo(event.user);
       yield UpdatedInfoState(currentUser: event.user);
     } catch (e) {
       yield FailedtoUpdateInfoState();
     }
+  }
+
+  Stream<ProfiledetailsState> _mapShowMoretoState(ShowMore event) async* {
+    yield ShowMoreState(isBio: event.isBio,isInterests: event.isInterests);
   }
 }

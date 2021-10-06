@@ -9,9 +9,16 @@ part 'useractivity_state.dart';
 
 class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   final UserActivityRepository userActivityRepository;
+  StreamSubscription? profileDetailsSubsciption;
   UseractivityBloc({
     required this.userActivityRepository,
   }) : super(UseractivityInitial());
+
+  @override
+  Future<void> close() {
+    profileDetailsSubsciption?.cancel();
+    return super.close();
+  }
 
   @override
   Stream<UseractivityState> mapEventToState(

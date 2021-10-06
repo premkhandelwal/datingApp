@@ -193,7 +193,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 }, builder: (context, state) {
                   if (state is FetchingAllUsersState ||
                       state is FetchingMatchedUsersState || state is FetchedAllUsersState) {
-                    return Center(child: CircularProgressIndicator());
+                    return Container(height:350,child: Center(child: CircularProgressIndicator()));
                   } else if (_matchedUsersList.isNotEmpty || state is FetchedMatchedUsersState) {
                     return Expanded(
                       child: AnimatedContainer(
@@ -209,7 +209,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       ),
                     );
                   } else {
-                    return Center(child: Text("No Matched Users"));
+                    return Container(height: 350,child: Center(child: Text("No Matched Users")));
                   }
                 })
               ],

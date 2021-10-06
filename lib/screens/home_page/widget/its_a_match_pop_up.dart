@@ -46,10 +46,10 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
-                                      child: Image.file(
-                                        image,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child:SessionConstants.sessionUser.image != null ? Image.file(
+                                         SessionConstants.sessionUser.image!
+                                        ,fit: BoxFit.cover,
+                                      ):Container(color: Colors.amber,),
                                     ),
                                   ),
                                 ),

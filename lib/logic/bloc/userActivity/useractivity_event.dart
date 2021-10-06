@@ -61,4 +61,3 @@ class FilterChangedEvent extends UseractivityEvent {
 
 
 
-class FilterClearedEvent extends UseractivityEvent {}

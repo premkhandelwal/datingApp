@@ -31,11 +31,22 @@ class AddInterestsInfoEvent extends ProfiledetailsEvent {
   });
 }
 
-class SubmitInfoEvent extends ProfiledetailsEvent{}
+class SubmitInfoEvent extends ProfiledetailsEvent {}
 
-class UpdateInfoEvent extends ProfiledetailsEvent{
+class UpdateInfoEvent extends ProfiledetailsEvent {
   final CurrentUser user;
   UpdateInfoEvent({
     required this.user,
+  });
+}
+
+class DataLoadingInProgress extends ProfiledetailsEvent {}
+
+class ShowMore extends ProfiledetailsEvent {
+  final bool isBio;
+  final bool isInterests;
+  ShowMore({
+    required this.isBio,
+    required this.isInterests,
   });
 }

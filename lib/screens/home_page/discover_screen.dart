@@ -98,7 +98,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                         Text(
-                          SessionConstants.sessionUser.location != null ? '${SessionConstants.sessionUser.location}' : "",
+                          SessionConstants.sessionUser.location != null
+                              ? '${SessionConstants.sessionUser.location}'
+                              : "",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ],
@@ -112,12 +114,24 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           color: AppColor,
                         ),
                         onPressed: () {
-                          showModalBottomSheet(
-                              enableDrag: true,
-                              isScrollControlled: true,
-                              context: context,
-                              backgroundColor: Colors.white.withOpacity(0),
-                              builder: (ctx) => FilterModalBottomSheet());
+                          UseractivityState state =
+                              BlocProvider.of<UseractivityBloc>(context,
+                                      listen: false)
+                                  .state;
+                          if (state is FetchingAllUsersState ||
+                              state is FetchingInfoState ||
+                              state is UpdatingLocationInfoState ||
+                              state is ApplyingFilters) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Loading Data..Please wait")));
+                          } else {
+                            showModalBottomSheet(
+                                enableDrag: true,
+                                isScrollControlled: true,
+                                context: context,
+                                backgroundColor: Colors.white.withOpacity(0),
+                                builder: (ctx) => FilterModalBottomSheet());
+                          }
                         },
                       ),
                       IconButton(
@@ -168,7 +182,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       if (filteredUsers == []) {
                         filteredUsers = new List.from(allUsers);
                       }
-                      setState(() {});
                       allUsers = List.from(state.usersList);
                     }
                   }, builder: (context, state) {
@@ -218,11 +231,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             }
                             _index = index;
                             print(info.direction);
-                            // setState(() {});
                           },
                           onBack: (index, info) {
                             _index = index;
-                            // setState(() {});
                           },
                           onEnd: () {
                             print('end');

@@ -6,7 +6,6 @@ import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
 
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
@@ -136,8 +135,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
           maxAge: _maxAge,
           thresholdDist: 5,
           interestedIn: SessionConstants.sessionUser.interestedin!);
-
-      for (var i = 0; i < usersList.length; i++) {
+      SessionConstants.defaultFilters = SessionConstants.appliedFilters;
+      /* for (var i = 0; i < usersList.length; i++) {
         DocumentSnapshot<Map<String, dynamic>> doc = await collection
             .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
             .collection("InteractedUsers")
@@ -146,7 +145,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
         if (doc.exists) {
           usersList.removeAt(i);
         }
-      }
+      } */
       usersList.removeWhere((element) {
         print(
             "sessionUid: ${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
@@ -332,11 +331,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
  */
   @override
   void clearAllFilters() {
-    /* SessionConstants.allUsers.forEach((user) {
-      user.gendernotinFilters = null;
-      user.agenotinFilters = null;
-      user.distancenotinFilters = null;
-    }); */
+    SessionConstants.appliedFilters = SessionConstants.defaultFilters;
   }
 
   @override

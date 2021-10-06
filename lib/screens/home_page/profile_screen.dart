@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
+import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/const/app_const.dart';
@@ -22,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     _currentUser = SessionConstants.sessionUser;
-    _controller.addListener(() {
+    /* _controller.addListener(() {
       // reached bottom
       if (_controller.offset >= _controller.position.maxScrollExtent &&
           !_controller.position.outOfRange) {
@@ -51,27 +52,37 @@ class _ProfilePageState extends State<ProfilePage> {
           !_controller.position.outOfRange) {
         setState(() => isBottom = false);
       }
-    });
+    }); */
     super.initState();
   }
 
   bool isBottom = false;
   bool isScrolling = false;
+  bool showMoreBio = true;
+  bool showMoreInterests = true;
 
   ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
-        listenWhen: (previousState, currentState) {
+        /* listenWhen: (previousState, currentState) {
           if (currentState is UpdatedInfoState) {
             return true;
           }
           return false;
-        },
+        }, */
         listener: (context, state) async {
           if (state is UpdatedInfoState) {
+            _currentUser.bio = state.currentUser.bio;
             _currentUser = state.currentUser;
+            if (_currentUser.locationCoordinates != null) {
+              _currentUser.location =
+                  await coordinatestoLoc(_currentUser.locationCoordinates!);
+            }
+          } else if (state is ShowMoreState) {
+            showMoreBio = state.isBio;
+            showMoreInterests = state.isInterests;
           }
         },
         builder: (context, state) {
@@ -81,6 +92,22 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.pink,
             ));
           } */
+          final userActivitystate = context.watch<UseractivityBloc>().state;
+
+          if (userActivitystate is FetchingAllUsersState ||
+              userActivitystate is FetchingInfoState ||
+              userActivitystate is UpdatingLocationInfoState ||
+              userActivitystate is ApplyingFilters ||
+              state is UpdatingInfoState) {
+            return Center(child: CircularProgressIndicator());
+          } else if (userActivitystate is FetchedInfoState ||
+              userActivitystate is FetchedAllUserswithFiltersState ||
+              userActivitystate is UpdatedLocInfoState ||
+              state is AppliedFiltersState) {
+            _currentUser = SessionConstants.sessionUser;
+          } else if (state is UpdatedInfoState) {
+            _currentUser = state.currentUser;
+          }
           return SafeArea(
             child: Container(
               child: Stack(
@@ -105,6 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Container(
                     child: ListView(
+                      shrinkWrap: true,
                       children: [
                         SizedBox(height: 380),
                         Stack(
@@ -121,6 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   )),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   SizedBox(height: 40),
                                   Row(
@@ -130,6 +159,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
                                               '${_currentUser.name != null ? _currentUser.name : ""}, ${_currentUser.age != null ? _currentUser.age : ""}',
@@ -159,6 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text('Location',
                                               style: Theme.of(context)
@@ -211,64 +242,85 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
                                   Text(
-                                    '${_currentUser.bio != null ? _currentUser.bio : ""}',
+                                    '${_currentUser.bio != null ? _currentUser.bio!.length > 150 && showMoreBio ? _currentUser.bio!.substring(0, 150) + "..." : _currentUser.bio : ""}',
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
-                                  SizedBox(height: 30),
+                                  _currentUser.bio != null ? SizedBox(height: 10) : Container(),
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context.read<ProfiledetailsBloc>().add(
+                                            ShowMore(
+                                                isBio: !showMoreBio,
+                                                isInterests:
+                                                    showMoreInterests));
+                                      },
+                                      child: Text(
+                                        _currentUser.bio != null &&
+                                                _currentUser.bio!.length > 150
+                                            ? showMoreBio
+                                                ? "Show More"
+                                                : "Show less"
+                                            : "",
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.red),
+                                      ),
+                                    ),
+                                  ),
+                                 _currentUser.bio != null ?  SizedBox(height: 30) : Container(),
                                   Text(
                                     'Interests',
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
                                   _currentUser.interests != null
                                       ? Container(
-                                          height: 70,
+                                          height: showMoreInterests ? 50 : null,
                                           child: GridView.builder(
                                             controller: _controller,
-                                            shrinkWrap: false,
+                                            shrinkWrap: true,
                                             scrollDirection: Axis.vertical,
                                             itemCount:
                                                 _currentUser.interests?.length,
                                             gridDelegate:
                                                 SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 3,
-                                                    mainAxisSpacing: 0.1,
-                                                    childAspectRatio: 1.3),
+                                                    childAspectRatio: 2),
                                             itemBuilder: (BuildContext context,
                                                 int index) {
-                                              return Container(
-                                                  child: Column(
-                                                children: [
-                                                  SizedBox(height: 20),
-                                                  Text(
-                                                    "${_currentUser.interests![index]}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .subtitle2,
-                                                  ),
-                                                  index == 1 &&
-                                                          (_currentUser
-                                                                  .interests!
-                                                                  .length) >
-                                                              3 &&
-                                                          !isScrolling
-                                                      ? GestureDetector(
-                                                          child: Text(
-                                                            "Scroll For More",
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color:
-                                                                    Colors.red),
-                                                          ),
-                                                        )
-                                                      : Text("")
-                                                ],
-                                              ));
+                                              return Text(
+                                                "${_currentUser.interests![index]}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2,
+                                              );
                                             },
                                           ),
                                         )
                                       : Container(),
+                                if(_currentUser.interests != null && _currentUser.interests!.length > 3)
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context.read<ProfiledetailsBloc>().add(
+                                            ShowMore(
+                                                isBio: showMoreBio,
+                                                isInterests:
+                                                    !showMoreInterests));
+                                      },
+                                      child: Text(
+                                        showMoreInterests
+                                            ? "Show More"
+                                            : "Show less",
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.red),
+                                      ),
+                                    ),
+                                  ),
                                   SizedBox(height: 30),
                                   Row(
                                     mainAxisAlignment:

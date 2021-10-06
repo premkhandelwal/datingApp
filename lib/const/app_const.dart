@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 class SessionConstants {
   static FilterChangedEvent? appliedFilters = FilterChangedEvent(
       maxAge: 0, minAge: 0, interestedIn: GENDER.NotSelected, thresholdDist: 0);
-
+  static FilterChangedEvent? defaultFilters;
   static const sessionUid = "sessionUid";
   static const sessionUsername = 'sessionUsername';
   static const sessionSignedInWith = "sessionSignedInWith";
@@ -22,7 +22,11 @@ class SessionConstants {
 
   static void clear() {
     sessionUser = CurrentUser();
-    appliedFilters = FilterChangedEvent(maxAge: 0, minAge: 0,interestedIn: GENDER.NotSelected,thresholdDist: 0);
+    appliedFilters = FilterChangedEvent(
+        maxAge: 0,
+        minAge: 0,
+        interestedIn: GENDER.NotSelected,
+        thresholdDist: 0);
   }
   // statsic const profileImage
 }
