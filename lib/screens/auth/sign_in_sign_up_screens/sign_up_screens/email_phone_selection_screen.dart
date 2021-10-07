@@ -3,6 +3,7 @@ import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/phone_number_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignUpSignInSelectionScreen extends StatelessWidget {
   final String authSide;
@@ -23,7 +24,7 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
                 CircleAvatar(
                   child: Text('LOGO HERE'),
                   backgroundColor: AppColor,
-                  radius: 50,
+                  radius: 50.r,
                 ),
               ],
             ),
@@ -42,15 +43,15 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
                         ));
                   },
                   text: "Continue with email",
-                  textSize: 18,
+                  textSize: 18.sp,
 
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    fixedSize: Size(350, 60),
+                    fixedSize: Size(350.sp, 60.sp),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(15.r),
                     ),
                   ),
                   onPressed: () {

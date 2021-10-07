@@ -55,12 +55,6 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     }
   }
 
-  StreamSubscription<User?> onAuthStateChanged() {
-    return _firebaseAuth.authStateChanges().listen((event) {
-      print(event);
-    });
-  }
-
   @override
   Future<bool> isuserDocExists(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
@@ -176,8 +170,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
           codeSent: codeSent,
           codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {
-      print("hello");
-      print(e);
+      throw Exception(e);
     }
   }
 

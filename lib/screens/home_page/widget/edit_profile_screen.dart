@@ -8,6 +8,7 @@ import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -72,7 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         minChildSize: 0.75, //set this as you want
         expand: true,
         builder: (context, controller) => Container(
-              height: 100,
+              height: 100.h,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -81,220 +82,188 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  controller: _controller,
-                  child: Column(
-                    children: [
-                      CustomAppBar(
-                          context: context,
-                          centerWidget: Text('Your Profile'),
-                          trailingWidget: Container()),
-                      Container(
-                        height: MediaQuery.of(context).size.height + 10,
-                        child: SingleChildScrollView(
-                          controller: _controller,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Stack(
-                                children: [
-                                  ClipOval(
-                                      child: _image != null
-                                          ? Image.file(
-                                              _image!,
-                                              height: 150,
-                                              width: 150,
-                                              alignment: Alignment.topCenter,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Container(
-                                              color: Colors.amber,
-                                            )
-                                      // backgroundImage: AssetImage(sampleImages[0]),
-                                      ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: InkWell(
-                                      child: CircleAvatar(
-                                        radius: 25,
-                                        backgroundColor: Colors.white,
-                                        child: IconButton(
-                                          onPressed: _addImage,
-                                          icon: Icon(
-                                            Icons.add_a_photo,
-                                            size: 30,
-                                            color: AppColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                padding: EdgeInsets.all(20.0.sp),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    CustomAppBar(
+                        context: context,
+                        centerWidget: Text('Your Profile'),
+                        trailingWidget: Container()),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        ClipOval(
+                            child: _image != null
+                                ? Image.file(
+                                    _image!,
+                                    height: 150.h,
+                                    width: 150.w,
+                                    alignment: Alignment.topCenter,
+                                    fit: BoxFit.cover,
                                   )
-                                ],
+                                : CircleAvatar(
+                                    backgroundColor: Colors.amber,
+                                    radius: 40.r,
+                                  )
+                            // backgroundImage: AssetImage(sampleImages[0]),
+                            ),
+                        Positioned(
+                          bottom: -10.sp,
+                          right: 100.sp,
+                          child: InkWell(
+                            child: CircleAvatar(
+                              radius: 25.r,
+                              backgroundColor: Colors.white,
+                              child: IconButton(
+                                onPressed: _addImage,
+                                icon: Icon(
+                                  Icons.add_a_photo,
+                                  size: 30.sp,
+                                  color: AppColor,
+                                ),
                               ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      gapPadding: 5,
-                                      borderSide:
-                                          BorderSide(color: Colors.black45),
-                                    ),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide:
-                                            BorderSide(color: Colors.black45)),
-                                    labelText: "Name",
-                                    labelStyle:
-                                        TextStyle(color: Colors.black45)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 10.h),
+                    TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.r),
+                            gapPadding: 5.sp,
+                            borderSide: BorderSide(color: Colors.black45),
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.r),
+                              borderSide: BorderSide(color: Colors.black45)),
+                          labelText: "Name",
+                          labelStyle: TextStyle(color: Colors.black45)),
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    TextFormField(
+                      controller: professionController,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.r),
+                            gapPadding: 5.sp,
+                            borderSide: BorderSide(color: Colors.black45),
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.r),
+                              borderSide: BorderSide(color: Colors.black45)),
+                          labelText: "Profession",
+                          labelStyle: TextStyle(color: Colors.black45)),
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    TextFormField(
+                      controller: bioController,
+                      maxLines: 5,
+                      maxLength: 399,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.r),
+                            gapPadding: 5.sp,
+                            borderSide: BorderSide(color: Colors.black45),
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.r),
+                              borderSide: BorderSide(color: Colors.black45)),
+                          labelText: "Bio",
+                          labelStyle: TextStyle(color: Colors.black45)),
+                    ),
+                    SizedBox(height: 20.h),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      controller: _controller,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 1,
+                          childAspectRatio: 3 / 1),
+                      itemCount: interests.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: EdgeInsets.all(2.0.sp),
+                          child: ChoiceChip(
+                              avatar: Icon(
+                                iconsList[index],
+                                color: _selectedInterests
+                                        .contains(interests[index])
+                                    ? Colors.white
+                                    : AppColor,
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              TextFormField(
-                                controller: professionController,
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      gapPadding: 5,
-                                      borderSide:
-                                          BorderSide(color: Colors.black45),
-                                    ),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide:
-                                            BorderSide(color: Colors.black45)),
-                                    labelText: "Profession",
-                                    labelStyle:
-                                        TextStyle(color: Colors.black45)),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              TextFormField(
-                                controller: bioController,
-                                maxLines: 5,
-                                maxLength: 399,
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      gapPadding: 5,
-                                      borderSide:
-                                          BorderSide(color: Colors.black45),
-                                    ),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide:
-                                            BorderSide(color: Colors.black45)),
-                                    labelText: "Bio",
-                                    labelStyle:
-                                        TextStyle(color: Colors.black45)),
-                              ),
-                              SizedBox(height: 20),
-                              Container(
-                                height: 300,
-                                child: GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          mainAxisSpacing: 1,
-                                          childAspectRatio: 3 / 1),
-                                  itemCount: interests.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: ChoiceChip(
-                                          avatar: Icon(
-                                            iconsList[index],
+                              backgroundColor: Colors.white,
+                              label: Row(children: [
+                                Text(interests[index],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
                                             color: _selectedInterests
                                                     .contains(interests[index])
                                                 ? Colors.white
-                                                : AppColor,
-                                          ),
-                                          backgroundColor: Colors.white,
-                                          label: Row(children: [
-                                            Text(interests[index],
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2!
-                                                    .copyWith(
-                                                        color: _selectedInterests
-                                                                .contains(
-                                                                    interests[
-                                                                        index])
-                                                            ? Colors.white
-                                                            : Colors.black)),
-                                          ]),
-                                          pressElevation: 8,
-                                          elevation: _selectedInterests
-                                                  .contains(interests[index])
-                                              ? 5
-                                              : 0,
-                                          labelPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 8.0),
-                                          selectedColor: AppColor,
-                                          selected: _selectedInterests
-                                              .contains(interests[index]),
-                                          onSelected: (selected) {
-                                            _selectedInterests
-                                                    .contains(interests[index])
-                                                ? _selectedInterests
-                                                    .remove(interests[index])
-                                                : _selectedInterests
-                                                    .add(interests[index]);
-                                            setState(() {});
-                                          }),
-                                    );
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              BlocConsumer<ProfiledetailsBloc,
-                                  ProfiledetailsState>(
-                                listener: (context, state) {
-                                  if (state is UpdatedInfoState) {
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                builder: (context, state) {
-                                  if (state is UpdatingInfoState) {
-                                    return CircularProgressIndicator(
-                                      backgroundColor: Colors.yellow,
-                                    );
-                                  }
-                                  return CommonButton(
-                                      text: 'Continue',
-                                      onPressed: () {
-                                        context.read<ProfiledetailsBloc>().add(
-                                            UpdateInfoEvent(
-                                                user: CurrentUser(
-                                                    locationCoordinates: widget
-                                                        .user
-                                                        .locationCoordinates,
-                                                    age: widget.user.age,
-                                                    name: nameController.text,
-                                                    bio: bioController.text,
-                                                    profession:
-                                                        professionController
-                                                            .text,
-                                                    image: _image,
-                                                    interests:
-                                                        _selectedInterests)));
-                                      });
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                                                : Colors.black)),
+                              ]),
+                              pressElevation: 8.sp,
+                              elevation:
+                                  _selectedInterests.contains(interests[index])
+                                      ? 5.sp
+                                      : 0.sp,
+                              labelPadding:
+                                  EdgeInsets.symmetric(vertical: 8.0.sp),
+                              selectedColor: AppColor,
+                              selected:
+                                  _selectedInterests.contains(interests[index]),
+                              onSelected: (selected) {
+                                _selectedInterests.contains(interests[index])
+                                    ? _selectedInterests
+                                        .remove(interests[index])
+                                    : _selectedInterests.add(interests[index]);
+                                setState(() {});
+                              }),
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    BlocConsumer<ProfiledetailsBloc, ProfiledetailsState>(
+                      listener: (context, state) {
+                        if (state is UpdatedInfoState) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is UpdatingInfoState) {
+                          return CircularProgressIndicator(
+                            backgroundColor: Colors.yellow,
+                          );
+                        }
+                        return CommonButton(
+                            text: 'Continue',
+                            onPressed: () {
+                              context.read<ProfiledetailsBloc>().add(
+                                  UpdateInfoEvent(
+                                      user: CurrentUser(
+                                          locationCoordinates:
+                                              widget.user.locationCoordinates,
+                                          age: widget.user.age,
+                                          name: nameController.text,
+                                          bio: bioController.text,
+                                          profession: professionController.text,
+                                          image: _image,
+                                          interests: _selectedInterests)));
+                            });
+                      },
+                    ),
+                  ],
                 ),
               ),
             ));

@@ -3,6 +3,7 @@ import 'package:dating_app/screens/enable_notification_screen/enable_notificatio
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchFriendsScreen extends StatelessWidget {
   const SearchFriendsScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class SearchFriendsScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -21,7 +22,7 @@ class SearchFriendsScreen extends StatelessWidget {
                 centerWidget: Container(),
                 trailingWidget: Container(),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Container(
                 child: Center(
                     child:
@@ -34,9 +35,9 @@ class SearchFriendsScreen extends StatelessWidget {
                     'Search friend’s',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
                     child: Text(
                       'You can find friends from your contact lists to connected',
                       textAlign: TextAlign.center,

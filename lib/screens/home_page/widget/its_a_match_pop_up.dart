@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void itIsAMatchPopUp(BuildContext context, File image,String name) {
   showGeneralDialog(
@@ -17,19 +18,19 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0)),
                 content: Container(
-                  height: 600,
+                  height: 600.h,
                   child: Column(
                     children: [
                       Container(
-                        height: 360,
+                        height: 360.h,
                         child: Stack(
                           children: [
                             Positioned(
                               right: 20,
                               top: 20,
                               child: Container(
-                                height: 240,
-                                width: 140,
+                                height: 240.h,
+                                width: 140.w,
                                 child: Transform.rotate(
                                   angle: 360 * -10,
                                   alignment: Alignment.center,
@@ -38,14 +39,14 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.grey.withOpacity(0.8),
-                                          spreadRadius: 1,
-                                          blurRadius: 25,
-                                          offset: Offset(0, 7),
+                                          spreadRadius: 1.r,
+                                          blurRadius: 25.r,
+                                          offset: Offset(0, 7.sp),
                                         ),
                                       ],
                                     ),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
+                                      borderRadius: BorderRadius.circular(15.r),
                                       child:SessionConstants.sessionUser.image != null ? Image.file(
                                          SessionConstants.sessionUser.image!
                                         ,fit: BoxFit.cover,
@@ -59,8 +60,8 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                               left: 20,
                               bottom: 10,
                               child: Container(
-                                height: 240,
-                                width: 140,
+                                height: 240.h,
+                                width: 140.w,
                                 child: Transform.rotate(
                                   angle: 360 * 10,
                                   alignment: Alignment.center,
@@ -68,15 +69,15 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                                     decoration: BoxDecoration(
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.grey.withOpacity(0.8),
-                                          spreadRadius: 1,
-                                          blurRadius: 25,
-                                          offset: Offset(0, 7),
+                                          color: Colors.grey.withOpacity(0.8.sp),
+                                          spreadRadius: 1.r,
+                                          blurRadius: 25.r,
+                                          offset: Offset(0, 7.sp),
                                         ),
                                       ],
                                     ),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
+                                      borderRadius: BorderRadius.circular(15.r),
                                       child: Image.file(
                                         image,        
                                         fit: BoxFit.cover,
@@ -107,19 +108,19 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                         'Start a conversation now with each other',
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 30.h),
                       CommonButton(
                         text: 'Say Hello',
                         onPressed: () {
                           // changePageTo(context: context, widget: );
                         },
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 10.h),
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          fixedSize: Size(350, 56),
+                          fixedSize: Size(350.sp, 56.sp),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(15.r),
                           ),
                         ),
                         onPressed: () {

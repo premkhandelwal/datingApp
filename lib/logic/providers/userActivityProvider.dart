@@ -34,7 +34,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
 
   @override
   Future<void> updateLocationInfo(Map<String, num> locationCoordinates) async {
-    SessionConstants.sessionUser.locationCoordinates = locationCoordinates;
     await collection
         .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .update({"locationCoordinates": locationCoordinates});
@@ -147,8 +146,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
         }
       } */
       usersList.removeWhere((element) {
-        print(
-            "sessionUid: ${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
         bool isDistanceGreaterthan5KM = false;
 
         if (element.locationCoordinates != null) {
@@ -159,7 +156,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
             isDistanceGreaterthan5KM = distanceInKilometers > 5;
           }
         }
-        print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
         if ((element.uid ==
                 SharedObjects.prefs?.getString(SessionConstants.sessionUid)) ||
             isDistanceGreaterthan5KM ||
@@ -215,7 +211,11 @@ class UserActivityProvider extends BaseUserActivityProvider {
                 SharedObjects.prefs?.getString(SessionConstants.sessionUid))
             : null;
       }
+      if (user.locationCoordinates != null) {
+        user.location = await coordinatestoLoc(user.locationCoordinates!);
+      }
       SessionConstants.sessionUser = user;
+
       return user;
     } catch (e) {
       throw Exception(e);
@@ -227,8 +227,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
-    print("position");
-    print(position);
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     var first = placemarks.first;
@@ -261,9 +259,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
     }
 
     usersList.removeWhere((user) {
-      print(
-          "sessionUid: ${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}");
-
       if (user.uid ==
           SharedObjects.prefs?.getString(SessionConstants.sessionUid)) {
         return true;

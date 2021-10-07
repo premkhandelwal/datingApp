@@ -9,6 +9,7 @@ import 'package:dating_app/screens/home_page/matches_screen.dart';
 import 'package:dating_app/screens/home_page/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,7 +41,6 @@ class _HomePageState extends State<HomePage> {
         return false;
       },
       builder: (context, state) {
-        print(state);
         if (state is FirebaseauthInitial) {
           context.read<FirebaseauthBloc>().add(UserStateRequested());
           return Container();
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       stateManagement: true,
       hideNavigationBarWhenKeyboardShows: true,
       decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(10.0.r),
         colorBehindNavBar: Color(0xffF3F3F3),
       ),
       popAllScreensOnTapOfSelectedTab: true,
@@ -102,15 +102,15 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.favorite_border),
             if (Random().nextBool())
               Positioned(
-                top: -8,
-                right: -10,
+                top: -8.sp,
+                right: -10.sp,
                 child: CircleAvatar(
-                  radius: 12,
+                  radius: 12.r,
                   backgroundColor: AppColor,
                   child: Text(
                     '5',
                     style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontFamily: 'Modernist',
                         color: Colors.white),
                   ),
@@ -129,15 +129,15 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.chat),
             if (Random().nextBool())
               Positioned(
-                top: -8,
-                right: -10,
+                top: -8.sp,
+                right: -10.sp,
                 child: CircleAvatar(
-                  radius: 12,
+                  radius: 12.r,
                   backgroundColor: AppColor,
                   child: Text(
                     '5',
                     style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontFamily: 'Modernist',
                         color: Colors.white),
                   ),

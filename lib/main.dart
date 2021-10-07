@@ -11,7 +11,7 @@ import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -52,26 +52,30 @@ class MyApp extends StatelessWidget {
           ),
           
         ],
-        child: MaterialApp(
-            title: 'Dating App',
-            theme: ThemeData(
-              primaryColor: AppColor,
-              scaffoldBackgroundColor: Colors.white,
-              textTheme: TextTheme(
-                bodyText1: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Modernist'),
-                bodyText2: TextStyle(
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Modernist'),
-                subtitle1: TextStyle(fontSize: 14, fontFamily: 'Modernist'),
-                subtitle2: TextStyle(fontSize: 18, fontFamily: 'Modernist'),
-              ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColor.withOpacity(0.1)),
-            ),
-
-            // home: ChooseSignInSignUpPage(),
-            home: HomePage()));
+        child:  ScreenUtilInit(
+          designSize: Size(393,851),//Redmi Note 7
+          builder: () => MaterialApp(
+                  title: 'Dating App',
+                  theme: ThemeData(
+                    primaryColor: AppColor,
+                    scaffoldBackgroundColor: Colors.white,
+                    textTheme: TextTheme(
+                      bodyText1: TextStyle(
+                          fontSize: 34.sp,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Modernist'),
+                      bodyText2: TextStyle(
+                          fontSize: 27.sp,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Modernist'),
+                      subtitle1: TextStyle(fontSize: 14.sp, fontFamily: 'Modernist'),
+                      subtitle2: TextStyle(fontSize: 18.sp, fontFamily: 'Modernist'),
+                    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColor.withOpacity(0.1.sp)),
+                  ),
+            
+                  // home: ChooseSignInSignUpPage(),
+                  home: HomePage())
+        ),
+        );
   }
 }

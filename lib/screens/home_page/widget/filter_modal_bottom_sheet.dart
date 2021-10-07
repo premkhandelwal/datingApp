@@ -4,6 +4,7 @@ import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FilterModalBottomSheet extends StatefulWidget {
   FilterModalBottomSheet({
@@ -44,16 +45,16 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600,
+      height: 600.h,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+          topLeft: Radius.circular(25.r),
+          topRight: Radius.circular(25.r),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding:  EdgeInsets.all(20.0.sp),
         child: BlocBuilder<UseractivityBloc, UseractivityState>(
           buildWhen: (previousState, currentState) {
             if (currentState is ClearedFiltersState) {
@@ -68,7 +69,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(width: 50),
+                    Container(width: 50.w),
                     Text(
                       'Filters',
                       style: Theme.of(context).textTheme.bodyText1,
@@ -80,7 +81,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                             .add(ClearedFiltersEvent());
                       },
                       child: Container(
-                        width: 50,
+                        width: 50.w,
                         child: Text(
                           'Clear',
                           style: Theme.of(context)
@@ -92,7 +93,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Row(
                   children: [
                     SectionHeading(
@@ -101,10 +102,10 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding:  EdgeInsets.all(15.0.sp),
                   child: Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15.r),
                         border: Border.all(color: Colors.grey)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,16 +119,16 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(15),
-                                topLeft: Radius.circular(15)),
+                                bottomLeft: Radius.circular(15.r),
+                                topLeft: Radius.circular(15.r)),
                             child: AnimatedContainer(
                               width:
-                                  _selectedGender == GENDER.female ? 120 : 90,
+                                  _selectedGender == GENDER.female ? 120.w : 90.w,
                               decoration: BoxDecoration(
                                   color: _selectedGender == GENDER.female
                                       ? AppColor
                                       : Colors.white),
-                              padding: EdgeInsets.all(20),
+                              padding: EdgeInsets.all(20.sp),
                               duration: Duration(milliseconds: 200),
                               child: Center(
                                 child: Text(
@@ -155,12 +156,12 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                             });
                           },
                           child: AnimatedContainer(
-                            width: _selectedGender == GENDER.male ? 120 : 90,
+                            width: _selectedGender == GENDER.male ? 120.w : 90.w,
                             decoration: BoxDecoration(
                                 color: _selectedGender == GENDER.male
                                     ? AppColor
                                     : Colors.white),
-                            padding: EdgeInsets.all(20),
+                            padding: EdgeInsets.all(20.sp),
                             duration: Duration(milliseconds: 200),
                             child: Center(
                               child: Text(
@@ -187,15 +188,15 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(15),
-                                topRight: Radius.circular(15)),
+                                bottomRight: Radius.circular(15.r),
+                                topRight: Radius.circular(15.r)),
                             child: AnimatedContainer(
-                              width: _selectedGender == GENDER.other ? 120 : 90,
+                              width: _selectedGender == GENDER.other ? 120.w : 90.w,
                               decoration: BoxDecoration(
                                   color: _selectedGender == GENDER.both
                                       ? AppColor
                                       : Colors.white),
-                              padding: EdgeInsets.all(20),
+                              padding: EdgeInsets.all(20.sp),
                               duration: Duration(milliseconds: 200),
                               child: Center(
                                 child: Text(
@@ -237,7 +238,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                         });
                       },
                     ), */
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -264,7 +265,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                         distance = val;
                       });
                     }),
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -293,10 +294,6 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 CommonButton(
                     text: 'Continue',
                     onPressed: () {
-                      print(_selectedGender);
-                      print(distance);
-                      print(ageRange);
-                      print(dropdownValue);
                       SessionConstants.appliedFilters = FilterChangedEvent(
                           minAge: ageRange.start,
                           maxAge: ageRange.end,

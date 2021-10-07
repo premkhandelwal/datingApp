@@ -6,6 +6,7 @@ import 'package:dating_app/screens/home_page/full_screen_image.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SwipeableCardFullScreen extends StatelessWidget {
   const SwipeableCardFullScreen({
@@ -31,7 +32,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                height: 500,
+                height: 500.h,
                 width: double.infinity,
                 child: image != null ? Image.file(
                   image!,
@@ -43,29 +44,29 @@ class SwipeableCardFullScreen extends StatelessWidget {
                 child: ListView(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding:  EdgeInsets.all(20.0.sp),
                       child: CustomAppBar(
                           context: context,
                           centerWidget: Container(),
                           trailingWidget: Container()),
                     ),
-                    SizedBox(height: 280),
+                    SizedBox(height: 280.h),
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 20),
+                          padding:  EdgeInsets.symmetric(
+                              horizontal: 20.0.sp, vertical: 20.sp),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25),
+                                topLeft: Radius.circular(25.r),
+                                topRight: Radius.circular(25.r),
                               )),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 40),
+                              SizedBox(height: 40.h),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -86,13 +87,13 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                   ),
                                   IconsOutlinedButton(
                                     onPressed: () {},
-                                    iconSize: 30,
-                                    size: Size(20, 60),
+                                    iconSize: 30.sp,
+                                    size: Size(20.sp, 60.sp),
                                     icon: Icons.near_me,
                                   )
                                 ],
                               ),
-                              SizedBox(height: 30),
+                              SizedBox(height: 30.h),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -112,12 +113,12 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                     ],
                                   ),
                                   Container(
-                                    height: 40,
-                                    width: 61,
+                                    height: 40.h,
+                                    width: 61.w,
                                     decoration: BoxDecoration(
-                                        color: AppColor.withOpacity(0.9),
+                                        color: AppColor.withOpacity(0.9.sp),
                                         borderRadius:
-                                            BorderRadius.circular(10)),
+                                            BorderRadius.circular(10.r)),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -125,7 +126,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                         Icon(
                                           Icons.location_on,
                                           color: Colors.white,
-                                          size: 18,
+                                          size: 18.sp,
                                         ),
                                         Text(
                                           '1 KM',
@@ -134,14 +135,14 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                               .subtitle1!
                                               .copyWith(
                                                   color: Colors.white,
-                                                  fontSize: 12),
+                                                  fontSize: 12.sp),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 30),
+                              SizedBox(height: 30.h),
                               Text(
                                 'Bio',
                                 style: Theme.of(context).textTheme.bodyText2,
@@ -150,13 +151,13 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                 '$personBio',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
-                              SizedBox(height: 30),
+                              SizedBox(height: 30.h),
                               Text(
                                 'Interests',
                                 style: Theme.of(context).textTheme.bodyText2,
                               ),
                               Container(
-                                height: 100,
+                                height: 100.h,
                                 child: GridView.builder(
                                   itemCount: interests.length,
                                   gridDelegate:
@@ -181,7 +182,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                   },
                                 ),
                               ),
-                              SizedBox(height: 30),
+                              SizedBox(height: 30.h),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -202,9 +203,9 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 30),
+                              SizedBox(height: 30.h),
                               Container(
-                                height: 400,
+                                height: 400.h,
                                 child: GridView.builder(
                                   itemCount: sampleImages.length,
                                   gridDelegate:
@@ -228,7 +229,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                         );
                                       },
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(15.r),
                                         child: Image.asset(
                                           sampleImages[index],
                                           fit: BoxFit.fitWidth,
@@ -243,33 +244,31 @@ class SwipeableCardFullScreen extends StatelessWidget {
                           ),
                         ),
                         Positioned(
-                          top: -25,
-                          left: 50,
+                          top: -25.sp,
+                          left: 50.sp,
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 40,
+                            radius: 40.r,
                             child: Center(
                               child: IconButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
                                     await Future.delayed(
                                         Duration(milliseconds: 200));
-                                    print('hi');
                                     swipeLeft!;
-                                    print('hi');
                                   },
-                                  iconSize: 60,
+                                  iconSize: 60.sp,
                                   color: Color(0xffF27121),
                                   icon: Icon(Icons.close)),
                             ),
                           ),
                         ),
                         Positioned(
-                            top: -25,
-                            right: 50,
+                            top: -25.sp,
+                            right: 50.sp,
                             child: CircleAvatar(
                               backgroundColor: AppColor,
-                              radius: 40,
+                              radius: 40.r,
                               child: Center(
                                 child: IconButton(
                                     onPressed: () async {
@@ -278,7 +277,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                           Duration(milliseconds: 200));
                                       swipeRight!;
                                     },
-                                    iconSize: 60,
+                                    iconSize: 60.sp,
                                     color: Colors.white,
                                     icon: Icon(Icons.favorite)),
                               ),

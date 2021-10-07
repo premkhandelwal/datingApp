@@ -8,6 +8,7 @@ import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class YourInterestScreen extends StatefulWidget {
   YourInterestScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Column(
             children: [
               CustomAppBar(
@@ -31,7 +32,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                 trailingWidget: Container(),
                 context: context,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Row(
                 children: [
                   Text(
@@ -41,12 +42,12 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Text(
                 'Select a few of your interests and let everyone know what you’re passionate bio.',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Expanded(
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -56,7 +57,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   itemCount: interests.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      padding: const EdgeInsets.all(2.0),
+                      padding:  EdgeInsets.all(2.0.sp),
                       child: ChoiceChip(
                           avatar: Icon(
                             iconsList[index],
@@ -76,13 +77,13 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                                             ? Colors.white
                                             : Colors.black)),
                           ]),
-                          pressElevation: 8,
+                          pressElevation: 8.sp,
                           elevation:
                               _selectedInterests.contains(interests[index])
-                                  ? 5
+                                  ? 5.sp
                                   : 0,
                           labelPadding:
-                              const EdgeInsets.symmetric(vertical: 8.0),
+                               EdgeInsets.symmetric(vertical: 8.0.sp),
                           selectedColor: AppColor,
                           selected:
                               _selectedInterests.contains(interests[index]),

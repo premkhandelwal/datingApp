@@ -83,7 +83,10 @@ Future<String> coordinatestoLoc(Map<String, num> coordinates) async {
         coordinates["latitude"]!.toDouble(),
         coordinates["longitude"]!.toDouble());
     var first = placemarks.first;
-    return "${first.subAdministrativeArea}, ${first.administrativeArea}";
+    if (first.administrativeArea == null)
+      return "${first.subAdministrativeArea}";
+    else  
+      return "${first.subAdministrativeArea}, ${first.administrativeArea}";
   }
   return "";
 }

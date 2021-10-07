@@ -1,5 +1,6 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CommonButton extends StatelessWidget {
   final String text;
@@ -16,9 +17,9 @@ class CommonButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         primary: AppColor,
-        fixedSize: Size(350, 56),
+        fixedSize: Size(350.sp, 56.sp),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(15.0.r),
         ),
       ),
     );

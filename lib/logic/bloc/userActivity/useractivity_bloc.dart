@@ -67,8 +67,6 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       UserFindMatchEvent event) async* {
     CurrentUser? x =
         await userActivityRepository.userFindMatch(event.matchUserUID);
-    print("xMatches ?");
-    print(x);
     if (x != null) {
       yield UserMatchFoundState(user: x);
     } else {

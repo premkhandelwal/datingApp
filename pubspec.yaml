@@ -18,7 +18,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^7.3.0
-  flutter_datetime_picker: ^1.5.1
+  flutter_datetime_picker:
+    git: https://github.com/Realank/flutter_datetime_picker.git
+  flutter_screenutil: ^5.0.0+2
   geocoding: ^2.0.1
   geolocator: ^7.6.0
   http: ^0.13.3

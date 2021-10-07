@@ -7,6 +7,7 @@ import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailPasswordScreen extends StatefulWidget {
   final String authSide;
@@ -33,20 +34,20 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(25.0),
+            padding:  EdgeInsets.all(25.0.sp),
             child: Column(
               children: [
                 Row(
                   children: [
                     IconsOutlinedButton(
                         icon: Icons.arrow_back,
-                        size: Size(52, 52),
+                        size: Size(52.sp, 52.sp),
                         onPressed: () {
                           Navigator.of(context).pop();
                         })
                   ],
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 Row(
                   children: [
                     Text(
@@ -56,13 +57,13 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 40.0),
+                  padding:  EdgeInsets.only(right: 40.0.sp),
                   child: Text(
                     'Please enter your email address and password. to ${widget.authSide}',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Form(
                     key: _formKey,
                     child: Column(
@@ -79,23 +80,23 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           controller: emailIdController,
                           decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                                  borderRadius: BorderRadius.circular(15.r),
                                   borderSide: BorderSide(color: AppColor)),
                               focusColor: AppColor,
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                gapPadding: 5,
+                                borderRadius: BorderRadius.circular(15.r),
+                                gapPadding: 5.sp,
                                 borderSide: BorderSide(color: AppColor),
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                                  borderRadius: BorderRadius.circular(15.r),
                                   borderSide: BorderSide(color: AppColor)),
                               labelText: "Enter Your Email",
                               labelStyle: TextStyle(color: AppColor)),
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 20.h),
                         TextFormField(
                           validator: (val) {
                             String pattern =
@@ -122,32 +123,32 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                       ? Icon(
                                           Icons.visibility_off,
                                           color: Colors.black,
-                                          size: 25,
+                                          size: 25.sp,
                                         )
                                       : Icon(
                                           Icons.visibility,
                                           color: Colors.black,
-                                          size: 25,
+                                          size: 25.sp,
                                         )),
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                                  borderRadius: BorderRadius.circular(15.r),
                                   borderSide: BorderSide(color: AppColor)),
                               focusColor: AppColor,
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                gapPadding: 5,
+                                borderRadius: BorderRadius.circular(15.r),
+                                gapPadding: 5.sp,
                                 borderSide: BorderSide(color: AppColor),
                               ),
                               errorMaxLines: 4,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                                  borderRadius: BorderRadius.circular(15.r),
                                   borderSide: BorderSide(color: AppColor)),
                               labelText: "Enter Your Password",
                               labelStyle: TextStyle(color: AppColor)),
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.text,
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 20.h),
                         widget.authSide == "Sign Up"
                             ? TextFormField(
                                 validator: (val) {
@@ -170,26 +171,26 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                             ? Icon(
                                                 Icons.visibility_off,
                                                 color: Colors.black,
-                                                size: 25,
+                                                size: 25.sp,
                                               )
                                             : Icon(
                                                 Icons.visibility,
                                                 color: Colors.black,
-                                                size: 25,
+                                                size: 25.sp,
                                               )),
                                     enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(15.r),
                                         borderSide:
                                             BorderSide(color: AppColor)),
                                     focusColor: AppColor,
                                     focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      gapPadding: 5,
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      gapPadding: 5.sp,
                                       borderSide: BorderSide(color: AppColor),
                                     ),
                                     errorMaxLines: 4,
                                     border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(15.r),
                                         borderSide:
                                             BorderSide(color: AppColor)),
                                     labelText: "Confirm Your Password",
@@ -251,7 +252,6 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       context
                           .read<FirebaseauthBloc>()
                           .add(SignedInforFirstTimeEvent(uid: state.userUID));
-                      print(state.userUID);
                     } else if (state is SignedInForFirstTimeState) {
                       context
                           .read<FirebaseauthBloc>()

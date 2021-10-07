@@ -11,6 +11,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LinkPhoneEmailScreen extends StatefulWidget {
   final String connectWith;
@@ -50,7 +51,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
             children: <Widget>[
               CountryPickerUtils.getDefaultFlagImage(country),
               SizedBox(
-                width: 5.0,
+                width: 5.0.w,
               ),
               Text("+${country.phoneCode}(${country.isoCode})"),
             ],
@@ -62,7 +63,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.sp),
             child: Column(
               children: [
                 Row(
@@ -81,14 +82,14 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         child: Text(
                           "Skip",
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontFamily: 'Modernist',
                               color: Colors.red),
                         ))
                   ],
                 ),
                 SizedBox(
-                  height: 60,
+                  height: 60.h,
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -98,7 +99,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 20.h,
                 ),
                 Align(
                   alignment: Alignment.bottomLeft,
@@ -108,7 +109,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 25,
+                  height: 25.h,
                 ),
                 widget.connectWith == "email"
                     ? Column(
@@ -132,7 +133,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: 25,
+                            height: 25.h,
                           ),
                           TextFormField(
                             validator: (val) {
@@ -149,7 +150,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                             controller: passwordController,
                             decoration: InputDecoration(
                               hintStyle: TextStyle(
-                                  fontFamily: 'Modernist', fontSize: 20),
+                                  fontFamily: 'Modernist', fontSize: 20.sp),
                               counterText: '',
                               hintText: "Password",
                             ),
@@ -157,10 +158,10 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         ],
                       )
                     : Container(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10.sp),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.grey, width: 1.w),
+                          borderRadius: BorderRadius.circular(15.r),
                         ),
                         child: Row(
                           children: [
@@ -186,10 +187,6 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                   setState(() {
                                     _selectedCountry = country;
                                   });
-                                  print("${country.isoCode}");
-                                  print("${country.iso3Code}");
-                                  print("${country.phoneCode}");
-                                  print("${country.name}");
                                 },
                               ),
                             ),
@@ -206,7 +203,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintStyle: TextStyle(
-                                      fontFamily: 'Modernist', fontSize: 20),
+                                      fontFamily: 'Modernist', fontSize: 20.sp),
                                   counterText: '',
                                   hintText: "Phone Number",
                                 ),
@@ -218,9 +215,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                 Spacer(),
                 BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                   listener: (context, state) {
-                    if (state is UserLoggedOut) {
-                      print("Hello");
-                    } else if (state is FailedtoLinkedPhoneNumberEmail) {
+                  if (state is FailedtoLinkedPhoneNumberEmail) {
                       showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
@@ -254,7 +249,6 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                     return false;
                   },
                   builder: (context, state) {
-                    print(state);
                     if (state is OtpSent || state is OperationInProgress) {
                       return CircularProgressIndicator();
                     }

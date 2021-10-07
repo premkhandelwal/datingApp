@@ -6,6 +6,7 @@ import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InterestedInScreen extends StatefulWidget {
   InterestedInScreen({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,7 +32,7 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
                 centerWidget: Container(),
                 trailingWidget: Container(),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Text('Interested In'),
               Spacer(),
               Column(
@@ -107,14 +108,14 @@ class InterestedInTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(15),
+      margin: EdgeInsets.all(10.sp),
+      padding: EdgeInsets.all(15.sp),
       decoration: BoxDecoration(
           border: Border.all(
-              width: 2,
-              color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0)),
-          color: AppColor.withOpacity(isThisTile ? 1 : 0),
-          borderRadius: BorderRadius.circular(15)),
+              width: 2.w,
+              color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0.sp)),
+          color: AppColor.withOpacity(isThisTile ? 1.sp : 0),
+          borderRadius: BorderRadius.circular(15.r)),
       child: InkWell(
         onTap: onPress,
         child: Row(

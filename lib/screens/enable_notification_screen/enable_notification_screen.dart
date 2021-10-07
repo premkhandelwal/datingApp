@@ -3,6 +3,7 @@ import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EnableNotificationScreen extends StatelessWidget {
   const EnableNotificationScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class EnableNotificationScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Column(
             children: [
               CustomAppBar(
@@ -20,7 +21,7 @@ class EnableNotificationScreen extends StatelessWidget {
                 centerWidget: Container(),
                 trailingWidget: Container(),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Container(
                 child: Center(
                     child: Image.asset(
@@ -33,9 +34,9 @@ class EnableNotificationScreen extends StatelessWidget {
                     'Enable notification’s',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
                     child: Text(
                       'Get push-notification when you get the match or receive a message.',
                       textAlign: TextAlign.center,

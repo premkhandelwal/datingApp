@@ -9,6 +9,7 @@ import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PhoneNumberPage extends StatefulWidget {
   final String authSide;
@@ -44,7 +45,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
             children: <Widget>[
               CountryPickerUtils.getDefaultFlagImage(country),
               SizedBox(
-                width: 5.0,
+                width: 5.0.w,
               ),
               Text("+${country.phoneCode}(${country.isoCode})"),
             ],
@@ -56,7 +57,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding:  EdgeInsets.all(20.0.sp),
             child: Column(
               children: [
                 CustomAppBar(
@@ -64,7 +65,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   centerWidget: Container(),
                   trailingWidget: Container(),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 Row(
                   children: [
                     Text(
@@ -74,18 +75,18 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 40.0),
+                  padding:  EdgeInsets.only(right: 40.0.sp),
                   child: Text(
                     'Please enter your valid phone number. We will send you a 6-digit code to verify your account.',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10.sp),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey, width: 1.w),
+                    borderRadius: BorderRadius.circular(15.r),
                   ),
                   child: Row(
                     children: <Widget>[
@@ -111,10 +112,6 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                             setState(() {
                               _selectedCountry = country;
                             });
-                            print("${country.isoCode}");
-                            print("${country.iso3Code}");
-                            print("${country.phoneCode}");
-                            print("${country.name}");
                           },
                         ),
                       ),

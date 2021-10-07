@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FullScreenImage extends StatefulWidget {
   final List image;
@@ -28,14 +29,12 @@ class _FullScreenImageState extends State<FullScreenImage> {
 
   @override
   Widget build(BuildContext context) {
-    print('int changes');
-
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.sp),
               child: CustomAppBar(
                   context: context,
                   centerWidget: Container(),
@@ -46,7 +45,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
               options: CarouselOptions(
                   viewportFraction: 0.9,
                   initialPage: _current,
-                  height: 550,
+                  height: 550.h,
                   enlargeStrategy: CenterPageEnlargeStrategy.scale,
                   enlargeCenterPage: true,
                   onPageChanged: (index, reason) {
@@ -59,9 +58,9 @@ class _FullScreenImageState extends State<FullScreenImage> {
                 return Builder(
                   builder: (BuildContext context) {
                     return Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
+                      margin: EdgeInsets.symmetric(vertical: 10.sp),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15.r),
                         image: DecorationImage(
                             image: AssetImage('$i'),
                             fit: BoxFit.contain,
@@ -73,8 +72,8 @@ class _FullScreenImageState extends State<FullScreenImage> {
               }).toList(),
             ),
             Container(
-              width: 300,
-              height: 55,
+              width: 300.w,
+              height: 55.h,
               child: ListView(
                 controller: _controller,
                 shrinkWrap: true,
@@ -91,16 +90,16 @@ class _FullScreenImageState extends State<FullScreenImage> {
                           });
                         },
                         child: Container(
-                          width: 50.0,
-                          height: 55.0,
+                          width: 50.0.w,
+                          height: 55.0.h,
                           margin: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 4.0),
+                              vertical: 4.0.sp, horizontal: 4.0.sp),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(15.r),
                             image: DecorationImage(
                               colorFilter: ColorFilter.mode(
                                 Colors.grey
-                                    .withOpacity(_current == entry.key ? 0 : 1),
+                                    .withOpacity(_current == entry.key ? 0 : 1.sp),
                                 BlendMode.saturation,
                               ),
                               image: AssetImage('${entry.value}'),

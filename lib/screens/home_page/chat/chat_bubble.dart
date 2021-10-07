@@ -1,5 +1,6 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble({
@@ -23,14 +24,14 @@ class ChatBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isMe ? Color(0xffF3F3F3) : AppColor.withOpacity(.2),
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                  bottomLeft: Radius.circular(!isMe ? 0 : 15),
-                  bottomRight: Radius.circular(isMe ? 0 : 15),
+                  topLeft: Radius.circular(15.r),
+                  topRight: Radius.circular(15.r),
+                  bottomLeft: Radius.circular(!isMe ? 0 : 15.r),
+                  bottomRight: Radius.circular(isMe ? 0 : 15.r),
                 ),
               ),
-              constraints: BoxConstraints(maxWidth: 250, minWidth: 0),
-              padding: EdgeInsets.all(10),
+              constraints: BoxConstraints(maxWidth: 250.w, minWidth: 0.w),
+              padding: EdgeInsets.all(10.sp),
               child: Text(
                 message,
                 style: Theme.of(context).textTheme.subtitle1,

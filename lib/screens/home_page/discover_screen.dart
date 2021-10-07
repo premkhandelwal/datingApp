@@ -12,6 +12,7 @@ import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tcard/tcard.dart';
 
 class DiscoverScreen extends StatefulWidget {
@@ -35,7 +36,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   void initState() {
     filteredUsers = [];
-    context.read<UseractivityBloc>().add(FetchInfoEvent());
+    context.read<UseractivityBloc>().add(FetchLocationInfoEvent());
     super.initState();
   }
 
@@ -43,7 +44,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   List<CurrentUser> allUsers = [];
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();
 
     List<Widget> cards(List<CurrentUser> listUsers) {
@@ -57,7 +57,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         listUsers.length,
         (int index) {
           return ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
               child: SwipeableCard(
                 personDistance: listUsers[index].distance != null
                     ? listUsers[index].distance!
@@ -82,59 +82,70 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       key: key1,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Column(
             children: [
-              Flexible(
-                child: CustomAppBar(
-                  context: context,
-                  canGoBack: false,
-                  centerWidget: Container(
-                    height: 50,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Discover',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                        Text(
-                          SessionConstants.sessionUser.location != null
-                              ? '${SessionConstants.sessionUser.location}'
-                              : "",
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  trailingWidget: Row(
+              CustomAppBar(
+                context: context,
+                canGoBack: false,
+                centerWidget: Container(
+                  height: 50.h,
+                  child: Column(
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.filter_alt,
-                          color: AppColor,
-                        ),
-                        onPressed: () {
-                          UseractivityState state =
-                              BlocProvider.of<UseractivityBloc>(context,
-                                      listen: false)
-                                  .state;
-                          if (state is FetchingAllUsersState ||
-                              state is FetchingInfoState ||
-                              state is UpdatingLocationInfoState ||
-                              state is ApplyingFilters) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Loading Data..Please wait")));
-                          } else {
-                            showModalBottomSheet(
-                                enableDrag: true,
-                                isScrollControlled: true,
-                                context: context,
-                                backgroundColor: Colors.white.withOpacity(0),
-                                builder: (ctx) => FilterModalBottomSheet());
+                      Text(
+                        'Discover',
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      BlocBuilder<UseractivityBloc, UseractivityState>(
+                        buildWhen: (previousState, currentState) {
+                          if (currentState is FetchedInfoState) {
+                            return true;
                           }
+                          return false;
+                        },
+                        builder: (context, state) {
+                          return Text(
+                            SessionConstants.sessionUser.location != null
+                                ? '${SessionConstants.sessionUser.location}'
+                                : "",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          );
                         },
                       ),
-                      IconButton(
+                    ],
+                  ),
+                ),
+                trailingWidget: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.filter_alt,
+                        color: AppColor,
+                      ),
+                      onPressed: () {
+                        UseractivityState state =
+                            BlocProvider.of<UseractivityBloc>(context,
+                                    listen: false)
+                                .state;
+                        if (state is FetchingAllUsersState ||
+                            state is FetchingInfoState ||
+                            state is UpdatingLocationInfoState ||
+                            state is ApplyingFilters) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("Loading Data..Please wait")));
+                        } else {
+                          showModalBottomSheet(
+                              enableDrag: true,
+                              isScrollControlled: true,
+                              context: context,
+                              backgroundColor: Colors.white.withOpacity(0),
+                              builder: (ctx) => FilterModalBottomSheet());
+                        }
+                      },
+                    ),
+                    Flexible(
+                      child: IconButton(
                           icon: Icon(
                             Icons.logout_outlined,
                             color: AppColor,
@@ -143,15 +154,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             context
                                 .read<FirebaseauthBloc>()
                                 .add(SignOutRequested());
-
+                                      
                             WidgetsBinding.instance?.addPostFrameCallback((_) {
                               changePageWithoutBack(
                                   context: context,
                                   widget: ChooseSignInSignUpPage());
                             });
                           }),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Center(
@@ -169,7 +180,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     } else if (state is FetchedInfoState) {
                       context
                           .read<UseractivityBloc>()
-                          .add(FetchLocationInfoEvent());
+                          .add(FetchAllUsersWithAppliedFiltersEvent());
                     } else if (state is FetchedLocationInfoState) {
                       context.read<UseractivityBloc>().add(
                           UpdateLocationInfoEvent(
@@ -177,7 +188,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     } else if (state is UpdatedLocInfoState) {
                       context
                           .read<UseractivityBloc>()
-                          .add(FetchAllUsersWithAppliedFiltersEvent());
+                          .add(FetchInfoEvent());
                     } else if (state is AppliedFiltersState) {
                       if (filteredUsers == []) {
                         filteredUsers = new List.from(allUsers);
@@ -185,32 +196,31 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       allUsers = List.from(state.usersList);
                     }
                   }, builder: (context, state) {
-                    print(state);
                     if (state is FailedToFetchAllUsersState) {
                       return Container(
-                          width: 450,
-                          height: 500,
+                          width: 450.w,
+                          height: 500.h,
                           child: Center(child: Text("Failed to fetch users")));
                     } else if (state is FetchingAllUsersState ||
                         state is FetchingInfoState ||
                         state is UpdatingLocationInfoState ||
                         state is ApplyingFilters) {
                       return Container(
-                        width: 450,
-                        height: 500,
+                        width: 450.w,
+                        height: 500.h,
                         child: Center(child: CircularProgressIndicator()),
                       );
                     } else if (allUsers.isEmpty ||
                         (state is AppliedFiltersState && allUsers.isEmpty)) {
                       return Container(
-                          width: 450,
-                          height: 500,
+                          width: 450.w,
+                          height: 500.h,
                           child: Center(child: Text("No users found")));
                     }
                     return Column(
                       children: [
                         TCard(
-                          size: Size(450, screenHeight * 0.6),
+                          size: Size(450.w, 0.6.sh),
                           slideSpeed: 10,
                           cards: cards(
                               /* state is AppliedFiltersState
@@ -230,17 +240,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   UserDislikedEvent(allUsers[_index].uid!));
                             }
                             _index = index;
-                            print(info.direction);
                           },
                           onBack: (index, info) {
                             _index = index;
                           },
                           onEnd: () {
-                            print('end');
                           },
                         ),
                         SizedBox(
-                          height: 25,
+                          height: 25.h,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -249,19 +257,18 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 onPressed: () {
                                   swipeLeft();
                                 },
-                                iconSize: 30,
+                                iconSize: 30.sp,
                                 color: Color(0xffF27121),
                                 icon: Icon(Icons.close)),
                             CircleAvatar(
                               backgroundColor: AppColor,
-                              radius: screenHeight * 0.045,
+                              radius:  0.045.sh,
                               child: Center(
                                 child: IconButton(
                                     onPressed: () {
                                       swipeRight();
-                                      print('hi');
                                     },
-                                    iconSize: screenHeight * 0.05,
+                                    iconSize:  0.05.sh,
                                     color: Colors.white,
                                     icon: Icon(Icons.favorite)),
                               ),
@@ -270,7 +277,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 onPressed: () {
                                   _controller.back();
                                 },
-                                iconSize: 30,
+                                iconSize: 30.sp,
                                 color: Color(0xffF27121),
                                 icon: Icon(Icons.restore)),
                           ],

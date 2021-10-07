@@ -10,6 +10,7 @@ import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class OTPVerificationPage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
         body: SafeArea(
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding:  EdgeInsets.all(20.0.sp),
               child: Column(
                 children: [
                   CustomAppBar(
@@ -59,7 +60,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                     centerWidget: Container(),
                     trailingWidget: Container(),
                   ),
-                  SizedBox(height: 60),
+                  SizedBox(height: 60.h),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -111,19 +112,19 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                   //       }),
                   // ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 20),
+                    padding:  EdgeInsets.symmetric(
+                        horizontal: 20.0.sp, vertical: 20.sp),
                     child: PinFieldAutoFill(
                       controller: otpController,
                       autoFocus: true,
                       decoration: UnderlineDecoration(
                         hintText: '000000',
-                        lineHeight: 1,
+                        lineHeight: 1.h,
                         hintTextStyle:
-                            TextStyle(fontSize: 20, color: Colors.grey),
+                            TextStyle(fontSize: 20.sp, color: Colors.grey),
                         bgColorBuilder: FixedColorBuilder(AppColor),
-                        textStyle: TextStyle(fontSize: 20, color: Colors.white),
-                        gapSpace: 10,
+                        textStyle: TextStyle(fontSize: 20.sp, color: Colors.white),
+                        gapSpace: 10.sp,
                         colorBuilder: FixedColorBuilder(AppColor),
                       ),
                       codeLength: 6,
@@ -220,7 +221,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       }
                     },
                   ),
-                  SizedBox(height: 20)
+                  SizedBox(height: 20.h)
                 ],
               ),
             ),

@@ -4,6 +4,8 @@ import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class ChooseSignInSignUpPage extends StatefulWidget {
   const ChooseSignInSignUpPage({Key? key}) : super(key: key);
@@ -32,7 +34,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
               CarouselSlider(
                 carouselController: buttonCarouselController,
                 options: CarouselOptions(
-                    height: 400,
+                    height: 400.h,
                     enlargeStrategy: CenterPageEnlargeStrategy.scale,
                     autoPlay: true,
                     enlargeCenterPage: true,
@@ -45,9 +47,9 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                   return Builder(
                     builder: (BuildContext context) {
                       return Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
+                        margin: EdgeInsets.symmetric(vertical: 10.sp),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(15.r),
                           image: DecorationImage(
                               image: AssetImage('$i'),
                               fit: BoxFit.fitWidth,
@@ -71,7 +73,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                           color: AppColor, fontWeight: FontWeight.bold),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
                       child: Text(
                         'We match you with people that have a large array of similar interests.',
                         style: Theme.of(context).textTheme.subtitle1,
@@ -89,7 +91,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                           color: AppColor, fontWeight: FontWeight.bold),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
                       child: Text(
                         'Sign up today and enjoy the first month of premium benefits on us.',
                         style: Theme.of(context).textTheme.subtitle1,
@@ -107,7 +109,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                           color: AppColor, fontWeight: FontWeight.bold),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
                       child: Text(
                         'Users going through a vetting process to ensure you never match with bots.',
                         style: Theme.of(context).textTheme.subtitle1,
@@ -128,14 +130,14 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                       });
                     },
                     child: Container(
-                      width: 8.0,
-                      height: 8.0,
+                      width: 8.0.w,
+                      height: 8.0.h,
                       margin:
-                          EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                          EdgeInsets.symmetric(vertical: 4.0.sp, horizontal: 4.0.sp),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColor.withOpacity(
-                              _current == entry.key ? 0.9 : 0.4)),
+                              _current == entry.key ? 0.9.sp : 0.4.sp)),
                     ),
                   );
                 }).toList(),
@@ -171,7 +173,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                             }),
                     ]),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
             ],
           ),
         ),

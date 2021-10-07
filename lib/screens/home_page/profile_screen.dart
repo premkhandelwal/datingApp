@@ -8,6 +8,7 @@ import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/screens/home_page/widget/edit_profile_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -23,37 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     _currentUser = SessionConstants.sessionUser;
-    /* _controller.addListener(() {
-      // reached bottom
-      if (_controller.offset >= _controller.position.maxScrollExtent &&
-          !_controller.position.outOfRange) {
-        setState(() => isBottom = true);
-      }
-      _controller.position.isScrollingNotifier.addListener(() {
-        if (!_controller.position.isScrollingNotifier.value) {
-          print('scroll is stopped');
-          setState(() => isScrolling = false);
-        } else {
-          print('scroll is started');
-          setState(() => isScrolling = true);
-        }
-      });
-
-      // IS SCROLLING
-//         if (_controller.offset >= _controller.position.minScrollExtent &&
-//             _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
-//           setState(() {
-//             isBottom = false;
-//           });
-//         }
-
-      // REACHED TOP
-      if (_controller.offset <= _controller.position.minScrollExtent &&
-          !_controller.position.outOfRange) {
-        setState(() => isBottom = false);
-      }
-    }); */
-    super.initState();
+       super.initState();
   }
 
   bool isBottom = false;
@@ -61,7 +32,6 @@ class _ProfilePageState extends State<ProfilePage> {
   bool showMoreBio = true;
   bool showMoreInterests = true;
 
-  ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Stack(
                 children: [
                   Container(
-                    height: 500,
+                    height: 500.h,
                     width: double.infinity,
                     child: _currentUser.image != null &&
                             isImage(_currentUser.image!.path)
@@ -134,24 +104,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        SizedBox(height: 380),
+                        SizedBox(height: 380.h),
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 20),
+                              padding:  EdgeInsets.symmetric(
+                                  horizontal: 20.0.sp, vertical: 20.sp),
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25),
-                                    topRight: Radius.circular(25),
+                                    topLeft: Radius.circular(25.r),
+                                    topRight: Radius.circular(25.r),
                                   )),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  SizedBox(height: 40),
+                                  SizedBox(height: 40.h),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -175,13 +145,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       IconsOutlinedButton(
                                         onPressed: () {},
-                                        iconSize: 30,
-                                        size: Size(20, 60),
+                                        iconSize: 30.sp,
+                                        size: Size(20.sp, 60.sp),
                                         icon: Icons.near_me,
                                       )
                                     ],
                                   ),
-                                  SizedBox(height: 30),
+                                  SizedBox(height: 30.h),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -203,12 +173,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ],
                                       ),
                                       Container(
-                                        height: 40,
-                                        width: 80,
+                                        height: 40.h,
+                                        width: 80.w,
                                         decoration: BoxDecoration(
-                                            color: AppColor.withOpacity(0.9),
+                                            color: AppColor.withOpacity(0.9.sp),
                                             borderRadius:
-                                                BorderRadius.circular(10)),
+                                                BorderRadius.circular(10.r)),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
@@ -218,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               icon: Icon(
                                                 Icons.location_on,
                                                 color: Colors.white,
-                                                size: 15,
+                                                size: 15.sp,
                                               ),
                                             ),
                                             Text(
@@ -228,14 +198,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   .subtitle1!
                                                   .copyWith(
                                                       color: Colors.white,
-                                                      fontSize: 12),
+                                                      fontSize: 12.sp),
                                             ),
                                           ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 30),
+                                  SizedBox(height: 30.h),
                                   Text(
                                     'Bio',
                                     style:
@@ -246,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
-                                  _currentUser.bio != null ? SizedBox(height: 10) : Container(),
+                                  _currentUser.bio != null ? SizedBox(height: 10.h) : Container(),
                                   Center(
                                     child: GestureDetector(
                                       onTap: () {
@@ -264,26 +234,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 : "Show less"
                                             : "",
                                         style: TextStyle(
-                                            fontSize: 12, color: Colors.red),
+                                            fontSize: 12.sp, color: Colors.red),
                                       ),
                                     ),
                                   ),
-                                 _currentUser.bio != null ?  SizedBox(height: 30) : Container(),
+                                 _currentUser.bio != null ?  SizedBox(height: 30.h) : Container(),
                                   Text(
                                     'Interests',
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
                                   SizedBox(
-                                    height: 20,
+                                    height: 20.h,
                                   ),
                                   _currentUser.interests != null
                                       ? Container(
-                                          height: showMoreInterests ? 50 : null,
+                                          height: showMoreInterests ? 50.h : null,
                                           child: GridView.builder(
-                                            controller: _controller,
+                                            physics: new NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
-                                            scrollDirection: Axis.vertical,
                                             itemCount:
                                                 _currentUser.interests?.length,
                                             gridDelegate:
@@ -297,6 +266,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .subtitle2,
+                                                    textAlign: TextAlign.center,
                                               );
                                             },
                                           ),
@@ -317,11 +287,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ? "Show More"
                                             : "Show less",
                                         style: TextStyle(
-                                            fontSize: 12, color: Colors.red),
+                                            fontSize: 12.sp, color: Colors.red),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 30),
+                                  SizedBox(height: 30.h),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -343,9 +313,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 30),
+                                  SizedBox(height: 30.h),
                                   Container(
-                                    height: 400,
+                                    height: 400.h,
                                     child: GridView.builder(
                                       itemCount: sampleImages.length,
                                       gridDelegate:
@@ -358,7 +328,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           (BuildContext context, int index) {
                                         return ClipRRect(
                                             borderRadius:
-                                                BorderRadius.circular(15),
+                                                BorderRadius.circular(15.r),
                                             child: Image.asset(
                                               sampleImages[index],
                                               fit: BoxFit.fitWidth,
@@ -371,11 +341,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             Positioned(
-                              top: -25,
-                              left: MediaQuery.of(context).size.width / 2.5,
+                              top: -25.sp,
+                              left: MediaQuery.of(context).size.width / 2.5.sp,
                               child: CircleAvatar(
                                 backgroundColor: AppColor,
-                                radius: 35,
+                                radius: 35.r,
                                 child: Center(
                                   child: IconButton(
                                       onPressed: () {
@@ -390,7 +360,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   user: _currentUser,
                                                 ));
                                       },
-                                      iconSize: 25,
+                                      iconSize: 25.sp,
                                       color: Colors.white,
                                       icon: Icon(Icons.edit)),
                                 ),

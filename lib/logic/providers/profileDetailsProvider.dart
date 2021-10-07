@@ -24,7 +24,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
         "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/profileImage");
     if (user.image != null) {
       UploadTask uploadTask = ref.putFile(user.image!);
-     await uploadTask.whenComplete(() async {
+      await uploadTask.whenComplete(() async {
         user.imageDownloadUrl = await ref.getDownloadURL();
         await collection
             .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
@@ -69,7 +69,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .delete();
         }).catchError((onError) {
-          print(onError);
+          throw Exception("Failed");
         });
       } else {
         await collection

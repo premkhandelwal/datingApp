@@ -9,6 +9,7 @@ import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileDetailPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.0.sp, vertical: 20.sp),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +57,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     context: context,
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 10.h,
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -66,20 +67,20 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 50,
+                    height: 50.h,
                   ),
                   Stack(clipBehavior: Clip.none, children: [
                     Container(
-                        width: 99,
-                        height: 99,
+                        width: 99.w,
+                        height: 99.h,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
+                            borderRadius: BorderRadius.circular(25.0.r),
                           ),
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25.0),
+                          borderRadius: BorderRadius.circular(25.0.r),
                           child: _image != null
                               ? Image.file(
                                   _image!,
@@ -96,13 +97,13 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       bottom: -15,
                       right: -5,
                       child: Container(
-                        height: 50,
-                        width: 50,
-                        padding: EdgeInsets.all(5),
+                        height: 50.h,
+                        width: 50.w,
+                        padding: EdgeInsets.all(5.sp),
                         decoration: BoxDecoration(
                             color: AppColor,
-                            borderRadius: BorderRadius.circular(15.0),
-                            border: Border.all(color: Colors.white, width: 2)),
+                            borderRadius: BorderRadius.circular(15.0.r),
+                            border: Border.all(color: Colors.white, width: 2.w)),
                         child: IconButton(
                           onPressed: _addImage,
                           icon: Icon(Icons.camera_alt_rounded),
@@ -112,7 +113,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     ),
                   ]),
                   SizedBox(
-                    height: 50,
+                    height: 50.h,
                   ),
                   TextFormField(
                     validator: (val) {
@@ -124,47 +125,48 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     controller: name,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          gapPadding: 5,
+                          borderRadius: BorderRadius.circular(15.r),
+                          gapPadding: 5.sp,
                           borderSide: BorderSide(color: Colors.black45),
                         ),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(15.r),
                             borderSide: BorderSide(color: Colors.black45)),
                         labelText: "Full Name",
                         labelStyle: TextStyle(color: Colors.black45)),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 20.h,
                   ),
                   TextFormField(
                     controller: profession,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          gapPadding: 5,
+                          borderRadius: BorderRadius.circular(15.r),
+                          gapPadding: 5.sp,
                           borderSide: BorderSide(color: Colors.black45),
                         ),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(15.r),
                             borderSide: BorderSide(color: Colors.black45)),
                         labelText: "Profession",
                         labelStyle: TextStyle(color: Colors.black45)),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Colors.red[50],
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
+                          borderRadius: BorderRadius.circular(15.r)),
                     ),
                     onPressed: () {
                       DatePicker.showDatePicker(context,
                           theme: DatePickerTheme(
+                            backgroundColor: Colors.white,
                             cancelStyle: TextStyle(color: Colors.grey),
                             doneStyle: TextStyle(color: AppColor),
                             itemStyle: TextStyle(color: AppColor),
-                            containerHeight: 210.0,
+                            containerHeight: 210.0.h,
                           ),
                           onCancel: () {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -186,7 +188,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      height: 50.0,
+                      height: 50.0.h,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -197,12 +199,12 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 color: AppColor,
                               ),
                               SizedBox(
-                                width: 20,
+                                width: 20.w,
                               ),
                               Text(
                                 " $_date",
                                 style:
-                                    TextStyle(color: AppColor, fontSize: 15.0),
+                                    TextStyle(color: AppColor, fontSize: 15.0.sp),
                               )
                             ],
                           ),
@@ -212,7 +214,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 60,
+                    height: 60.h,
                   ),
                   CommonButton(
                     onPressed: () {

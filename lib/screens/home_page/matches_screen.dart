@@ -7,6 +7,7 @@ import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({
@@ -44,16 +45,16 @@ class _MatchesScreenState extends State<MatchesScreen> {
         imageUrl = _matchedUsersList[index].image!;
       }
       return Container(
-          padding: EdgeInsets.all(7),
+          padding: EdgeInsets.all(7.sp),
           child: ClipRRect(
             child: Container(
-              height: 350,
+              height: 350.h,
               child: Stack(
                 children: [
                   Center(
                     child: Container(
-                      height: 350,
-                      width: 200,
+                      height: 350.h,
+                      width: 200.w,
                       child: imageUrl == null
                           ? Container(
                               color: Colors.amber,
@@ -66,10 +67,10 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 60,
-                    left: 2,
+                    bottom: 60.sp,
+                    left: 2.sp,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding:  EdgeInsets.symmetric(horizontal: 8.0.sp),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -78,7 +79,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
-                                .copyWith(color: Colors.white, fontSize: 16),
+                                .copyWith(color: Colors.white, fontSize: 16.sp),
                           ),
                         ],
                       ),
@@ -88,12 +89,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     bottom: 0,
                     child: ClipRRect(
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15.r),
+                        bottomRight: Radius.circular(15.r),
                       ),
                       child: Container(
-                        height: 50,
-                        width: 170,
+                        height: 50.h,
+                        width: 170.w,
                         child: BackdropFilter(
                           child: Row(
                             children: [
@@ -101,7 +102,6 @@ class _MatchesScreenState extends State<MatchesScreen> {
                                 child: InkWell(
                                   onTap: () {
                                     removeItem(index);
-                                    print('cancel');
                                   },
                                   child: Icon(
                                     Icons.close,
@@ -110,14 +110,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
                                 ),
                               ),
                               Container(
-                                height: 50,
-                                width: 2,
+                                height: 50.h,
+                                width: 2.w,
                                 color: Colors.white,
                               ),
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                    print('like');
                                   },
                                   child: Icon(
                                     Icons.favorite,
@@ -138,14 +137,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 ],
               ),
             ),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
           ));
     }
 
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Center(
             child: Column(
               children: [
@@ -164,21 +163,19 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   ),
                   trailingWidget: IconsOutlinedButton(
                       icon: Icons.filter_list,
-                      size: Size(52, 52),
+                      size: Size(52.sp, 52.sp),
                       onPressed: () {}),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 Text(
                   'This is a list of people who have liked you and your matches.',
                   style: Theme.of(context).textTheme.subtitle2,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 BlocConsumer<UseractivityBloc, UseractivityState>(
                     listener: (context, state) {
                   if (state is FetchedMatchedUsersState) {
-                    print(state.users);
                     _matchedUsersList = state.users;
-                    print(_matchedUsersList);
                     for (var i = 0; i < _matchedUsersList.length; i++) {
                       int index = _allUsersList.indexWhere((element) {
                         return element.uid == _matchedUsersList[i].uid;
@@ -193,7 +190,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 }, builder: (context, state) {
                   if (state is FetchingAllUsersState ||
                       state is FetchingMatchedUsersState || state is FetchedAllUsersState) {
-                    return Container(height:350,child: Center(child: CircularProgressIndicator()));
+                    return Container(height:350.h,child: Center(child: CircularProgressIndicator()));
                   } else if (_matchedUsersList.isNotEmpty || state is FetchedMatchedUsersState) {
                     return Expanded(
                       child: AnimatedContainer(
@@ -209,7 +206,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       ),
                     );
                   } else {
-                    return Container(height: 350,child: Center(child: Text("No Matched Users")));
+                    return Container(height: 350.h,child: Center(child: Text("No Matched Users")));
                   }
                 })
               ],

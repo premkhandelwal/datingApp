@@ -6,6 +6,7 @@ import 'package:dating_app/screens/home_page/chat/single_chat_list_tile.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0.sp),
           child: Center(
             child: Column(
               children: [
@@ -41,23 +42,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   trailingWidget: IconsOutlinedButton(
-                      icon: Icons.tune, size: Size(52, 52), onPressed: () {}),
+                      icon: Icons.tune, size: Size(52.sp, 52.sp), onPressed: () {}),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 TextFormField(
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        gapPadding: 5,
+                        borderRadius: BorderRadius.circular(15.r),
+                        gapPadding: 5.sp,
                         borderSide: BorderSide(color: Colors.black45),
                       ),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(15.r),
                           borderSide: BorderSide(color: Colors.black45)),
                       labelText: "Search",
                       labelStyle: TextStyle(color: Colors.black45)),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Expanded(
                   child: ListView.builder(
                       itemCount: name.length,
