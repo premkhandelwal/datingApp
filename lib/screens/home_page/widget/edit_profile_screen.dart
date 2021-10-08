@@ -28,9 +28,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController professionController = TextEditingController();
   TextEditingController bioController = TextEditingController();
   File? _image;
+  late ProfiledetailsBloc profiledetailsBloc;
 
   @override
   void initState() {
+    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
     _fillFields();
     super.initState();
   }
@@ -249,7 +251,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         return CommonButton(
                             text: 'Continue',
                             onPressed: () {
-                              context.read<ProfiledetailsBloc>().add(
+                              profiledetailsBloc.add(
                                   UpdateInfoEvent(
                                       user: CurrentUser(
                                           locationCoordinates:

@@ -25,6 +25,15 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
       Country(isoCode: "IN", iso3Code: 'IND', phoneCode: "91", name: 'India');
 
   final _formKey = GlobalKey<FormState>();
+  late FirebaseauthBloc firebaseauthBloc;
+
+  @override
+  void initState() {
+    firebaseauthBloc = BlocProvider.of<FirebaseauthBloc>(context);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController phoneNumber = new TextEditingController();
@@ -181,16 +190,14 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                         text: 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context
-                                .read<FirebaseauthBloc>()
-                                .add(OtpSendRequested(
+                                  firebaseauthBloc.add(OtpSendRequested(
                                   codeAutoRetrievalTimeout: (id) {
-                                    context
+                                    /* context
                                         .read<FirebaseauthBloc>()
-                                        .add(OtpRetrievalTimeOut());
+                                        .add(OtpRetrievalTimeOut()); */
                                   },
                                   verificationFailed: (exception) {
-                                    context.read<FirebaseauthBloc>().add(
+                                    firebaseauthBloc.add(
                                         OtpRetrievalFailure(
                                             errorMessage: exception.code));
                                     //throw Exception(exception);

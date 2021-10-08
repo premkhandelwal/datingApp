@@ -25,6 +25,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   TextEditingController name = new TextEditingController();
   TextEditingController profession = new TextEditingController();
   File? _image;
+  late ProfiledetailsBloc profiledetailsBloc;
 
   Future<File?> _addImage() async {
     final picker = ImagePicker();
@@ -38,6 +39,12 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   }
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +235,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       }
                       if (_formKey.currentState!.validate() &&
                           !isDateNotSelected) {
-                        context.read<ProfiledetailsBloc>().add(
+                        profiledetailsBloc.add(
                             AddBasicInfoEvent(
                                 user: CurrentUser(
                                     name: name.text,

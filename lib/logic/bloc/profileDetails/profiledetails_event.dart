@@ -50,3 +50,12 @@ class ShowMore extends ProfiledetailsEvent {
     required this.isInterests,
   });
 }
+
+class FetchUserInfoEvent extends ProfiledetailsEvent {
+  final Map<String, num> locationCoordinates;
+  FetchUserInfoEvent({
+    required this.locationCoordinates,
+  });
+}
+
+class FetchLocInfoEvent extends ProfiledetailsEvent {}

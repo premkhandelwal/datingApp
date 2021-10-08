@@ -137,7 +137,7 @@ class _ChooseSignInSignUpPageState extends State<ChooseSignInSignUpPage> {
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColor.withOpacity(
-                              _current == entry.key ? 0.9.sp : 0.4.sp)),
+                              _current == entry.key ? 0.9 : 0.4)),
                     ),
                   );
                 }).toList(),

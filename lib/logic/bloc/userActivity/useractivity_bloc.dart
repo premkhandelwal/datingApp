@@ -80,6 +80,7 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       List<CurrentUser> _users =
           await userActivityRepository.fetchAllUsersWithAppliedFilters();
       yield FetchedAllUserswithFiltersState(users: _users);
+      add(UpdateLocationInfoEvent());
     } catch (e) {
       yield FailedToFetchAllUsersState();
     }
@@ -108,8 +109,11 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   Stream<UseractivityState> _mapFetchInfotoState(FetchInfoEvent event) async* {
     yield FetchingInfoState();
     try {
-      CurrentUser currentUser = await userActivityRepository.fetchUserInfo();
+// Pass location coordinates to fetchuserinfo() because the new location of the user is not updated in the database yet
+      CurrentUser currentUser =
+          await userActivityRepository.fetchUserInfo(event.locationCoordinates);
       yield FetchedInfoState(currentUser: currentUser);
+      add(FetchAllUsersWithAppliedFiltersEvent());
     } catch (e) {
       yield FailedFetchInfoState();
     }
@@ -122,6 +126,7 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       Map<String, num> locationInfo =
           await userActivityRepository.fetchLocationInfo();
       yield FetchedLocationInfoState(locationInfo: locationInfo);
+      add(FetchInfoEvent(locationCoordinates: locationInfo));
     } catch (e) {
       yield FailedFetchInfoState();
     }
@@ -131,8 +136,7 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       UpdateLocationInfoEvent event) async* {
     yield UpdatingLocationInfoState();
     try {
-      await userActivityRepository
-          .updateLocationInfo(event.locationCoordinates);
+      userActivityRepository.updateLocationInfo();
       yield UpdatedLocInfoState();
     } catch (e) {}
   }

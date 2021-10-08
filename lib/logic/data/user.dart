@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CurrentUser {
@@ -39,8 +38,6 @@ class CurrentUser {
       this.interests});
 
   factory CurrentUser.fromMap(Map<String, dynamic> map) {
-    int? gender = map['gender'] ?? null;
-    int? interestedIn = map['interestedIn'] ?? null;
     // int interestedIn = map['interestedin'];
     return CurrentUser(
       uid: map['uid'] != null ? map['uid'] : null,
@@ -49,8 +46,18 @@ class CurrentUser {
       bio: map['bio'] != null ? map['bio'] : null,
       age: map['age'] != null ? map['age'] : null,
       birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
-      gender: gender != null ? GENDER.values[gender] : GENDER.NotSelected,
-      interestedin: interestedIn != null ? GENDER.values[interestedIn] : GENDER.NotSelected,
+      gender: map["gender"] == "Male"
+          ? GENDER.male
+          : map["gender"] == "Female"
+              ? GENDER.female
+              : GENDER.other,
+      interestedin: map["gender"] != null
+          ? map["gender"] == "Male"
+              ? GENDER.male
+              : map["gender"] == "Female"
+                  ? GENDER.female
+                  : GENDER.other
+          : GENDER.NotSelected,
       // interestedin: INTERESTEDIN.values[interestedIn],
       location: map['location'] ?? map['location'],
       imageDownloadUrl:

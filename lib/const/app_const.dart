@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
+import 'package:dating_app/logic/data/appliedFilters.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +10,9 @@ import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SessionConstants {
-  static FilterChangedEvent? appliedFilters = FilterChangedEvent(
+  static AppliedFilters? appliedFilters = AppliedFilters(
       maxAge: 0, minAge: 0, interestedIn: GENDER.NotSelected, thresholdDist: 0);
-  static FilterChangedEvent? defaultFilters;
+  static AppliedFilters? defaultFilters;
   static const sessionUid = "sessionUid";
   static const sessionUsername = 'sessionUsername';
   static const sessionSignedInWith = "sessionSignedInWith";
@@ -22,7 +21,7 @@ class SessionConstants {
 
   static void clear() {
     sessionUser = CurrentUser();
-    appliedFilters = FilterChangedEvent(
+    appliedFilters = AppliedFilters(
         maxAge: 0,
         minAge: 0,
         interestedIn: GENDER.NotSelected,

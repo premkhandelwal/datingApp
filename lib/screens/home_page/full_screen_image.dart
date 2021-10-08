@@ -99,7 +99,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
                             image: DecorationImage(
                               colorFilter: ColorFilter.mode(
                                 Colors.grey
-                                    .withOpacity(_current == entry.key ? 0 : 1.sp),
+                                    .withOpacity(_current == entry.key ? 0 : 1),
                                 BlendMode.saturation,
                               ),
                               image: AssetImage('${entry.value}'),

@@ -34,6 +34,10 @@ class ProfiledetailsBloc
       yield DataLoadingInProgressState();
     } else if (event is ShowMore) {
       yield* _mapShowMoretoState(event);
+    } else if (event is FetchLocInfoEvent) {
+      yield* _mapFetchLoctoState();
+    } else if (event is FetchUserInfoEvent) {
+      yield* _mapFetchInfotoState(event);
     }
   }
 
@@ -113,6 +117,31 @@ class ProfiledetailsBloc
   }
 
   Stream<ProfiledetailsState> _mapShowMoretoState(ShowMore event) async* {
-    yield ShowMoreState(isBio: event.isBio,isInterests: event.isInterests);
+    yield ShowMoreState(isBio: event.isBio, isInterests: event.isInterests);
   }
+
+  Stream<ProfiledetailsState> _mapFetchLoctoState()async* {
+     yield FetchingUserLocInfoState();
+    try {
+      Map<String, num> locationInfo =
+          await profileDetailsRepository.fetchLocInfo();
+      yield FetchedUserLocInfoState();
+      add(FetchUserInfoEvent(locationCoordinates: locationInfo));
+    } catch (e) {
+      yield FailedtoFetchLocInfoState();
+    }
+  } 
+
+  Stream<ProfiledetailsState> _mapFetchInfotoState(FetchUserInfoEvent event)async*{
+    yield FetchingUserInfoState();
+    try {
+// Pass location coordinates to fetchuserinfo() because the new location of the user is not updated in the database yet
+      CurrentUser currentUser =
+          await profileDetailsRepository.fetchUserInfo(event.locationCoordinates);
+      yield FetchedUserInfoState(currentUser: currentUser);
+    } catch (e) {
+      yield FailedtoFetchUserInfoState();
+    }
+  }
+
 }

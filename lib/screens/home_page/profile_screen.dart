@@ -20,11 +20,16 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   Random random = Random();
   CurrentUser _currentUser = CurrentUser();
+  late ProfiledetailsBloc profiledetailsBloc;
 
   @override
   void initState() {
+    super.initState();
+    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
+    if (SessionConstants.sessionUser != CurrentUser()) {
+      profiledetailsBloc.add(FetchLocInfoEvent());
+    }
     _currentUser = SessionConstants.sessionUser;
-       super.initState();
   }
 
   bool isBottom = false;
@@ -53,6 +58,8 @@ class _ProfilePageState extends State<ProfilePage> {
           } else if (state is ShowMoreState) {
             showMoreBio = state.isBio;
             showMoreInterests = state.isInterests;
+          } else if (state is FetchedUserInfoState) {
+            _currentUser = state.currentUser;
           }
         },
         builder: (context, state) {
@@ -62,13 +69,15 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.pink,
             ));
           } */
+
           final userActivitystate = context.watch<UseractivityBloc>().state;
 
           if (userActivitystate is FetchingAllUsersState ||
               userActivitystate is FetchingInfoState ||
-              userActivitystate is UpdatingLocationInfoState ||
               userActivitystate is ApplyingFilters ||
-              state is UpdatingInfoState) {
+              state is UpdatingInfoState ||
+              state is FetchingUserInfoState ||
+              state is FetchingUserLocInfoState) {
             return Center(child: CircularProgressIndicator());
           } else if (userActivitystate is FetchedInfoState ||
               userActivitystate is FetchedAllUserswithFiltersState ||
@@ -109,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           clipBehavior: Clip.none,
                           children: [
                             Container(
-                              padding:  EdgeInsets.symmetric(
+                              padding: EdgeInsets.symmetric(
                                   horizontal: 20.0.sp, vertical: 20.sp),
                               decoration: BoxDecoration(
                                   color: Colors.white,
@@ -176,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         height: 40.h,
                                         width: 80.w,
                                         decoration: BoxDecoration(
-                                            color: AppColor.withOpacity(0.9.sp),
+                                            color: AppColor.withOpacity(0.9),
                                             borderRadius:
                                                 BorderRadius.circular(10.r)),
                                         child: Row(
@@ -216,15 +225,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
-                                  _currentUser.bio != null ? SizedBox(height: 10.h) : Container(),
+                                  _currentUser.bio != null
+                                      ? SizedBox(height: 10.h)
+                                      : Container(),
                                   Center(
                                     child: GestureDetector(
                                       onTap: () {
-                                        context.read<ProfiledetailsBloc>().add(
-                                            ShowMore(
-                                                isBio: !showMoreBio,
-                                                isInterests:
-                                                    showMoreInterests));
+                                        profiledetailsBloc.add(ShowMore(
+                                            isBio: !showMoreBio,
+                                            isInterests: showMoreInterests));
                                       },
                                       child: Text(
                                         _currentUser.bio != null &&
@@ -238,7 +247,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   ),
-                                 _currentUser.bio != null ?  SizedBox(height: 30.h) : Container(),
+                                  _currentUser.bio != null
+                                      ? SizedBox(height: 30.h)
+                                      : Container(),
                                   Text(
                                     'Interests',
                                     style:
@@ -249,9 +260,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   _currentUser.interests != null
                                       ? Container(
-                                          height: showMoreInterests ? 50.h : null,
+                                          height:
+                                              showMoreInterests ? 50.h : null,
                                           child: GridView.builder(
-                                            physics: new NeverScrollableScrollPhysics(),
+                                            physics:
+                                                new NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount:
                                                 _currentUser.interests?.length,
@@ -266,31 +279,34 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .subtitle2,
-                                                    textAlign: TextAlign.center,
+                                                textAlign: TextAlign.center,
                                               );
                                             },
                                           ),
                                         )
                                       : Container(),
-                                if(_currentUser.interests != null && _currentUser.interests!.length > 3)
-                                  Center(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        context.read<ProfiledetailsBloc>().add(
-                                            ShowMore(
-                                                isBio: showMoreBio,
-                                                isInterests:
-                                                    !showMoreInterests));
-                                      },
-                                      child: Text(
-                                        showMoreInterests
-                                            ? "Show More"
-                                            : "Show less",
-                                        style: TextStyle(
-                                            fontSize: 12.sp, color: Colors.red),
+                                  if (_currentUser.interests != null &&
+                                      _currentUser.interests!.length > 3)
+                                    Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context
+                                              .read<ProfiledetailsBloc>()
+                                              .add(ShowMore(
+                                                  isBio: showMoreBio,
+                                                  isInterests:
+                                                      !showMoreInterests));
+                                        },
+                                        child: Text(
+                                          showMoreInterests
+                                              ? "Show More"
+                                              : "Show less",
+                                          style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color: Colors.red),
+                                        ),
                                       ),
                                     ),
-                                  ),
                                   SizedBox(height: 30.h),
                                   Row(
                                     mainAxisAlignment:

@@ -24,7 +24,7 @@ abstract class BaseAuthProvider {
   Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
   Future<bool> sendverificationEmail();
   Future<bool> isEmailVerified();
-  Future<bool> isuserDocExists(String uid);
+  Future<bool> isdatalessUserDocExists(String uid);
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
@@ -56,9 +56,19 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   }
 
   @override
-  Future<bool> isuserDocExists(String uid) async {
+  Future<bool> isdatalessUserDocExists(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
         await datalessCollection.doc("$uid").get();
+
+    if (doc.exists) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> iscollectionDocExists(String uid) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await collection.doc("$uid").get();
 
     if (doc.exists) {
       return true;
@@ -76,8 +86,37 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
           .doc(userCredential.user!.uid)
           .update({"lastLogin": DateTime.now()});
       return CurrentUser(firebaseUser: userCredential.user);
-    } catch (e) {
-      throw Exception(e);
+    } on FirebaseAuthException catch (error) {
+      switch (error.code) {
+        case "ERROR_EMAIL_ALREADY_IN_USE":
+        case "account-exists-with-different-credential":
+        case "email-already-in-use":
+          throw Exception(
+              "Email already used. Please sign up using different account.");
+        case "ERROR_WRONG_PASSWORD":
+        case "wrong-password":
+          throw Exception("Invalid Credentials!");
+        case "ERROR_USER_NOT_FOUND":
+        case "user-not-found":
+          throw Exception("No user found with this email.");
+
+        case "ERROR_USER_DISABLED":
+        case "user-disabled":
+          throw Exception("User disabled.");
+        case "ERROR_TOO_MANY_REQUESTS":
+        case "operation-not-allowed":
+          throw Exception("Too many requests to log into this account.");
+
+        case "ERROR_OPERATION_NOT_ALLOWED":
+        case "operation-not-allowed":
+          throw Exception("Server error, please try again later.");
+        case "ERROR_INVALID_EMAIL":
+        case "invalid-email":
+          throw Exception("Email address is invalid.");
+
+        default:
+          throw Exception("Login failed. Please try again.");
+      }
     }
   }
 
@@ -94,12 +133,45 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   @override
   Future<CurrentUser> signUpWithEmailPassword(
       String emailId, String password) async {
-    UserCredential credential = await _firebaseAuth
-        .createUserWithEmailAndPassword(email: emailId, password: password);
-    await datalessCollection
-        .doc(credential.user!.uid)
-        .set({"timeStamp": DateTime.now()});
-    return CurrentUser(firebaseUser: credential.user);
+    try {
+      UserCredential credential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: emailId, password: password);
+      await datalessCollection
+          .doc(credential.user!.uid)
+          .set({"timeStamp": DateTime.now()});
+      return CurrentUser(firebaseUser: credential.user);
+    } on FirebaseAuthException catch (error) {
+      switch (error.code) {
+        case "ERROR_EMAIL_ALREADY_IN_USE":
+        case "account-exists-with-different-credential":
+        case "email-already-in-use":
+          throw Exception(
+              "Email already used. Please sign up using different account.");
+        case "ERROR_WRONG_PASSWORD":
+        case "wrong-password":
+          throw Exception("Invalid Credentials!");
+        case "ERROR_USER_NOT_FOUND":
+        case "user-not-found":
+          throw Exception("No user found with this email.");
+
+        case "ERROR_USER_DISABLED":
+        case "user-disabled":
+          throw Exception("User disabled.");
+        case "ERROR_TOO_MANY_REQUESTS":
+        case "operation-not-allowed":
+          throw Exception("Too many requests to log into this account.");
+
+        case "ERROR_OPERATION_NOT_ALLOWED":
+        case "operation-not-allowed":
+          throw Exception("Server error, please try again later.");
+        case "ERROR_INVALID_EMAIL":
+        case "invalid-email":
+          throw Exception("Email address is invalid.");
+
+        default:
+          throw Exception("Login failed. Please try again.");
+      }
+    }
   }
 
   @override
@@ -139,7 +211,14 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
         await _firebaseAuth.signInWithCredential(credential);
     collection.doc(result.user!.uid).update({"lastLogin": DateTime.now()});
 
-    if (result.user?.uid != null) {
+    if (result.user != null) {
+     bool docExist = await iscollectionDocExists(result.user!.uid);
+     if(!docExist){
+       await datalessCollection
+          .doc(result.user!.uid)
+          .set({"timeStamp": DateTime.now()});
+     }
+     
       return credential;
     } //Pass the credential created, to the signInWithCredential()
     return null; // returns true if otp is verified else returns false
@@ -164,7 +243,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     try {
       _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
-          timeout: Duration(seconds: 30),
+          timeout: Duration(seconds: 60),
           verificationCompleted: (auth) {},
           verificationFailed: verificationFailed,
           codeSent: codeSent,

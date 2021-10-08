@@ -19,10 +19,7 @@ class OtpSent extends FirebaseauthState {}
 class OtpVerified extends FirebaseauthState {
   final AuthCredential authCredential;
   final String? userUID;
-  OtpVerified({
-    required this.authCredential,
-    this.userUID
-  });
+  OtpVerified({required this.authCredential, this.userUID});
 }
 
 class OtpNotVerified extends FirebaseauthState {}
@@ -36,7 +33,12 @@ class OtpRetrievalFailed extends FirebaseauthState {
   });
 }
 
-class RequestedOperationFailed extends FirebaseauthState {}
+class RequestedOperationFailed extends FirebaseauthState {
+  final Object errorMessage;
+  RequestedOperationFailed({
+    required this.errorMessage,
+  });
+}
 
 class UserLoggedIn extends FirebaseauthState {
   final String userUID;
@@ -56,13 +58,13 @@ class UserSignedUp extends FirebaseauthState {
   });
 }
 
-class EmailVerificationSentState extends FirebaseauthState{} 
+class EmailVerificationSentState extends FirebaseauthState {}
 
-class FailedtoSendEmailVerificationState extends FirebaseauthState{} 
+class FailedtoSendEmailVerificationState extends FirebaseauthState {}
 
-class EmailVerifiedState extends FirebaseauthState{} 
+class EmailVerifiedState extends FirebaseauthState {}
 
-class EmailNotVerifiedState extends FirebaseauthState{} 
+class EmailNotVerifiedState extends FirebaseauthState {}
 
 class LinkedEmailWithPhoneNumber extends FirebaseauthState {}
 
@@ -70,7 +72,13 @@ class LinkedPhoneNumberWithEmail extends FirebaseauthState {}
 
 class FailedtoLinkedPhoneNumberEmail extends FirebaseauthState {}
 
-class SignedInForFirstTimeState extends FirebaseauthState{}
+class SignedInForFirstTimeState extends FirebaseauthState {}
 
-class NotSignedInForFirstTimeState extends FirebaseauthState{}
-class FailedtogetSignInForFirstTimeState extends FirebaseauthState{}
+class NotSignedInForFirstTimeState extends FirebaseauthState {
+  final String? userUID;
+  NotSignedInForFirstTimeState({
+    required this.userUID,
+  });
+}
+
+class FailedtogetSignInForFirstTimeState extends FirebaseauthState {}

@@ -43,3 +43,20 @@ class ShowMoreState extends ProfiledetailsState {
     required this.isInterests,
   });
 }
+
+class FetchingUserInfoState extends ProfiledetailsState{}
+
+class FetchedUserInfoState extends ProfiledetailsState {
+  final CurrentUser currentUser;
+  FetchedUserInfoState({
+    required this.currentUser,
+  });
+}
+
+class FailedtoFetchUserInfoState extends ProfiledetailsState{}
+
+class FetchingUserLocInfoState extends ProfiledetailsState{}
+
+class FetchedUserLocInfoState extends ProfiledetailsState{}
+
+class FailedtoFetchLocInfoState extends ProfiledetailsState{}

@@ -22,6 +22,7 @@ class LinkPhoneEmailScreen extends StatefulWidget {
 }
 
 class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
+  late FirebaseauthBloc firebaseauthBloc;
   final TextEditingController emailIdController = new TextEditingController();
 
   final TextEditingController passwordController = new TextEditingController();
@@ -29,6 +30,12 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
   final TextEditingController phoneNumber = new TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    firebaseauthBloc = BlocProvider.of<FirebaseauthBloc>(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +222,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                 Spacer(),
                 BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                   listener: (context, state) {
-                  if (state is FailedtoLinkedPhoneNumberEmail) {
+                    if (state is FailedtoLinkedPhoneNumberEmail) {
                       showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
@@ -256,19 +263,17 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         text: 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context.read<FirebaseauthBloc>().add(
+                            firebaseauthBloc.add(
                                 widget.connectWith == "email"
                                     ? LinkEmailWithPhoneNumberEvent(
                                         emailId: emailIdController.text,
                                         password: passwordController.text)
                                     : OtpSendRequested(
                                         codeAutoRetrievalTimeout: (id) {
-                                          context
-                                              .read<FirebaseauthBloc>()
-                                              .add(OtpRetrievalTimeOut());
+                                          firebaseauthBloc.add(OtpRetrievalTimeOut());
                                         },
                                         verificationFailed: (exception) {
-                                          context.read<FirebaseauthBloc>().add(
+                                          firebaseauthBloc.add(
                                               OtpRetrievalFailure(
                                                   errorMessage:
                                                       exception.code));

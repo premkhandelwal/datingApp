@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 class GenderSelectionScreen extends StatefulWidget {
   GenderSelectionScreen({Key? key}) : super(key: key);
 
@@ -114,7 +115,7 @@ class GenderSelectionTile extends StatelessWidget {
           border: Border.all(
               width: 2.w,
               color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0)),
-          color: AppColor.withOpacity(isThisTile ? 1.sp : 0),
+          color: AppColor.withOpacity(isThisTile ? 1 : 0),
           borderRadius: BorderRadius.circular(15.r)),
       child: InkWell(
         onTap: onPress,

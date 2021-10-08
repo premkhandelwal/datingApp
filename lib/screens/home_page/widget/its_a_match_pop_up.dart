@@ -69,7 +69,7 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                                     decoration: BoxDecoration(
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.grey.withOpacity(0.8.sp),
+                                          color: Colors.grey.withOpacity(0.8),
                                           spreadRadius: 1.r,
                                           blurRadius: 25.r,
                                           offset: Offset(0, 7.sp),

@@ -32,14 +32,14 @@ class FetchAllUsersEvent extends UseractivityEvent {}
 
 class FetchLocationInfoEvent extends UseractivityEvent {}
 
-class FetchInfoEvent extends UseractivityEvent {}
-
-class UpdateLocationInfoEvent extends UseractivityEvent {
+class FetchInfoEvent extends UseractivityEvent {
   final Map<String, num> locationCoordinates;
-  UpdateLocationInfoEvent({
+  FetchInfoEvent({
     required this.locationCoordinates,
   });
 }
+
+class UpdateLocationInfoEvent extends UseractivityEvent {}
 
 class AppliedFiltersEvent extends UseractivityEvent{}
 class ClearedFiltersEvent extends UseractivityEvent{}

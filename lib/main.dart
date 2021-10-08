@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                           fontFamily: 'Modernist'),
                       subtitle1: TextStyle(fontSize: 14.sp, fontFamily: 'Modernist'),
                       subtitle2: TextStyle(fontSize: 18.sp, fontFamily: 'Modernist'),
-                    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColor.withOpacity(0.1.sp)),
+                    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColor.withOpacity(0.1)),
                   ),
             
                   // home: ChooseSignInSignUpPage(),

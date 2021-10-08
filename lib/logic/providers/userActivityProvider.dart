@@ -1,22 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
-import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
+import 'package:dating_app/logic/data/appliedFilters.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
   Future<void> userDisliked(String likedUserUID);
   Future<CurrentUser?> userFindMatch(String matchUserUID);
-  Future<void> updateLocationInfo(Map<String, num> locationCoordinates);
+  Future<void> updateLocationInfo();
 
   Future<List<CurrentUser>> fetchAllUsers();
   Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters();
   Future<List<CurrentUser>> fetchMatchedUsers();
-  Future<CurrentUser> fetchUserInfo();
+  Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates);
   Future<Map<String, num>> fetchLocationInfo();
 
   // Future<List<CurrentUser>> interestedInChanged(GENDER gender);
@@ -33,10 +34,12 @@ class UserActivityProvider extends BaseUserActivityProvider {
   FirebaseStorage storage = FirebaseStorage.instance;
 
   @override
-  Future<void> updateLocationInfo(Map<String, num> locationCoordinates) async {
+  Future<void> updateLocationInfo() async {
     await collection
         .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
-        .update({"locationCoordinates": locationCoordinates});
+        .update({
+      "locationCoordinates": SessionConstants.sessionUser.locationCoordinates
+    });
   }
 
   @override
@@ -129,13 +132,13 @@ class UserActivityProvider extends BaseUserActivityProvider {
           ? 18
           : SessionConstants.sessionUser.age! - 3;
       num _maxAge = SessionConstants.sessionUser.age! + 3;
-      SessionConstants.appliedFilters = FilterChangedEvent(
+      SessionConstants.appliedFilters = AppliedFilters(
           minAge: _minAge,
           maxAge: _maxAge,
           thresholdDist: 5,
           interestedIn: SessionConstants.sessionUser.interestedin!);
       SessionConstants.defaultFilters = SessionConstants.appliedFilters;
-      /* for (var i = 0; i < usersList.length; i++) {
+      for (var i = 0; i < usersList.length; i++) {
         DocumentSnapshot<Map<String, dynamic>> doc = await collection
             .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
             .collection("InteractedUsers")
@@ -144,7 +147,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
         if (doc.exists) {
           usersList.removeAt(i);
         }
-      } */
+      }
       usersList.removeWhere((element) {
         bool isDistanceGreaterthan5KM = false;
 
@@ -197,7 +200,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<CurrentUser> fetchUserInfo() async {
+  Future<CurrentUser> fetchUserInfo(
+      Map<String, num> locationCoordinates) async {
     try {
       CurrentUser user = CurrentUser();
       DocumentSnapshot<Map<String, dynamic>> doc = await collection
@@ -211,9 +215,9 @@ class UserActivityProvider extends BaseUserActivityProvider {
                 SharedObjects.prefs?.getString(SessionConstants.sessionUid))
             : null;
       }
-      if (user.locationCoordinates != null) {
-        user.location = await coordinatestoLoc(user.locationCoordinates!);
-      }
+      user.locationCoordinates = locationCoordinates;
+      user.location = await coordinatestoLoc(locationCoordinates);
+
       SessionConstants.sessionUser = user;
 
       return user;

@@ -52,6 +52,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
         uploadTask = ref.putFile(user.image!);
         await uploadTask.whenComplete(() async {
           user.imageDownloadUrl = await ref.getDownloadURL();
+          print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
           await collection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .set({
@@ -59,17 +60,23 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
             "age": user.age,
             "profession": user.profession,
             "birthDate": user.birthDate,
-            "gender": user.gender?.index,
+            "gender": user.gender == GENDER.male
+                ? "Male"
+                : user.gender == GENDER.female
+                    ? "Female"
+                    : "Other",
             "interests": user.interests,
-            "interestedIn": user.interestedin?.index,
+            "interestedIn": user.gender == GENDER.male
+                ? "Male"
+                : user.gender == GENDER.female
+                    ? "Female"
+                    : "Other",
             "profileImageUrl":
                 user.imageDownloadUrl != null ? user.imageDownloadUrl : null
           });
           await dataLessCollection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .delete();
-        }).catchError((onError) {
-          throw Exception("Failed");
         });
       } else {
         await collection

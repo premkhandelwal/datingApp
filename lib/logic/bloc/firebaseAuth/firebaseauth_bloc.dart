@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,26 +84,29 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   Stream<FirebaseauthState> _mapSignInWithEmailPasswordRequesttoState(
       SignInWithEmailPasswordRequested event) async* {
     yield OperationInProgress();
-
-    CurrentUser? user = await firebaseAuthRepo.signInWithEmailPassword(
-        event.emailId, event.password);
-    if (user != null) {
-      yield UserLoggedIn(userUID: user.firebaseUser!.uid);
-    } else {
-      yield RequestedOperationFailed();
+    try {
+      CurrentUser? user = await firebaseAuthRepo.signInWithEmailPassword(
+          event.emailId, event.password);
+      if (user != null) {
+        yield UserLoggedIn(userUID: user.firebaseUser!.uid);
+      }
+    } catch (e) {
+      print(e.runtimeType);
+      yield RequestedOperationFailed(errorMessage: e);
     }
   }
 
   Stream<FirebaseauthState> _mapSignUpWithEmailPasswordRequesttoState(
       SignUpWithEmailPasswordRequested event) async* {
     yield OperationInProgress();
-
-    CurrentUser? user = await firebaseAuthRepo.signUpWithEmailPassword(
-        event.emailId, event.password);
-    if (user != null) {
-      yield UserSignedUp(userUID: user.firebaseUser!.uid);
-    } else {
-      yield RequestedOperationFailed();
+    try {
+      CurrentUser? user = await firebaseAuthRepo.signUpWithEmailPassword(
+          event.emailId, event.password);
+      if (user != null) {
+        yield UserSignedUp(userUID: user.firebaseUser!.uid);
+      }
+    } catch (e) {
+      yield RequestedOperationFailed(errorMessage: e);
     }
   }
 
@@ -120,7 +125,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       });
       yield UserLoggedOut();
     } catch (e) {
-      yield RequestedOperationFailed();
+      yield RequestedOperationFailed(errorMessage: e);
     }
   }
 
@@ -130,8 +135,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       await firebaseAuthRepo.sendOTP(event.phoneNumber, event.codeSent,
           event.verificationFailed, event.codeAutoRetrievalTimeout);
       yield OtpSent();
-    } catch (e) {
-      yield RequestedOperationFailed();
+    } on Exception catch (e) {
+      yield RequestedOperationFailed(errorMessage: e);
     }
   }
 
@@ -145,6 +150,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       if (authCredential != null) {
         String? uid = await firebaseAuthRepo.getCurrentUserUID();
         yield OtpVerified(authCredential: authCredential, userUID: uid);
+        SharedObjects.prefs?.setString(SessionConstants.sessionUid, uid!);
+        add(SignedInforFirstTimeEvent(uid: uid!));
       } else {
         yield OtpNotVerified();
       }
@@ -219,7 +226,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       if (isuserDocExists) {
         yield SignedInForFirstTimeState();
       } else {
-        yield NotSignedInForFirstTimeState();
+        yield NotSignedInForFirstTimeState(userUID: event.uid);
       }
     } catch (e) {
       yield FailedtogetSignInForFirstTimeState();

@@ -113,8 +113,8 @@ class InterestedInTile extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(
               width: 2.w,
-              color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0.sp)),
-          color: AppColor.withOpacity(isThisTile ? 1.sp : 0),
+              color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0)),
+          color: AppColor.withOpacity(isThisTile ? 1 : 0),
           borderRadius: BorderRadius.circular(15.r)),
       child: InkWell(
         onTap: onPress,

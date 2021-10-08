@@ -116,7 +116,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                     height: 40.h,
                                     width: 61.w,
                                     decoration: BoxDecoration(
-                                        color: AppColor.withOpacity(0.9.sp),
+                                        color: AppColor.withOpacity(0.9),
                                         borderRadius:
                                             BorderRadius.circular(10.r)),
                                     child: Row(

@@ -1,6 +1,7 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
+import 'package:dating_app/logic/data/appliedFilters.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,8 @@ double distance = 5;
 class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
   String dropdownValue = location[0];
   var _selectedGender = GENDER.NotSelected;
- /*  void clearFilter() {
+  late UseractivityBloc useractivityBloc;
+  /*  void clearFilter() {
     _selectedGender = GENDER.NotSelected;
     distance = 5;
     ageRange = RangeValues(18, 22);
@@ -38,8 +40,9 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
 
   @override
   void initState() {
-    applyFilters();
     super.initState();
+    useractivityBloc = BlocProvider.of<UseractivityBloc>(context);
+    applyFilters();
   }
 
   @override
@@ -54,7 +57,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
         ),
       ),
       child: Padding(
-        padding:  EdgeInsets.all(20.0.sp),
+        padding: EdgeInsets.all(20.0.sp),
         child: BlocBuilder<UseractivityBloc, UseractivityState>(
           buildWhen: (previousState, currentState) {
             if (currentState is ClearedFiltersState) {
@@ -102,7 +105,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                   ],
                 ),
                 Padding(
-                  padding:  EdgeInsets.all(15.0.sp),
+                  padding: EdgeInsets.all(15.0.sp),
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.r),
@@ -122,8 +125,9 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                 bottomLeft: Radius.circular(15.r),
                                 topLeft: Radius.circular(15.r)),
                             child: AnimatedContainer(
-                              width:
-                                  _selectedGender == GENDER.female ? 120.w : 90.w,
+                              width: _selectedGender == GENDER.female
+                                  ? 120.w
+                                  : 90.w,
                               decoration: BoxDecoration(
                                   color: _selectedGender == GENDER.female
                                       ? AppColor
@@ -156,7 +160,8 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                             });
                           },
                           child: AnimatedContainer(
-                            width: _selectedGender == GENDER.male ? 120.w : 90.w,
+                            width:
+                                _selectedGender == GENDER.male ? 120.w : 90.w,
                             decoration: BoxDecoration(
                                 color: _selectedGender == GENDER.male
                                     ? AppColor
@@ -191,7 +196,9 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                 bottomRight: Radius.circular(15.r),
                                 topRight: Radius.circular(15.r)),
                             child: AnimatedContainer(
-                              width: _selectedGender == GENDER.other ? 120.w : 90.w,
+                              width: _selectedGender == GENDER.other
+                                  ? 120.w
+                                  : 90.w,
                               decoration: BoxDecoration(
                                   color: _selectedGender == GENDER.both
                                       ? AppColor
@@ -294,12 +301,12 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 CommonButton(
                     text: 'Continue',
                     onPressed: () {
-                      SessionConstants.appliedFilters = FilterChangedEvent(
+                      SessionConstants.appliedFilters = AppliedFilters(
                           minAge: ageRange.start,
                           maxAge: ageRange.end,
                           interestedIn: _selectedGender,
                           thresholdDist: distance);
-                      context.read<UseractivityBloc>().add(FilterChangedEvent(
+                      useractivityBloc.add(FilterChangedEvent(
                           minAge: ageRange.start,
                           maxAge: ageRange.end,
                           interestedIn: _selectedGender,

@@ -22,11 +22,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
+  late FirebaseauthBloc firebaseauthBloc;
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    firebaseauthBloc = BlocProvider.of<FirebaseauthBloc>(context);
   }
 
   @override
@@ -42,7 +49,7 @@ class _HomePageState extends State<HomePage> {
       },
       builder: (context, state) {
         if (state is FirebaseauthInitial) {
-          context.read<FirebaseauthBloc>().add(UserStateRequested());
+          firebaseauthBloc.add(UserStateRequested());
           return Container();
         } else if (state is UserLoggedOut) {
           return ChooseSignInSignUpPage();

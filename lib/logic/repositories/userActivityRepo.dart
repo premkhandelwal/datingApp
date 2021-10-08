@@ -8,12 +8,12 @@ class UserActivityRepository extends BaseRepository {
   Future<void> userLiked(String likedUserUID) => activityProvider.userLiked(likedUserUID);
   Future<void> userDisliked(String dislikedUserUID) => activityProvider.userDisliked(dislikedUserUID);
   Future<CurrentUser?> userFindMatch(String matchUserUID,) => activityProvider.userFindMatch(matchUserUID);
-    Future<void> updateLocationInfo(Map<String, num> locationCoordinates) =>
-      activityProvider.updateLocationInfo(locationCoordinates);
+    Future<void> updateLocationInfo() =>
+      activityProvider.updateLocationInfo();
   Future<List<CurrentUser>> fetchMatchedUsers() => activityProvider.fetchMatchedUsers();
   Future<List<CurrentUser>> fetchAllUsers() => activityProvider.fetchAllUsers();
   Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters() => activityProvider.fetchAllUsersWithAppliedFilters();
-Future<CurrentUser> fetchUserInfo() => activityProvider.fetchUserInfo();
+Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates) => activityProvider.fetchUserInfo(locationCoordinates);
   Future<Map<String,num>> fetchLocationInfo() =>
       activityProvider.fetchLocationInfo();
 /*       Future<List<CurrentUser>> interestedInChanged(GENDER interestedIn) async =>

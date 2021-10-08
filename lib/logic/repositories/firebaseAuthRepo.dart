@@ -29,7 +29,7 @@ class FirebaseAuthRepository extends BaseRepository {
   Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId) async => await authprovider.linkPhoneNumberWithEmail(smsCode,verificationId);
   Future<bool> sendverificationEmail() async =>await authprovider.sendverificationEmail();
   Future<bool> isEmailVerified() async =>await authprovider.isEmailVerified();
-  Future<bool> isuserDocExists(String uid) async=>await authprovider.isuserDocExists(uid);
+  Future<bool> isuserDocExists(String uid) async=>await authprovider.isdatalessUserDocExists(uid);
 
   @override
   void dispose() {}

@@ -33,10 +33,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   TCardController _controller = TCardController();
   int _index = 0;
+  late UseractivityBloc useractivityBloc;
+
+  
   @override
   void initState() {
     filteredUsers = [];
-    context.read<UseractivityBloc>().add(FetchLocationInfoEvent());
+    useractivityBloc = BlocProvider.of<UseractivityBloc>(context);
+    useractivityBloc.add(FetchLocationInfoEvent());
     super.initState();
   }
 
@@ -82,7 +86,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       key: key1,
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(20.0.sp),
+          padding: EdgeInsets.all(20.0.sp),
           child: Column(
             children: [
               CustomAppBar(
@@ -130,7 +134,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 .state;
                         if (state is FetchingAllUsersState ||
                             state is FetchingInfoState ||
-                            state is UpdatingLocationInfoState ||
                             state is ApplyingFilters) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text("Loading Data..Please wait")));
@@ -154,7 +157,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             context
                                 .read<FirebaseauthBloc>()
                                 .add(SignOutRequested());
-                                      
+
                             WidgetsBinding.instance?.addPostFrameCallback((_) {
                               changePageWithoutBack(
                                   context: context,
@@ -177,18 +180,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           .add(UserStateNoneEvent());
                     } else if (state is FetchedAllUserswithFiltersState) {
                       allUsers = List.from(state.users);
-                    } else if (state is FetchedInfoState) {
-                      context
-                          .read<UseractivityBloc>()
-                          .add(FetchAllUsersWithAppliedFiltersEvent());
-                    } else if (state is FetchedLocationInfoState) {
-                      context.read<UseractivityBloc>().add(
-                          UpdateLocationInfoEvent(
-                              locationCoordinates: state.locationInfo));
-                    } else if (state is UpdatedLocInfoState) {
-                      context
-                          .read<UseractivityBloc>()
-                          .add(FetchInfoEvent());
                     } else if (state is AppliedFiltersState) {
                       if (filteredUsers == []) {
                         filteredUsers = new List.from(allUsers);
@@ -196,6 +187,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       allUsers = List.from(state.usersList);
                     }
                   }, builder: (context, state) {
+                    print(state);
                     if (state is FailedToFetchAllUsersState) {
                       return Container(
                           width: 450.w,
@@ -203,7 +195,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           child: Center(child: Text("Failed to fetch users")));
                     } else if (state is FetchingAllUsersState ||
                         state is FetchingInfoState ||
-                        state is UpdatingLocationInfoState ||
                         state is ApplyingFilters) {
                       return Container(
                         width: 450.w,
@@ -233,10 +224,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               context
                                   .read<UseractivityBloc>()
                                   .add(UserLikedEvent(allUsers[_index].uid!));
-                              context.read<UseractivityBloc>().add(
+                              useractivityBloc.add(
                                   UserFindMatchEvent(allUsers[_index].uid!));
                             } else if (info.direction == SwipDirection.Left) {
-                              context.read<UseractivityBloc>().add(
+                              useractivityBloc.add(
                                   UserDislikedEvent(allUsers[_index].uid!));
                             }
                             _index = index;
@@ -244,8 +235,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           onBack: (index, info) {
                             _index = index;
                           },
-                          onEnd: () {
-                          },
+                          onEnd: () {},
                         ),
                         SizedBox(
                           height: 25.h,
@@ -262,13 +252,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 icon: Icon(Icons.close)),
                             CircleAvatar(
                               backgroundColor: AppColor,
-                              radius:  0.045.sh,
+                              radius: 0.045.sh,
                               child: Center(
                                 child: IconButton(
                                     onPressed: () {
                                       swipeRight();
                                     },
-                                    iconSize:  0.05.sh,
+                                    iconSize: 0.05.sh,
                                     color: Colors.white,
                                     icon: Icon(Icons.favorite)),
                               ),

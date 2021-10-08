@@ -27,6 +27,14 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
   String sessionUid = "";
+  late FirebaseauthBloc firebaseauthBloc;
+
+  @override
+  void initState() {
+    firebaseauthBloc = BlocProvider.of<FirebaseauthBloc>(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -34,7 +42,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Padding(
-            padding:  EdgeInsets.all(25.0.sp),
+            padding: EdgeInsets.all(25.0.sp),
             child: Column(
               children: [
                 Row(
@@ -57,7 +65,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   ],
                 ),
                 Padding(
-                  padding:  EdgeInsets.only(right: 40.0.sp),
+                  padding: EdgeInsets.only(right: 40.0.sp),
                   child: Text(
                     'Please enter your email address and password. to ${widget.authSide}',
                     style: Theme.of(context).textTheme.subtitle1,
@@ -179,7 +187,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                                 size: 25.sp,
                                               )),
                                     enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15.r),
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
                                         borderSide:
                                             BorderSide(color: AppColor)),
                                     focusColor: AppColor,
@@ -190,7 +199,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                     ),
                                     errorMaxLines: 4,
                                     border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15.r),
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
                                         borderSide:
                                             BorderSide(color: AppColor)),
                                     labelText: "Confirm Your Password",
@@ -236,11 +246,14 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
-                                   if (widget.authSide == "Sign Up") {
-                                    context.read<FirebaseauthBloc>().add(SignOutRequested());
+                                  if (widget.authSide == "Sign Up") {
+                                    context
+                                        .read<FirebaseauthBloc>()
+                                        .add(SignOutRequested());
                                     changePageWithoutBack(
-                                  context: context,
-                                  widget:EmailPasswordScreen(authSide: "Sign In"));
+                                        context: context,
+                                        widget: EmailPasswordScreen(
+                                            authSide: "Sign In"));
                                   }
                                 },
                                 child: Text("Ok"))
@@ -284,7 +297,21 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
-                                 
+                                },
+                                child: Text("Ok"))
+                          ],
+                        ),
+                      );
+                    } else if (state is RequestedOperationFailed) {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text("Message"),
+                          content: Text(state.errorMessage.toString()),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(ctx);
                                 },
                                 child: Text("Ok"))
                           ],
@@ -301,12 +328,12 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             if (widget.authSide == 'Sign Up') {
-                              context.read<FirebaseauthBloc>().add(
+                              firebaseauthBloc.add(
                                   SignUpWithEmailPasswordRequested(
                                       emailId: emailIdController.text,
                                       password: passwordController.text));
                             } else {
-                              context.read<FirebaseauthBloc>().add(
+                              firebaseauthBloc.add(
                                   SignInWithEmailPasswordRequested(
                                       emailId: emailIdController.text,
                                       password: passwordController.text));

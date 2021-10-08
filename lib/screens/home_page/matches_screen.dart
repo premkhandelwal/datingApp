@@ -19,10 +19,13 @@ class MatchesScreen extends StatefulWidget {
 }
 
 class _MatchesScreenState extends State<MatchesScreen> {
+  late UseractivityBloc useractivityBloc;
+
   @override
   void initState() {
-    context.read<UseractivityBloc>().add(FetchAllUsersEvent());
-    context.read<UseractivityBloc>().add(FetchMatchedUsersEvent());
+    useractivityBloc = BlocProvider.of<UseractivityBloc>(context);
+    useractivityBloc.add(FetchAllUsersEvent());
+    useractivityBloc.add(FetchMatchedUsersEvent());
     super.initState();
   }
 
@@ -70,7 +73,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     bottom: 60.sp,
                     left: 2.sp,
                     child: Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: 8.0.sp),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0.sp),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -116,8 +119,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               ),
                               Expanded(
                                 child: InkWell(
-                                  onTap: () {
-                                  },
+                                  onTap: () {},
                                   child: Icon(
                                     Icons.favorite,
                                     color: Colors.white,
@@ -144,7 +146,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(20.0.sp),
+          padding: EdgeInsets.all(20.0.sp),
           child: Center(
             child: Column(
               children: [
@@ -189,9 +191,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   }
                 }, builder: (context, state) {
                   if (state is FetchingAllUsersState ||
-                      state is FetchingMatchedUsersState || state is FetchedAllUsersState) {
-                    return Container(height:350.h,child: Center(child: CircularProgressIndicator()));
-                  } else if (_matchedUsersList.isNotEmpty || state is FetchedMatchedUsersState) {
+                      state is FetchingMatchedUsersState ||
+                      state is FetchedAllUsersState) {
+                    return Container(
+                        height: 350.h,
+                        child: Center(child: CircularProgressIndicator()));
+                  } else if ((_matchedUsersList.isNotEmpty &&
+                          state is FetchedMatchedUsersState) ||
+                      _matchedUsersList.isNotEmpty) {
                     return Expanded(
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 300),
@@ -206,7 +213,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       ),
                     );
                   } else {
-                    return Container(height: 350.h,child: Center(child: Text("No Matched Users")));
+                    return Container(
+                        height: 350.h,
+                        child: Center(child: Text("No Matched Users")));
                   }
                 })
               ],
