@@ -8,6 +8,7 @@ import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -131,7 +132,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                               return null;
                             },
                             controller: emailIdController,
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType:  widget.connectWith == "phone" ? TextInputType.phone: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               hintStyle: TextStyle(
                                   fontFamily: 'Modernist', fontSize: 20),
@@ -228,7 +229,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                           builder: (ctx) => AlertDialog(
                                 title: Text("Error"),
                                 content: Text(
-                                  "Failed to link email-id and phone number",
+                                  "${state.errorMessage}",
                                 ),
                                 actions: [
                                   ElevatedButton(
@@ -241,19 +242,26 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                       child: Text("Ok"))
                                 ],
                               ));
-                    } else {
-                      changePageWithoutBack(
-                          context: context, widget: ProfileDetailPage());
+                    }else if(state is LinkedEmailWithPhoneNumber || state is LinkedPhoneNumberWithEmail){
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("Message"),
+                                content: Text(
+                                  "Successfully Linked Email and Phone Number",
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(ctx);
+                                        changePageWithoutBack(
+                                            context: context,
+                                            widget: ProfileDetailPage());
+                                      },
+                                      child: Text("Ok"))
+                                ],
+                              ));
                     }
-                  },
-                  listenWhen: (previousState, currentState) {
-                    if ((currentState is LinkedEmailWithPhoneNumber &&
-                            previousState is OperationInProgress) ||
-                        currentState is OtpVerified ||
-                        currentState is FailedtoLinkedPhoneNumberEmail) {
-                      return true;
-                    }
-                    return false;
                   },
                   builder: (context, state) {
                     if (state is OtpSent || state is OperationInProgress) {
@@ -263,26 +271,24 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         text: 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            firebaseauthBloc.add(
-                                widget.connectWith == "email"
-                                    ? LinkEmailWithPhoneNumberEvent(
-                                        emailId: emailIdController.text,
-                                        password: passwordController.text)
-                                    : OtpSendRequested(
-                                        codeAutoRetrievalTimeout: (id) {
-                                          firebaseauthBloc.add(OtpRetrievalTimeOut());
-                                        },
-                                        verificationFailed: (exception) {
-                                          firebaseauthBloc.add(
-                                              OtpRetrievalFailure(
-                                                  errorMessage:
-                                                      exception.code));
-                                          //throw Exception(exception);
-                                        },
-                                        codeSent: codeSent,
-                                        phoneNumber:
-                                            "+${_selectedCountry.phoneCode + phoneNumber.text}",
-                                      ));
+                            firebaseauthBloc.add(widget.connectWith == "email"
+                                ? LinkEmailWithPhoneNumberEvent(
+                                    emailId: emailIdController.text,
+                                    password: passwordController.text)
+                                : OtpSendRequested(
+                                    codeAutoRetrievalTimeout: (id) {
+                                      firebaseauthBloc
+                                          .add(OtpRetrievalTimeOut());
+                                    },
+                                    verificationFailed: (exception) {
+                                      firebaseauthBloc.add(OtpRetrievalFailure(
+                                          errorMessage: exception.code));
+                                      //throw Exception(exception);
+                                    },
+                                    codeSent: codeSent,
+                                    phoneNumber:
+                                        "+${_selectedCountry.phoneCode + phoneNumber.text}",
+                                  ));
 
                             /* changePageTo(
                                           context: context, widget: ProfileDetailPage()); */

@@ -2,9 +2,11 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
+import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/search_friends_screen/search_friends_Screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
@@ -24,7 +26,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(20.0.sp),
+          padding: EdgeInsets.all(20.0.sp),
           child: Column(
             children: [
               CustomAppBar(
@@ -57,7 +59,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   itemCount: interests.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      padding:  EdgeInsets.all(2.0.sp),
+                      padding: EdgeInsets.all(2.0.sp),
                       child: ChoiceChip(
                           avatar: Icon(
                             iconsList[index],
@@ -82,8 +84,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                               _selectedInterests.contains(interests[index])
                                   ? 5.sp
                                   : 0,
-                          labelPadding:
-                               EdgeInsets.symmetric(vertical: 8.0.sp),
+                          labelPadding: EdgeInsets.symmetric(vertical: 8.0.sp),
                           selectedColor: AppColor,
                           selected:
                               _selectedInterests.contains(interests[index]),
@@ -104,7 +105,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                         ?.setString(SessionConstants.sessionSignedInWith, "");
                     SharedObjects.prefs
                         ?.setString(SessionConstants.sessionUid, "");
-                    
+                    FirebaseAuth.instance.signOut();
                     showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
@@ -115,7 +116,9 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                               actions: [
                                 ElevatedButton(
                                     onPressed: () {
-                                      Navigator.pop(ctx);
+                                      changePageWithoutBack(
+                                          context: context,
+                                          widget: ChooseSignInSignUpPage());
                                     },
                                     child: Text("Ok"))
                               ],

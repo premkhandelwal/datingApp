@@ -70,7 +70,12 @@ class LinkedEmailWithPhoneNumber extends FirebaseauthState {}
 
 class LinkedPhoneNumberWithEmail extends FirebaseauthState {}
 
-class FailedtoLinkedPhoneNumberEmail extends FirebaseauthState {}
+class FailedtoLinkedPhoneNumberEmail extends FirebaseauthState {
+  final Object errorMessage;
+  FailedtoLinkedPhoneNumberEmail({
+    required this.errorMessage,
+  });
+}
 
 class SignedInForFirstTimeState extends FirebaseauthState {}
 

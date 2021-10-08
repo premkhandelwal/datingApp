@@ -1,6 +1,7 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -285,7 +286,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       SharedObjects.prefs
                           ?.setString(SessionConstants.sessionUid, sessionUid);
                       changePageWithoutBack(
-                          context: context, widget: ProfileDetailPage());
+                          context: context, widget: LinkPhoneEmailScreen(connectWith: "phone",));
                     } else if (state is EmailNotVerifiedState) {
                       showDialog(
                         context: context,

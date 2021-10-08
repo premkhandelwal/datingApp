@@ -168,11 +168,9 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
           .linkEmailWithPhoneNumber(event.emailId, event.password);
       if (linkedPhoneNumberEmail) {
         yield LinkedEmailWithPhoneNumber();
-      } else {
-        yield FailedtoLinkedPhoneNumberEmail();
       }
     } catch (e) {
-      yield FailedtoLinkedPhoneNumberEmail();
+      yield FailedtoLinkedPhoneNumberEmail(errorMessage: e);
     }
   }
 
@@ -185,11 +183,9 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
           .linkPhoneNumberWithEmail(event.smsCode, event.verificationId);
       if (linkedPhoneNumberEmail) {
         yield LinkedPhoneNumberWithEmail();
-      } else {
-        yield FailedtoLinkedPhoneNumberEmail();
       }
     } catch (e) {
-      yield FailedtoLinkedPhoneNumberEmail();
+      yield FailedtoLinkedPhoneNumberEmail(errorMessage: e);
     }
   }
 
