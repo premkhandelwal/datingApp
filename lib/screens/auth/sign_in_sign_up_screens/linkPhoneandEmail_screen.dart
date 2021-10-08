@@ -3,6 +3,8 @@ import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
+import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
+import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -66,237 +68,251 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
           ),
         );
 
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(20.sp),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomAppBar(
-                      context: context,
-                      centerWidget: Container(),
-                      trailingWidget: Container(),
+    return WillPopScope(
+      onWillPop: () async {
+        await FirebaseAuthRepository().signOut();
+        changePageWithoutBack(
+            context: context, widget: ChooseSignInSignUpPage());
+        return true;
+      },
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(20.sp),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomAppBar(
+                        context: context,
+                        canGoBack: false,
+                        centerWidget: Container(),
+                        trailingWidget: Container(),
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            changePageTo(
+                                context: context, widget: ProfileDetailPage());
+                          },
+                          child: Text(
+                            "Skip",
+                            style: TextStyle(
+                                fontSize: 18.sp,
+                                fontFamily: 'Modernist',
+                                color: Colors.red),
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 60.h,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "What's your ${widget.connectWith}?",
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
-                    GestureDetector(
-                        onTap: () {
-                          changePageTo(
-                              context: context, widget: ProfileDetailPage());
-                        },
-                        child: Text(
-                          "Skip",
-                          style: TextStyle(
-                              fontSize: 18.sp,
-                              fontFamily: 'Modernist',
-                              color: Colors.red),
-                        ))
-                  ],
-                ),
-                SizedBox(
-                  height: 60.h,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "What's your ${widget.connectWith}?",
-                    style: Theme.of(context).textTheme.bodyText1,
                   ),
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Don't lose access to your account. connect it with ${widget.connectWith}",
-                    style: Theme.of(context).textTheme.subtitle2,
+                  SizedBox(
+                    height: 20.h,
                   ),
-                ),
-                SizedBox(
-                  height: 25.h,
-                ),
-                widget.connectWith == "email"
-                    ? Column(
-                        children: [
-                          TextFormField(
-                            validator: (val) {
-                              if (val == null) {
-                                return "Email ID cannot be empty";
-                              } else if (!EmailValidator.validate(val)) {
-                                return "Invalid email-id";
-                              }
-                              return null;
-                            },
-                            controller: emailIdController,
-                            keyboardType:  widget.connectWith == "phone" ? TextInputType.phone: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(
-                                  fontFamily: 'Modernist', fontSize: 20),
-                              counterText: '',
-                              hintText: "Email ID",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 25.h,
-                          ),
-                          TextFormField(
-                            validator: (val) {
-                              String pattern =
-                                  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-                              RegExp regex = new RegExp(pattern);
-                              if (val == null) {
-                                return "Password cannot be empty";
-                              } else if (!regex.hasMatch(val)) {
-                                return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter, at least one digit and at least one special character';
-                              }
-                              return null;
-                            },
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(
-                                  fontFamily: 'Modernist', fontSize: 20.sp),
-                              counterText: '',
-                              hintText: "Password",
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container(
-                        padding: EdgeInsets.all(10.sp),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1.w),
-                          borderRadius: BorderRadius.circular(15.r),
-                        ),
-                        child: Row(
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      "Don't lose access to your account. connect it with ${widget.connectWith}",
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 25.h,
+                  ),
+                  widget.connectWith == "email"
+                      ? Column(
                           children: [
-                            Expanded(
-                              child: CountryPickerDropdown(
-                                initialValue: "IN",
-                                isDense: true,
-                                isExpanded: false,
-                                priorityList: [
-                                  Country(
-                                      isoCode: 'IN',
-                                      iso3Code: 'IND',
-                                      phoneCode: "91",
-                                      name: 'India'),
-                                  Country(
-                                      isoCode: 'US',
-                                      iso3Code: 'USA',
-                                      phoneCode: "1",
-                                      name: 'United States')
-                                ],
-                                itemBuilder: _buildDropdownItem,
-                                onValuePicked: (Country country) {
-                                  setState(() {
-                                    _selectedCountry = country;
-                                  });
-                                },
+                            TextFormField(
+                              validator: (val) {
+                                if (val == null) {
+                                  return "Email ID cannot be empty";
+                                } else if (!EmailValidator.validate(val)) {
+                                  return "Invalid email-id";
+                                }
+                                return null;
+                              },
+                              controller: emailIdController,
+                              keyboardType: widget.connectWith == "phone"
+                                  ? TextInputType.phone
+                                  : TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(
+                                    fontFamily: 'Modernist', fontSize: 20),
+                                counterText: '',
+                                hintText: "Email ID",
                               ),
                             ),
-                            Expanded(
-                              child: TextFormField(
-                                validator: (val) {
-                                  if (val == null) {
-                                    return "Phone Number cannot be empty";
-                                  } else if (val.length != 10) {
-                                    return 'Phone Number must be of 10 digit';
-                                  }
-                                },
-                                controller: phoneNumber,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Modernist', fontSize: 20.sp),
-                                  counterText: '',
-                                  hintText: "Phone Number",
-                                ),
+                            SizedBox(
+                              height: 25.h,
+                            ),
+                            TextFormField(
+                              validator: (val) {
+                                String pattern =
+                                    r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+                                RegExp regex = new RegExp(pattern);
+                                if (val == null) {
+                                  return "Password cannot be empty";
+                                } else if (!regex.hasMatch(val)) {
+                                  return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter, at least one digit and at least one special character';
+                                }
+                                return null;
+                              },
+                              controller: passwordController,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(
+                                    fontFamily: 'Modernist', fontSize: 20.sp),
+                                counterText: '',
+                                hintText: "Password",
                               ),
                             ),
                           ],
+                        )
+                      : Container(
+                          padding: EdgeInsets.all(10.sp),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1.w),
+                            borderRadius: BorderRadius.circular(15.r),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: CountryPickerDropdown(
+                                  initialValue: "IN",
+                                  isDense: true,
+                                  isExpanded: false,
+                                  priorityList: [
+                                    Country(
+                                        isoCode: 'IN',
+                                        iso3Code: 'IND',
+                                        phoneCode: "91",
+                                        name: 'India'),
+                                    Country(
+                                        isoCode: 'US',
+                                        iso3Code: 'USA',
+                                        phoneCode: "1",
+                                        name: 'United States')
+                                  ],
+                                  itemBuilder: _buildDropdownItem,
+                                  onValuePicked: (Country country) {
+                                    setState(() {
+                                      _selectedCountry = country;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  validator: (val) {
+                                    if (val == null) {
+                                      return "Phone Number cannot be empty";
+                                    } else if (val.length != 10) {
+                                      return 'Phone Number must be of 10 digit';
+                                    }
+                                  },
+                                  controller: phoneNumber,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(
+                                        fontFamily: 'Modernist',
+                                        fontSize: 20.sp),
+                                    counterText: '',
+                                    hintText: "Phone Number",
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                Spacer(),
-                BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
-                  listener: (context, state) {
-                    if (state is FailedtoLinkedPhoneNumberEmail) {
-                      showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                                title: Text("Error"),
-                                content: Text(
-                                  "${state.errorMessage}",
-                                ),
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(ctx);
-                                        changePageWithoutBack(
-                                            context: context,
-                                            widget: ProfileDetailPage());
+                  Spacer(),
+                  BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
+                    listener: (context, state) {
+                      if (state is FailedtoLinkedPhoneNumberEmail) {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("Error"),
+                                  content: Text(
+                                    "${state.errorMessage}",
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(ctx);
+                                          changePageWithoutBack(
+                                              context: context,
+                                              widget: ProfileDetailPage());
+                                        },
+                                        child: Text("Ok"))
+                                  ],
+                                ));
+                      } else if (state is LinkedEmailWithPhoneNumber ||
+                          state is LinkedPhoneNumberWithEmail) {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("Message"),
+                                  content: Text(
+                                    "Successfully Linked Email and Phone Number",
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(ctx);
+                                          changePageWithoutBack(
+                                              context: context,
+                                              widget: ProfileDetailPage());
+                                        },
+                                        child: Text("Ok"))
+                                  ],
+                                ));
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is OtpSent || state is OperationInProgress) {
+                        return CircularProgressIndicator();
+                      }
+                      return CommonButton(
+                          text: 'Continue',
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              firebaseauthBloc.add(widget.connectWith == "email"
+                                  ? LinkEmailWithPhoneNumberEvent(
+                                      emailId: emailIdController.text,
+                                      password: passwordController.text)
+                                  : OtpSendRequested(
+                                      codeAutoRetrievalTimeout: (id) {
+                                        firebaseauthBloc
+                                            .add(OtpRetrievalTimeOut());
                                       },
-                                      child: Text("Ok"))
-                                ],
-                              ));
-                    }else if(state is LinkedEmailWithPhoneNumber || state is LinkedPhoneNumberWithEmail){
-                      showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                                title: Text("Message"),
-                                content: Text(
-                                  "Successfully Linked Email and Phone Number",
-                                ),
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(ctx);
-                                        changePageWithoutBack(
-                                            context: context,
-                                            widget: ProfileDetailPage());
+                                      verificationFailed: (exception) {
+                                        firebaseauthBloc.add(
+                                            OtpRetrievalFailure(
+                                                errorMessage: exception.code));
+                                        //throw Exception(exception);
                                       },
-                                      child: Text("Ok"))
-                                ],
-                              ));
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is OtpSent || state is OperationInProgress) {
-                      return CircularProgressIndicator();
-                    }
-                    return CommonButton(
-                        text: 'Continue',
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            firebaseauthBloc.add(widget.connectWith == "email"
-                                ? LinkEmailWithPhoneNumberEvent(
-                                    emailId: emailIdController.text,
-                                    password: passwordController.text)
-                                : OtpSendRequested(
-                                    codeAutoRetrievalTimeout: (id) {
-                                      firebaseauthBloc
-                                          .add(OtpRetrievalTimeOut());
-                                    },
-                                    verificationFailed: (exception) {
-                                      firebaseauthBloc.add(OtpRetrievalFailure(
-                                          errorMessage: exception.code));
-                                      //throw Exception(exception);
-                                    },
-                                    codeSent: codeSent,
-                                    phoneNumber:
-                                        "+${_selectedCountry.phoneCode + phoneNumber.text}",
-                                  ));
+                                      codeSent: codeSent,
+                                      phoneNumber:
+                                          "+${_selectedCountry.phoneCode + phoneNumber.text}",
+                                    ));
 
-                            /* changePageTo(
-                                          context: context, widget: ProfileDetailPage()); */
-                          }
-                        });
-                  },
-                )
-              ],
+                              /* changePageTo(
+                                            context: context, widget: ProfileDetailPage()); */
+                            }
+                          });
+                    },
+                  )
+                ],
+              ),
             ),
           ),
         ),

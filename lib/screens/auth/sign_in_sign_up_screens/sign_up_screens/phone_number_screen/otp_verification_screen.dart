@@ -166,7 +166,16 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                           });
                     },
                     listener: (context, state) {
-                      if (state is NotSignedInForFirstTimeState) {
+                     if (state is SignedInForFirstTimeState) {
+                        changePageWithoutBack(
+                            context: context,
+                            widget: LinkPhoneEmailScreen(
+                              connectWith: "email",
+                            ));
+                      } else if (state is LinkedPhoneNumberWithEmail || state is LinkedEmailWithPhoneNumber) {
+                        changePageWithoutBack(
+                            context: context, widget: ProfileDetailPage());
+                      }  else if (state is NotSignedInForFirstTimeState) {
                         if (state.userUID != null) {
                           SharedObjects.prefs?.setString(
                               SessionConstants.sessionSignedInWith,
@@ -195,15 +204,6 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                             ),
                           );
                         }
-                      } else if (state is SignedInForFirstTimeState) {
-                        changePageWithoutBack(
-                            context: context,
-                            widget: LinkPhoneEmailScreen(
-                              connectWith: "email",
-                            ));
-                      } else if (state is LinkedPhoneNumberWithEmail) {
-                        changePageWithoutBack(
-                            context: context, widget: ProfileDetailPage());
                       } else if (state is OtpNotVerified) {
                         showDialog(
                             context: context,
