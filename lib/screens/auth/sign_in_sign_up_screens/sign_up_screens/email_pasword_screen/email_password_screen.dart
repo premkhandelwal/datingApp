@@ -290,11 +290,17 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           SessionConstants.sessionSignedInWith, "email");
                       SharedObjects.prefs
                           ?.setString(SessionConstants.sessionUid, sessionUid);
+                      firebaseauthBloc.add(LinkStatusEvent(uid: sessionUid));
+                     
+                    } else if (state is PhoneEmailNotLinkedState) {
                       changePageTo(
                           context: context,
                           widget: LinkPhoneEmailScreen(
                             connectWith: "phone",
                           ));
+                    } else if (state is PhoneEmailLinkedState) {
+                      changePageTo(
+                          context: context, widget: ProfileDetailPage());
                     } else if (state is EmailNotVerifiedState) {
                       showDialog(
                         context: context,

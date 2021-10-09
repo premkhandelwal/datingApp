@@ -25,6 +25,7 @@ abstract class BaseAuthProvider {
   Future<bool> sendverificationEmail();
   Future<bool> isEmailVerified();
   Future<bool> isdatalessUserDocExists(String uid);
+  Future<bool> phoneEmailLinked(String uid);
 }
 
 class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
@@ -62,6 +63,20 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
 
     if (doc.exists) {
       return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> phoneEmailLinked(String uid) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await datalessCollection.doc("$uid").get();
+
+    if (doc.data() != null) {
+      if (doc.data()!["linkedEmailPhone"]) {
+        return true;
+      }
+      return false;
     }
     return false;
   }
@@ -107,9 +122,9 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     try {
       UserCredential credential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: emailId, password: password);
-      await datalessCollection
-          .doc(credential.user!.uid)
-          .set({"timeStamp": DateTime.now()});
+      await datalessCollection.doc(credential.user!.uid).set(
+        {"timeStamp": DateTime.now(), "linkedEmailPhone": false},
+      );
       return CurrentUser(firebaseUser: credential.user);
     } on FirebaseAuthException catch (error) {
       throw Exception(error.message);
@@ -123,6 +138,10 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
           EmailAuthProvider.credential(email: emailId, password: password);
       UserCredential? userCredential =
           await _firebaseAuth.currentUser?.linkWithCredential(credential);
+      if (userCredential != null)
+        await datalessCollection.doc(userCredential.user!.uid).update(
+          {"linkedEmailPhone": true},
+        );
       return userCredential != null;
     } on FirebaseAuthException catch (error) {
       throw Exception(error.message);
@@ -139,11 +158,14 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
       UserCredential? userCredential =
           await _firebaseAuth.currentUser?.linkWithCredential(credential);
       if (userCredential != null) {
-        bool isNewUser = userCredential.additionalUserInfo!.isNewUser;
+        /* bool isNewUser = userCredential.additionalUserInfo!.isNewUser;
         if (isNewUser) {
           return true;
         }
-        return false;
+        return false; */
+        await datalessCollection
+            .doc(userCredential.user!.uid)
+            .update({"linkedEmailPhone": true});
       }
       return userCredential != null;
     } on FirebaseAuthException catch (e) {

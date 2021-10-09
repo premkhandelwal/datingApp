@@ -65,6 +65,8 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       yield* __mapEmailVerificationStateRequested();
     } else if (event is SignedInforFirstTimeEvent) {
       yield* __mapSignedInFirstTimeState(event);
+    } else if (event is LinkStatusEvent) {
+      yield* __mapLinkStatusEventtoState(event);
     }
   }
 
@@ -226,6 +228,16 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       }
     } catch (e) {
       yield FailedtogetSignInForFirstTimeState();
+    }
+  }
+
+  Stream<FirebaseauthState> __mapLinkStatusEventtoState(
+      LinkStatusEvent event) async* {
+    bool islinked = await firebaseAuthRepo.phoneEmailLinked(event.uid);
+    if (islinked) {
+      yield PhoneEmailLinkedState();
+    } else {
+      yield PhoneEmailNotLinkedState();
     }
   }
 }

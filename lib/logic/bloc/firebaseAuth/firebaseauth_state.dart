@@ -87,3 +87,7 @@ class NotSignedInForFirstTimeState extends FirebaseauthState {
 }
 
 class FailedtogetSignInForFirstTimeState extends FirebaseauthState {}
+
+class PhoneEmailLinkedState extends FirebaseauthState{}
+
+class PhoneEmailNotLinkedState extends FirebaseauthState{}

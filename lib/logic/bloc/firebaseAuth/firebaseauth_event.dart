@@ -87,3 +87,10 @@ class SignedInforFirstTimeEvent extends FirebaseauthEvent {
     required this.uid,
   });
 }
+
+class LinkStatusEvent extends FirebaseauthEvent{
+  final String uid;
+  LinkStatusEvent({
+    required this.uid,
+  });
+}
