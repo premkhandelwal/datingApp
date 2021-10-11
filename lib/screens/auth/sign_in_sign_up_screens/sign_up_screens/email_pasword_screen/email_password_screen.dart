@@ -225,9 +225,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   }, */
                   listener: (context, state) {
                     if (state is UserSignedUp) {
-                      context
-                          .read<FirebaseauthBloc>()
-                          .add(EmailVerificationRequested());
+                      firebaseauthBloc.add(EmailVerificationRequested());
                       /* SharedObjects.prefs?.setString(
                           SessionConstants.sessionSignedInWith, "email");
                       SharedObjects.prefs?.setString(
@@ -249,9 +247,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                 onPressed: () {
                                   Navigator.pop(ctx);
                                   if (widget.authSide == "Sign Up") {
-                                    context
-                                        .read<FirebaseauthBloc>()
-                                        .add(SignOutRequested());
+                                   firebaseauthBloc.add(SignOutRequested());
 
                                     changePageWithoutBack(
                                         context: context,
@@ -268,16 +264,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       );
                     } else if (state is UserLoggedIn) {
                       sessionUid = state.userUID;
-                      context
-                          .read<FirebaseauthBloc>()
-                          .add(SignedInforFirstTimeEvent(uid: state.userUID));
-                    } else if (state is SignedInForFirstTimeState) {
-                      context
-                          .read<FirebaseauthBloc>()
-                          .add(EmailVerificationStateRequested());
-/* 
-                      changePageWithoutBack(
-                          context: context, widget: ProfileDetailPage()); */
+                      firebaseauthBloc.add(SignedInforFirstTimeEvent(uid: state.userUID));
                     } else if (state is NotSignedInForFirstTimeState) {
                       SharedObjects.prefs?.setString(
                           SessionConstants.sessionSignedInWith, "email");

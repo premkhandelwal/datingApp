@@ -61,10 +61,10 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     ElevatedButton(
                         onPressed: () async {
                           await FirebaseAuthRepository().signOut();
+                          Navigator.pop(ctx);
                           changePageWithoutBack(
                               context: context,
                               widget: ChooseSignInSignUpPage());
-                          Navigator.pop(ctx);
                         },
                         child: Text('Yes')),
                     ElevatedButton(
@@ -268,17 +268,38 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         }
                         if (_formKey.currentState!.validate() &&
                             !isDateNotSelected) {
+                              num age = calculateAge(_selectedDate);
+                              if(age < 18){
+                                showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('Error'),
+                                  content: Text(
+                                    'Sorry, you cannot sign up into the app. Minimum age to use the app is 18 years.'
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                    },
+                                    child: Text('Ok')),
+                                  ],
+                                  ));
+                              }
+                              else{
                           profiledetailsBloc.add(AddBasicInfoEvent(
                               user: CurrentUser(
                                   name: name.text,
                                   profession: profession.text,
                                   birthDate: _selectedDate,
-                                  age: calculateAge(_selectedDate),
+                                  age: age,
                                   image: _image)));
                           changePageTo(
                               context: context,
                               widget: GenderSelectionScreen());
+
                         }
+                            }
                       },
                       text: "Confirm",
                     ),

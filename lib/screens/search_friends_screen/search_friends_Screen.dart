@@ -23,10 +23,10 @@ class SearchFriendsScreen extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () async {
                           await FirebaseAuthRepository().signOut();
+                          Navigator.pop(ctx);
                           changePageWithoutBack(
                               context: context,
                               widget: ChooseSignInSignUpPage());
-                          Navigator.pop(ctx);
                         },
                         child: Text('Yes')),
                     ElevatedButton(

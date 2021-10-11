@@ -34,12 +34,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   TCardController _controller = TCardController();
   int _index = 0;
   late UseractivityBloc useractivityBloc;
+  late FirebaseauthBloc firebaseAuthBloc;
 
   
   @override
   void initState() {
     filteredUsers = [];
     useractivityBloc = BlocProvider.of<UseractivityBloc>(context);
+    firebaseAuthBloc = BlocProvider.of<FirebaseauthBloc>(context);
     useractivityBloc.add(FetchLocationInfoEvent());
     super.initState();
   }
@@ -154,9 +156,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             color: AppColor,
                           ),
                           onPressed: () {
-                            context
-                                .read<FirebaseauthBloc>()
-                                .add(SignOutRequested());
+                            firebaseAuthBloc.add(SignOutRequested());
 
                             WidgetsBinding.instance?.addPostFrameCallback((_) {
                               changePageWithoutBack(
@@ -175,9 +175,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     if (state is UserMatchFoundState) {
                       itIsAMatchPopUp(
                           context, state.user.image!, state.user.name!);
-                      context
-                          .read<UseractivityBloc>()
-                          .add(UserStateNoneEvent());
+                      useractivityBloc.add(UserStateNoneEvent());
                     } else if (state is FetchedAllUserswithFiltersState) {
                       allUsers = List.from(state.users);
                     } else if (state is AppliedFiltersState) {
@@ -221,9 +219,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           controller: _controller,
                           onForward: (index, info) async {
                             if (info.direction == SwipDirection.Right) {
-                              context
-                                  .read<UseractivityBloc>()
-                                  .add(UserLikedEvent(allUsers[_index].uid!));
+                             useractivityBloc.add(UserLikedEvent(allUsers[_index].uid!));
                               useractivityBloc.add(
                                   UserFindMatchEvent(allUsers[_index].uid!));
                             } else if (info.direction == SwipDirection.Left) {

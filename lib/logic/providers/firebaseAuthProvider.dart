@@ -81,7 +81,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> iscollectionDocExists(String uid) async {
+  Future<bool> iscollectionDocExists(String? uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
         await collection.doc("$uid").get();
 
@@ -97,9 +97,14 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     try {
       UserCredential? userCredential = await _firebaseAuth
           .signInWithEmailAndPassword(email: emailId, password: password);
-      collection
-          .doc(userCredential.user!.uid)
-          .update({"lastLogin": DateTime.now()});
+          bool docExists = await iscollectionDocExists(userCredential.user?.uid) ;
+      if (docExists) {
+        
+        collection
+            .doc(userCredential.user!.uid)
+            .update({"lastLogin": DateTime.now()});
+      }
+
       return CurrentUser(firebaseUser: userCredential.user);
     } on FirebaseAuthException catch (error) {
       throw Exception(error.message);

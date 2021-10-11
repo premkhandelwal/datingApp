@@ -51,10 +51,10 @@ class CurrentUser {
           : map["gender"] == "Female"
               ? GENDER.female
               : GENDER.other,
-      interestedin: map["gender"] != null
-          ? map["gender"] == "Male"
+      interestedin: map["interestedIn"] != null
+          ? map["interestedIn"] == "Male"
               ? GENDER.male
-              : map["gender"] == "Female"
+              : map["interestedIn"] == "Female"
                   ? GENDER.female
                   : GENDER.other
           : GENDER.NotSelected,

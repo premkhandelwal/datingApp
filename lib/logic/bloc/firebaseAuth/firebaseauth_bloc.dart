@@ -223,6 +223,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       bool isuserDocExists = await firebaseAuthRepo.isuserDocExists(event.uid);
       if (isuserDocExists) {
         yield SignedInForFirstTimeState();
+        add(EmailVerificationStateRequested());
       } else {
         yield NotSignedInForFirstTimeState(userUID: event.uid);
       }

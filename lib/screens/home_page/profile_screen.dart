@@ -290,9 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Center(
                                       child: GestureDetector(
                                         onTap: () {
-                                          context
-                                              .read<ProfiledetailsBloc>()
-                                              .add(ShowMore(
+                                          profiledetailsBloc.add(ShowMore(
                                                   isBio: showMoreBio,
                                                   isInterests:
                                                       !showMoreInterests));

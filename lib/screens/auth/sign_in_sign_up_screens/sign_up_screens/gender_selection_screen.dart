@@ -18,6 +18,13 @@ class GenderSelectionScreen extends StatefulWidget {
 
 class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
   var _selected = GENDER.NotSelected;
+  late ProfiledetailsBloc profiledetailsBloc;
+
+  @override
+  void initState() {
+    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +85,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                           ));
                         }
                       : () {
-                          context
-                              .read<ProfiledetailsBloc>()
-                              .add(AddGenderInfoEvent(
+                          profiledetailsBloc.add(AddGenderInfoEvent(
                                   user: CurrentUser(
                                 gender: _selected,
                               )));

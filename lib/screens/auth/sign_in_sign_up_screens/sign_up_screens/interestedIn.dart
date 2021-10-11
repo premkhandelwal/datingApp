@@ -17,6 +17,13 @@ class InterestedInScreen extends StatefulWidget {
 
 class _InterestedInScreenState extends State<InterestedInScreen> {
   var _selected = GENDER.NotSelected;
+  late ProfiledetailsBloc profiledetailsBloc;
+  
+  @override
+  void initState() {
+    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +84,7 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
                           ));
                         }
                       : () {
-                          context
-                              .read<ProfiledetailsBloc>()
-                              .add(AddInterestedInInfoEvent(
+                          profiledetailsBloc.add(AddInterestedInInfoEvent(
                                   user: CurrentUser(
                                 interestedin: _selected,
                               )));

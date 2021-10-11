@@ -66,13 +66,14 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
                     ? "Female"
                     : "Other",
             "interests": user.interests,
-            "interestedIn": user.gender == GENDER.male
+            "interestedIn": user.interestedin == GENDER.male
                 ? "Male"
-                : user.gender == GENDER.female
+                : user.interestedin == GENDER.female
                     ? "Female"
                     : "Other",
             "profileImageUrl":
-                user.imageDownloadUrl != null ? user.imageDownloadUrl : null
+                user.imageDownloadUrl != null ? user.imageDownloadUrl : null,
+                "lastLogin": DateTime.now()
           });
           await dataLessCollection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
@@ -86,10 +87,20 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
           "age": user.age,
           "profession": user.profession,
           "birthDate": user.birthDate,
-          "gender": user.gender?.index,
+          "gender": user.gender == GENDER.male
+                ? "Male"
+                : user.gender == GENDER.female
+                    ? "Female"
+                    : "Other",
+            "interestedIn": user.interestedin == GENDER.male
+                ? "Male"
+                : user.interestedin == GENDER.female
+                    ? "Female"
+                    : "Other",
           "interests": user.interests,
-          "interestedIn": user.interestedin?.index,
-          "profileImageUrl": null
+          "profileImageUrl": null,
+                "lastLogin": DateTime.now()
+
         });
         await dataLessCollection
             .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))

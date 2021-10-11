@@ -61,7 +61,12 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
         child: BlocBuilder<UseractivityBloc, UseractivityState>(
           buildWhen: (previousState, currentState) {
             if (currentState is ClearedFiltersState) {
-              applyFilters();
+              ageRange = RangeValues(
+                  SessionConstants.defaultFilters!.minAge.toDouble(),
+                  SessionConstants.defaultFilters!.maxAge.toDouble());
+              distance =
+                  SessionConstants.defaultFilters!.thresholdDist.toDouble();
+              _selectedGender = SessionConstants.defaultFilters!.interestedIn;
               return true;
             }
             return false;
@@ -79,9 +84,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     ),
                     InkWell(
                       onTap: () {
-                        context
-                            .read<UseractivityBloc>()
-                            .add(ClearedFiltersEvent());
+                        useractivityBloc.add(ClearedFiltersEvent());
                       },
                       child: Container(
                         width: 50.w,
@@ -196,7 +199,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                 bottomRight: Radius.circular(15.r),
                                 topRight: Radius.circular(15.r)),
                             child: AnimatedContainer(
-                              width: _selectedGender == GENDER.other
+                              width: _selectedGender == GENDER.both
                                   ? 120.w
                                   : 90.w,
                               decoration: BoxDecoration(
@@ -212,9 +215,10 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                       .textTheme
                                       .subtitle2!
                                       .copyWith(
-                                          color: _selectedGender == GENDER.other
-                                              ? Colors.white
-                                              : Colors.black),
+                                          color:
+                                              _selectedGender == GENDER.both
+                                                  ? Colors.white
+                                                  : Colors.black),
                                 ),
                               ),
                             ),
@@ -311,12 +315,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                           maxAge: ageRange.end,
                           interestedIn: _selectedGender,
                           thresholdDist: distance));
-                      /*  SessionConstants.appliedFilters.forEach((key, value) {
-                            if (value) {
-                              context.read<UseractivityBloc>().add(key);
-                            }
-                          });
-         */
+                    
                       Navigator.of(context).pop();
                     })
               ],

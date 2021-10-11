@@ -330,7 +330,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
  */
   @override
   void clearAllFilters() {
-    SessionConstants.appliedFilters = SessionConstants.defaultFilters;
+    // SessionConstants.appliedFilters = SessionConstants.defaultFilters;
   }
 
   @override

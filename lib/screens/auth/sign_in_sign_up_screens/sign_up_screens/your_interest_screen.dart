@@ -21,6 +21,15 @@ class YourInterestScreen extends StatefulWidget {
 
 class _YourInterestScreenState extends State<YourInterestScreen> {
   List<String> _selectedInterests = [];
+  late ProfiledetailsBloc profileDetailsBloc;
+
+  @override
+  void initState() {
+    profileDetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);    
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,15 +145,11 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   return CommonButton(
                       text: 'Continue',
                       onPressed: () {
-                        context
-                            .read<ProfiledetailsBloc>()
-                            .add(AddInterestsInfoEvent(
+                      profileDetailsBloc.add(AddInterestsInfoEvent(
                                 user: CurrentUser(
                               interests: _selectedInterests,
                             )));
-                        context
-                            .read<ProfiledetailsBloc>()
-                            .add(SubmitInfoEvent());
+                        profileDetailsBloc.add(SubmitInfoEvent());
                       });
                 },
               )
