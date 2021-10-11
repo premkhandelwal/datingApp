@@ -69,9 +69,29 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        await FirebaseAuthRepository().signOut();
-        changePageWithoutBack(
-            context: context, widget: ChooseSignInSignUpPage());
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('Confirm'),
+                  content: Text('Are you sure you want to sign out?'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuthRepository().signOut();
+                          changePageWithoutBack(
+                              context: context,
+                              widget: ChooseSignInSignUpPage());
+                          Navigator.pop(ctx);
+                        },
+                        child: Text('Yes')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                        },
+                        child: Text('No')),
+                  ],
+                ));
+
         return true;
       },
       child: Form(

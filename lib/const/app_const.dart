@@ -84,7 +84,7 @@ Future<String> coordinatestoLoc(Map<String, num> coordinates) async {
     var first = placemarks.first;
     if (first.administrativeArea == null)
       return "${first.subAdministrativeArea}";
-    else  
+    else
       return "${first.subAdministrativeArea}, ${first.administrativeArea}";
   }
   return "";
@@ -111,5 +111,9 @@ void changePageTo({required BuildContext context, required Widget widget}) {
 void changePageWithoutBack(
     {required BuildContext context, required Widget widget}) {
   Navigator.pushAndRemoveUntil(
-      context, MaterialPageRoute(builder: (ctx) => widget), (route) => false);
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => widget,
+      ),
+      (route) => false);
 }

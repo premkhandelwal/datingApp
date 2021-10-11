@@ -14,15 +14,35 @@ class SearchFriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await FirebaseAuthRepository().signOut();
-        changePageWithoutBack(
-            context: context, widget: ChooseSignInSignUpPage());
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('Confirm'),
+                  content: Text('Are you sure you want to sign out?'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuthRepository().signOut();
+                          changePageWithoutBack(
+                              context: context,
+                              widget: ChooseSignInSignUpPage());
+                          Navigator.pop(ctx);
+                        },
+                        child: Text('Yes')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                        },
+                        child: Text('No')),
+                  ],
+                ));
+
         return true;
       },
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding:  EdgeInsets.all(20.0.sp),
+            padding: EdgeInsets.all(20.0.sp),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -35,8 +55,8 @@ class SearchFriendsScreen extends StatelessWidget {
                 SizedBox(height: 20.h),
                 Container(
                   child: Center(
-                      child:
-                          Image.asset('assets/images/search_friends/people.png')),
+                      child: Image.asset(
+                          'assets/images/search_friends/people.png')),
                 ),
                 Spacer(),
                 Column(
@@ -47,7 +67,7 @@ class SearchFriendsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
+                      padding: EdgeInsets.symmetric(horizontal: 20.0.sp),
                       child: Text(
                         'You can find friends from your contact lists to connected',
                         textAlign: TextAlign.center,

@@ -52,9 +52,29 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await FirebaseAuthRepository().signOut();
-        changePageWithoutBack(
-            context: context, widget: ChooseSignInSignUpPage());
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('Confirm'),
+                  content: Text('Are you sure you want to sign out?'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuthRepository().signOut();
+                          changePageWithoutBack(
+                              context: context,
+                              widget: ChooseSignInSignUpPage());
+                          Navigator.pop(ctx);
+                        },
+                        child: Text('Yes')),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                        },
+                        child: Text('No')),
+                  ],
+                ));
+
         return true;
       },
       child: Form(
@@ -62,13 +82,14 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
         child: Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0.sp, vertical: 20.sp),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 20.0.sp, vertical: 20.sp),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomAppBar(
-                          canGoBack: false,
+                      canGoBack: false,
                       centerWidget: Container(),
                       trailingWidget: Container(),
                       context: context,
@@ -120,7 +141,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           decoration: BoxDecoration(
                               color: AppColor,
                               borderRadius: BorderRadius.circular(15.0.r),
-                              border: Border.all(color: Colors.white, width: 2.w)),
+                              border:
+                                  Border.all(color: Colors.white, width: 2.w)),
                           child: IconButton(
                             onPressed: _addImage,
                             icon: Icon(Icons.camera_alt_rounded),
@@ -186,7 +208,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                               containerHeight: 210.0.h,
                             ),
                             onCancel: () {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
                                 content: Text(
                                   'Please Select Your Birth Date',
                                 ),
@@ -220,8 +243,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 ),
                                 Text(
                                   " $_date",
-                                  style:
-                                      TextStyle(color: AppColor, fontSize: 15.0.sp),
+                                  style: TextStyle(
+                                      color: AppColor, fontSize: 15.0.sp),
                                 )
                               ],
                             ),
@@ -245,16 +268,16 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         }
                         if (_formKey.currentState!.validate() &&
                             !isDateNotSelected) {
-                          profiledetailsBloc.add(
-                              AddBasicInfoEvent(
-                                  user: CurrentUser(
-                                      name: name.text,
-                                      profession: profession.text,
-                                      birthDate: _selectedDate,
-                                      age: calculateAge(_selectedDate),
-                                      image: _image)));
+                          profiledetailsBloc.add(AddBasicInfoEvent(
+                              user: CurrentUser(
+                                  name: name.text,
+                                  profession: profession.text,
+                                  birthDate: _selectedDate,
+                                  age: calculateAge(_selectedDate),
+                                  image: _image)));
                           changePageTo(
-                              context: context, widget: GenderSelectionScreen());
+                              context: context,
+                              widget: GenderSelectionScreen());
                         }
                       },
                       text: "Confirm",
