@@ -13,18 +13,13 @@ abstract class BaseUserActivityProvider {
   Future<void> userDisliked(String likedUserUID);
   Future<CurrentUser?> userFindMatch(String matchUserUID);
   Future<void> updateLocationInfo();
-
   Future<List<CurrentUser>> fetchAllUsers();
   Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters();
   Future<List<CurrentUser>> fetchMatchedUsers();
   Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates);
   Future<Map<String, num>> fetchLocationInfo();
-
-  // Future<List<CurrentUser>> interestedInChanged(GENDER gender);
-  // Future<List<CurrentUser>> distanceFilterChanged(List<CurrentUser> usersList,num thresholdDist);
   Future<List<CurrentUser>> filterChanged(
       num minAge, num maxAge, num thresholdDist, GENDER interestedIn);
-  void clearAllFilters();
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
@@ -269,7 +264,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
       }
       if (user.age != null) {
         if (minAge > user.age! || user.age! > maxAge) {
-          // user.agenotinFilters = true;
           return true;
         }
       }
@@ -290,47 +284,6 @@ class UserActivityProvider extends BaseUserActivityProvider {
       return false;
     });
     return usersList;
-  }
-
-  /* @override
-  Future<List<CurrentUser>> distanceFilterChanged(List<CurrentUser> usersList,num thresholdDist) async {
-    
-    if (thresholdDist >= 80) {
-      return usersList;
-    }
-    usersList.removeWhere((user) {
-      if (user.locationCoordinates != null) {
-        num? distance = calculateDistance(user.locationCoordinates!);
-
-        if (distance != null) {
-          if (distance > thresholdDist) {
-            return true;
-          }
-        }
-      }
-      return false;
-    });
-    return usersList;
-  }
-
-  @override
-  Future<List<CurrentUser>> interestedInChanged(GENDER interestedIn) async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await collection.get();
-    List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
-        querySnapshot.docs;
-
-    List<CurrentUser> usersList =
-        await CurrentUser.toCurrentList(listSnapShots);
-    usersList.removeWhere((user) {
-      
-      return false;
-    });
-    return usersList;
-  }
- */
-  @override
-  void clearAllFilters() {
-    // SessionConstants.appliedFilters = SessionConstants.defaultFilters;
   }
 
   @override

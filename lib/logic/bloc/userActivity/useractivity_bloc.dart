@@ -150,7 +150,6 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   }
 
   Stream<UseractivityState> _mapClearFiltertoState() async* {
-    userActivityRepository.clearAllFilters();
     yield ClearedFiltersState();
   }
 }

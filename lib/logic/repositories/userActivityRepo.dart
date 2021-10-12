@@ -16,13 +16,8 @@ class UserActivityRepository extends BaseRepository {
 Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates) => activityProvider.fetchUserInfo(locationCoordinates);
   Future<Map<String,num>> fetchLocationInfo() =>
       activityProvider.fetchLocationInfo();
-/*       Future<List<CurrentUser>> interestedInChanged(GENDER interestedIn) async =>
-    await  activityProvider.interestedInChanged(interestedIn);
-  Future<List<CurrentUser>> distanceFilterChanged(List<CurrentUser> usersList,num threshHoldDist) async =>
-     await activityProvider.distanceFilterChanged(usersList,threshHoldDist);
- */  Future<List<CurrentUser>> filterChanged(num minAge, num maxAge,num thresholdDist, GENDER interestedIn) async =>
+ Future<List<CurrentUser>> filterChanged(num minAge, num maxAge,num thresholdDist, GENDER interestedIn) async =>
      await  activityProvider.filterChanged(minAge, maxAge,thresholdDist,interestedIn);
-  void clearAllFilters() => activityProvider.clearAllFilters();
   @override
   void dispose() {}
 }
