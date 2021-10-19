@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
@@ -7,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 abstract class BaseProfileDetailProvider {
   Future<void> updateUserInfo(CurrentUser user);
   Future<void> submitUserInfo(CurrentUser user);
+  Future<void> uploadImages(List<File> images);
 }
 
 class ProfileDetailsProvider extends BaseProfileDetailProvider {
@@ -73,7 +76,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
                     : "Other",
             "profileImageUrl":
                 user.imageDownloadUrl != null ? user.imageDownloadUrl : null,
-                "lastLogin": DateTime.now()
+            "lastLogin": DateTime.now()
           });
           await dataLessCollection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
@@ -88,24 +91,47 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
           "profession": user.profession,
           "birthDate": user.birthDate,
           "gender": user.gender == GENDER.male
-                ? "Male"
-                : user.gender == GENDER.female
-                    ? "Female"
-                    : "Other",
-            "interestedIn": user.interestedin == GENDER.male
-                ? "Male"
-                : user.interestedin == GENDER.female
-                    ? "Female"
-                    : "Other",
+              ? "Male"
+              : user.gender == GENDER.female
+                  ? "Female"
+                  : "Other",
+          "interestedIn": user.interestedin == GENDER.male
+              ? "Male"
+              : user.interestedin == GENDER.female
+                  ? "Female"
+                  : "Other",
           "interests": user.interests,
           "profileImageUrl": null,
-                "lastLogin": DateTime.now()
-
+          "lastLogin": DateTime.now()
         });
         await dataLessCollection
             .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
             .delete();
       }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<void> uploadImages(List<File> images) async {
+    try {
+      if (images.isEmpty) return null;
+      List<String> _downloadUrls = [];
+      for (var i = 0; i < images.length; i++) {
+        Reference ref = storage.ref(images[i].path).child(
+            "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/${i + 1}");
+        final UploadTask uploadTask = ref.putFile(images[i]);
+        // final TaskSnapshot taskSnapshot =
+        await uploadTask.whenComplete(() async {
+          final url = await ref.getDownloadURL();
+          _downloadUrls.add(url);
+        });
+      }
+
+      await collection
+          .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+          .update({"imagesUrl": FieldValue.arrayUnion(_downloadUrls)});
     } catch (e) {
       throw Exception(e);
     }

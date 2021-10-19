@@ -20,6 +20,7 @@ class CurrentUser {
   User? firebaseUser;
   List<String>? interests;
   Map<String, num>? locationCoordinates; //{Latitude:0,Longitude:0}
+  List<File>? images = [];
   CurrentUser(
       {this.uid,
       this.name,
@@ -35,7 +36,9 @@ class CurrentUser {
       this.firebaseUser,
       this.imageDownloadUrl,
       this.locationCoordinates,
-      this.interests});
+      this.interests,
+      this.images   
+      });
 
   factory CurrentUser.fromMap(Map<String, dynamic> map) {
     // int interestedIn = map['interestedin'];
@@ -72,22 +75,25 @@ class CurrentUser {
 
   static Future<List<CurrentUser>> toCurrentList(
       List<QueryDocumentSnapshot<Map<String, dynamic>>> snapshots) async {
-    List<CurrentUser> users = [];
+    List<CurrentUser> usersList = [];
     for (var snapshot in snapshots) {
-      users.add(CurrentUser.fromMap(snapshot.data()));
-      users[users.length - 1].uid = snapshot.id;
+      usersList.add(CurrentUser.fromMap(snapshot.data()));
+
+      usersList[usersList.length - 1].uid = snapshot.id;
+      
       if (snapshot.data()["profileImageUrl"] != null) {
-        users[users.length - 1].image =
+        usersList[usersList.length - 1].image =
             await urlToFile(snapshot.data()["profileImageUrl"], snapshot.id);
       }
+      
       if (snapshot.data()["locationCoordinates"] != null) {
         Map<String, num> locationCoordainates =
             Map<String, num>.from(snapshot.data()["locationCoordinates"]);
-        users[users.length - 1].location =
+        usersList[usersList.length - 1].location =
             await coordinatestoLoc(locationCoordainates);
       }
     }
-    return users;
+    return usersList;
   }
 
   factory CurrentUser.fromJson(String source) =>

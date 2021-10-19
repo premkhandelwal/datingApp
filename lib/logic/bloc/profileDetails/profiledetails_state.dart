@@ -44,7 +44,7 @@ class ShowMoreState extends ProfiledetailsState {
   });
 }
 
-class FetchingUserInfoState extends ProfiledetailsState{}
+class FetchingUserInfoState extends ProfiledetailsState {}
 
 class FetchedUserInfoState extends ProfiledetailsState {
   final CurrentUser currentUser;
@@ -53,10 +53,26 @@ class FetchedUserInfoState extends ProfiledetailsState {
   });
 }
 
-class FailedtoFetchUserInfoState extends ProfiledetailsState{}
+class FailedtoFetchUserInfoState extends ProfiledetailsState {}
 
-class FetchingUserLocInfoState extends ProfiledetailsState{}
+class FetchingUserLocInfoState extends ProfiledetailsState {}
 
-class FetchedUserLocInfoState extends ProfiledetailsState{}
+class FetchedUserLocInfoState extends ProfiledetailsState {}
 
-class FailedtoFetchLocInfoState extends ProfiledetailsState{}
+class FailedtoFetchLocInfoState extends ProfiledetailsState {}
+
+class AddingUserImages extends ProfiledetailsState {}
+
+class AddedUserImages extends ProfiledetailsState {
+  final List<File> images;
+  AddedUserImages({
+    required this.images,
+  });
+}
+
+class FailedtoAddUserImages extends ProfiledetailsState {
+  final Object exceptionMessage;
+  FailedtoAddUserImages({
+    required this.exceptionMessage,
+  });
+}

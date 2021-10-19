@@ -10,7 +10,7 @@ List<String> sampleImages = [
   'assets/images/sample_images/sample_image_7.png',
   'assets/images/sample_images/sample_image_8.png',
   'assets/images/sample_images/sample_image_9.png',
-  'assets/images/sample_images/sample_image_10.png',
+  // 'assets/images/sample_images/sample_image_10.png',
 ];
 List<String> name = [
   'Rudi Randolph',

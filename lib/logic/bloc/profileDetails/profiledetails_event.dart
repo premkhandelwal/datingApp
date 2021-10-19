@@ -59,3 +59,10 @@ class FetchUserInfoEvent extends ProfiledetailsEvent {
 }
 
 class FetchLocInfoEvent extends ProfiledetailsEvent {}
+
+class AddUserImages extends ProfiledetailsEvent {
+  final List<File> images;
+  AddUserImages({
+    required this.images,
+  });
+}

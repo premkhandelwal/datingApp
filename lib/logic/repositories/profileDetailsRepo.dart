@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/providers/profileDetailsProvider.dart';
 import 'package:dating_app/logic/providers/userActivityProvider.dart';
@@ -18,6 +20,8 @@ class ProfileDetailsRepository extends BaseRepository {
       profileDetailsProvider.submitUserInfo(user);
   Future<Map<String, num>> fetchLocInfo() => userActivityProvider.fetchLocationInfo();
   Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates) => userActivityProvider.fetchUserInfo(locationCoordinates);
+  Future<void> uploadImages(List<File> images) => profileDetailsProvider.uploadImages(images);
+
 
   @override
   void dispose() {}

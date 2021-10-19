@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:dating_app/logic/data/user.dart';
@@ -38,6 +39,8 @@ class ProfiledetailsBloc
       yield* _mapFetchLoctoState();
     } else if (event is FetchUserInfoEvent) {
       yield* _mapFetchInfotoState(event);
+    } else if (event is AddUserImages) {
+      yield* _mapAddImagetoState(event);
     }
   }
 
@@ -120,8 +123,8 @@ class ProfiledetailsBloc
     yield ShowMoreState(isBio: event.isBio, isInterests: event.isInterests);
   }
 
-  Stream<ProfiledetailsState> _mapFetchLoctoState()async* {
-     yield FetchingUserLocInfoState();
+  Stream<ProfiledetailsState> _mapFetchLoctoState() async* {
+    yield FetchingUserLocInfoState();
     try {
       Map<String, num> locationInfo =
           await profileDetailsRepository.fetchLocInfo();
@@ -130,18 +133,28 @@ class ProfiledetailsBloc
     } catch (e) {
       yield FailedtoFetchLocInfoState();
     }
-  } 
+  }
 
-  Stream<ProfiledetailsState> _mapFetchInfotoState(FetchUserInfoEvent event)async*{
+  Stream<ProfiledetailsState> _mapFetchInfotoState(
+      FetchUserInfoEvent event) async* {
     yield FetchingUserInfoState();
     try {
 // Pass location coordinates to fetchuserinfo() because the new location of the user is not updated in the database yet
-      CurrentUser currentUser =
-          await profileDetailsRepository.fetchUserInfo(event.locationCoordinates);
+      CurrentUser currentUser = await profileDetailsRepository
+          .fetchUserInfo(event.locationCoordinates);
       yield FetchedUserInfoState(currentUser: currentUser);
     } catch (e) {
       yield FailedtoFetchUserInfoState();
     }
   }
 
+  Stream<ProfiledetailsState> _mapAddImagetoState(AddUserImages event) async* {
+    yield AddingUserImages();
+    try {
+      await profileDetailsRepository.uploadImages(event.images);
+      yield AddedUserImages(images: event.images);
+    } catch (e) {
+      yield FailedtoAddUserImages(exceptionMessage: e);
+    }
+  }
 }

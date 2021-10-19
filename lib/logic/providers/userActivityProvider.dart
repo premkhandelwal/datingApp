@@ -7,7 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
-
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
   Future<void> userDisliked(String likedUserUID);
@@ -204,11 +203,22 @@ class UserActivityProvider extends BaseUserActivityProvider {
           .get();
       if (doc.exists && doc.data() != null) {
         Map<String, dynamic> dataMap = doc.data()!;
+        String? uid =
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid);
         user = CurrentUser.fromMap(dataMap);
         user.image = doc.data()!["profileImageUrl"] != null
-            ? await urlToFile(doc.data()!["profileImageUrl"],
-                SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            ? await urlToFile(doc.data()!["profileImageUrl"], uid)
             : null;
+        if (doc.data()!["imagesUrl"] != null) {
+          List imageUrls = doc.data()!["imagesUrl"];
+          for (var i = 0; i < imageUrls.length; i++) {
+            if (user.images == null) {
+              user.images = [];
+            }
+            user.images!
+                .add(await urlToFile(imageUrls[i], uid! + (i + 1).toString()));
+          }
+        }
       }
       user.locationCoordinates = locationCoordinates;
       user.location = await coordinatestoLoc(locationCoordinates);

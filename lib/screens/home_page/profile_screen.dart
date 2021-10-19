@@ -1,14 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
-import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/screens/home_page/widget/edit_profile_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -26,8 +26,12 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
-    if (SessionConstants.sessionUser != CurrentUser()) {
+    if (SessionConstants.sessionUser.locationCoordinates == null) {
       profiledetailsBloc.add(FetchLocInfoEvent());
+    } else if (SessionConstants.sessionUser == CurrentUser()) {
+      profiledetailsBloc.add(FetchUserInfoEvent(
+          locationCoordinates:
+              SessionConstants.sessionUser.locationCoordinates!));
     }
     _currentUser = SessionConstants.sessionUser;
   }
@@ -36,6 +40,20 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isScrolling = false;
   bool showMoreBio = true;
   bool showMoreInterests = true;
+
+  List<File> _pickedImages = [];
+
+  Future<File?> _addImage() async {
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickMultiImage();
+    if (pickedFiles != null) {
+      pickedFiles.forEach((image) {
+        _pickedImages.add(File(image.path));
+      });
+      profiledetailsBloc.add(AddUserImages(images: _pickedImages));
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,32 +78,32 @@ class _ProfilePageState extends State<ProfilePage> {
             showMoreInterests = state.isInterests;
           } else if (state is FetchedUserInfoState) {
             _currentUser = state.currentUser;
+          } else if (state is AddedUserImages) {
+            SessionConstants.sessionUser.images = state.images;
+            _currentUser = SessionConstants.sessionUser;
+          }else if(state is FailedtoAddUserImages){
+            showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('Error'),
+              content: Text(
+                state.exceptionMessage.toString()
+              ),
+              actions: [
+                ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                },
+                child: Text('Ok')),
+              ],
+              ));
           }
         },
         builder: (context, state) {
-          /*  if (state is InfoState) {
-            return Center(
-                child: CircularProgressIndicator(
-              color: Colors.pink,
-            ));
-          } */
-
-          final userActivitystate = context.watch<UseractivityBloc>().state;
-
-          if (userActivitystate is FetchingAllUsersState ||
-              userActivitystate is FetchingInfoState ||
-              userActivitystate is ApplyingFilters ||
-              state is UpdatingInfoState ||
-              state is FetchingUserInfoState ||
-              state is FetchingUserLocInfoState) {
+          if (state is FetchingUserInfoState ||
+              state is FetchingUserLocInfoState ||
+              state is AddingUserImages) {
             return Center(child: CircularProgressIndicator());
-          } else if (userActivitystate is FetchedInfoState ||
-              userActivitystate is FetchedAllUserswithFiltersState ||
-              userActivitystate is UpdatedLocInfoState ||
-              state is AppliedFiltersState) {
-            _currentUser = SessionConstants.sessionUser;
-          } else if (state is UpdatedInfoState) {
-            _currentUser = state.currentUser;
           }
           return SafeArea(
             child: Container(
@@ -291,9 +309,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: GestureDetector(
                                         onTap: () {
                                           profiledetailsBloc.add(ShowMore(
-                                                  isBio: showMoreBio,
-                                                  isInterests:
-                                                      !showMoreInterests));
+                                              isBio: showMoreBio,
+                                              isInterests: !showMoreInterests));
                                         },
                                         child: Text(
                                           showMoreInterests
@@ -330,8 +347,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   SizedBox(height: 30.h),
                                   Container(
                                     height: 400.h,
-                                    child: GridView.builder(
-                                      itemCount: sampleImages.length,
+                                    child: _currentUser.images == null ? Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("No Images Available"),
+                                        Spacer(),
+                                        IconButton(icon: Icon(Icons.add,size: 25),onPressed: _addImage,)  
+                                      ],
+                                    ):GridView.builder(
+                                      itemCount: _currentUser.images!.length < 10
+                                          ? _currentUser.images!.length + 1
+                                          : _currentUser.images!.length,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 2,
@@ -343,11 +369,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                         return ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15.r),
-                                            child: Image.asset(
-                                              sampleImages[index],
-                                              fit: BoxFit.fitWidth,
-                                              alignment: Alignment.topCenter,
-                                            ));
+                                            child: _currentUser.images!.length < 10 &&
+                                                    index == _currentUser.images!.length
+                                                ? GestureDetector(
+                                                    onTap: _addImage,
+                                                    child: Container(
+                                                      color: Colors.grey,
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        size: 40,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Image.file(
+                                                    _currentUser.images![index],
+                                                    fit: BoxFit.fitWidth,
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                  ));
                                       },
                                     ),
                                   ),
