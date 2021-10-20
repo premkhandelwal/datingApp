@@ -118,16 +118,24 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
     try {
       if (images.isEmpty) return null;
       List<String> _downloadUrls = [];
+      String? uid = SharedObjects.prefs?.getString(SessionConstants.sessionUid);
       for (var i = 0; i < images.length; i++) {
-        Reference ref = storage.ref(images[i].path).child(
-            "userImages/${SharedObjects.prefs?.getString(SessionConstants.sessionUid)}/${i + 1}");
+        Reference ref =
+            storage.ref(images[i].path).child("userImages/${uid!+'/'}/${i + 1}");
         final UploadTask uploadTask = ref.putFile(images[i]);
         // final TaskSnapshot taskSnapshot =
         await uploadTask.whenComplete(() async {
           final url = await ref.getDownloadURL();
           _downloadUrls.add(url);
+          
         });
       }
+
+      if (SessionConstants.sessionUser.images == null) {
+            SessionConstants.sessionUser.images = [];
+          }
+          SessionConstants.sessionUser.images =
+              SessionConstants.sessionUser.images! + images;
 
       await collection
           .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))

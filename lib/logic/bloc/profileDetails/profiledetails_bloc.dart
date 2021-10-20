@@ -152,7 +152,7 @@ class ProfiledetailsBloc
     yield AddingUserImages();
     try {
       await profileDetailsRepository.uploadImages(event.images);
-      yield AddedUserImages(images: event.images);
+      yield AddedUserImages();
     } catch (e) {
       yield FailedtoAddUserImages(exceptionMessage: e);
     }

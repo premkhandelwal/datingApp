@@ -211,12 +211,14 @@ class UserActivityProvider extends BaseUserActivityProvider {
             : null;
         if (doc.data()!["imagesUrl"] != null) {
           List imageUrls = doc.data()!["imagesUrl"];
+          print(imageUrls);
           for (var i = 0; i < imageUrls.length; i++) {
             if (user.images == null) {
               user.images = [];
             }
             user.images!
                 .add(await urlToFile(imageUrls[i], uid! + (i + 1).toString()));
+            SessionConstants.sessionUser.images = user.images;
           }
         }
       }

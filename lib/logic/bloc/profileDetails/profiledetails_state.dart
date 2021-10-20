@@ -63,12 +63,7 @@ class FailedtoFetchLocInfoState extends ProfiledetailsState {}
 
 class AddingUserImages extends ProfiledetailsState {}
 
-class AddedUserImages extends ProfiledetailsState {
-  final List<File> images;
-  AddedUserImages({
-    required this.images,
-  });
-}
+class AddedUserImages extends ProfiledetailsState {}
 
 class FailedtoAddUserImages extends ProfiledetailsState {
   final Object exceptionMessage;
