@@ -50,6 +50,11 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                                       child:SessionConstants.sessionUser.image != null ? Image.file(
                                          SessionConstants.sessionUser.image!
                                         ,fit: BoxFit.cover,
+                                              errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
                                       ):Container(color: Colors.amber,),
                                     ),
                                   ),
@@ -81,6 +86,11 @@ void itIsAMatchPopUp(BuildContext context, File image,String name) {
                                       child: Image.file(
                                         image,        
                                         fit: BoxFit.cover,
+                                              errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
                                       ),
                                     ),
                                   ),

@@ -66,6 +66,11 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               imageUrl,
                               fit: BoxFit.cover,
                               alignment: Alignment.topCenter,
+                              errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
                             ),
                     ),
                   ),

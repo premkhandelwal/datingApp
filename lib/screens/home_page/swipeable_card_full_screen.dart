@@ -38,7 +38,16 @@ class SwipeableCardFullScreen extends StatelessWidget {
                   image!,
                   fit: BoxFit.fitWidth,
                   alignment: Alignment.topCenter,
-                ) : Container(),
+                  errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
+                ) : 
+                               Container(
+                                color: Colors.amber,
+                                  )
+                            ,
               ),
               Container(
                 child: ListView(

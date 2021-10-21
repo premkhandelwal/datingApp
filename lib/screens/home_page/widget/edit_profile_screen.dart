@@ -103,6 +103,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     width: 150.w,
                                     alignment: Alignment.topCenter,
                                     fit: BoxFit.cover,
+                                          errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
                                   )
                                 : CircleAvatar(
                                     backgroundColor: Colors.amber,

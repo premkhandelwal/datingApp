@@ -33,6 +33,11 @@ class SwipeableSingleCard extends StatelessWidget {
                   imageUrl!,
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
+                  errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
                 )
               : Container(
                   color: Colors.amber,

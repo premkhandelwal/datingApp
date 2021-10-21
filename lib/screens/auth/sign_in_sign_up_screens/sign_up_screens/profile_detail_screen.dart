@@ -124,12 +124,16 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                     _image!,
                                     alignment: Alignment.topCenter,
                                     fit: BoxFit.cover,
+                                    errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
                                   )
-                                : Image.asset(
-                                    'assets/images/female_model_2.png',
-                                    alignment: Alignment.topCenter,
-                                    fit: BoxFit.cover,
+                                :  Container(
+                                color: Colors.amber,
                                   ),
+                            
                           )),
                       Positioned(
                         bottom: -15,

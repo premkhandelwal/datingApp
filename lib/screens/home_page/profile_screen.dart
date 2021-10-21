@@ -41,9 +41,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool showMoreBio = true;
   bool showMoreInterests = true;
 
-
   Future<File?> _addImage() async {
-  List<File> _pickedImages = [];
+    List<File> _pickedImages = [];
     try {
       final picker = await MultiImagePicker.pickImages(
         maxImages: SessionConstants.sessionUser.images != null
@@ -53,7 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
       for (var i = 0; i < picker.length; i++) {
-       
         _pickedImages.add(await assetToFile(picker[i]));
       }
 
@@ -63,7 +61,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   ScrollController _controller = ScrollController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +120,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         ? Image.file(
                             _currentUser.image!,
                             errorBuilder: (context, exception, stacktrace) {
-                              return Center(
-                                  child: Text("Failed to load image"));
+                              return Container(
+                                color: Colors.amber,
+                              );
                             },
                             fit: BoxFit.fitWidth,
                             alignment: Alignment.topCenter,
@@ -340,7 +338,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ProfiledetailsState>(
                                     builder: (context, state) {
                                       if (state is AddingUserImages) {
-                                        return Center(child: CircularProgressIndicator());
+                                        return Center(
+                                            child: CircularProgressIndicator());
                                       }
                                       return Container(
                                         child: _currentUser.images == null
@@ -366,8 +365,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         1
                                                     : _currentUser
                                                         .images!.length,
-                                                     controller: _controller,
-                                                     shrinkWrap: true,
+                                                controller: _controller,
+                                                shrinkWrap: true,
                                                 gridDelegate:
                                                     SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
@@ -378,13 +377,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     (BuildContext context,
                                                         int index) {
                                                   return InkWell(
-                                                    onTap:()=> imagePopUp(context: context, image: _currentUser
-                                                                        .images![
-                                                                    index],),
+                                                    onTap: () => imagePopUp(
+                                                      context: context,
+                                                      image: _currentUser
+                                                          .images![index],
+                                                    ),
                                                     child: ClipRRect(
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                15.r),
+                                                            BorderRadius
+                                                                .circular(15.r),
                                                         child: _currentUser
                                                                         .images!
                                                                         .length <
@@ -394,10 +395,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                         .images!
                                                                         .length
                                                             ? GestureDetector(
-                                                                onTap: _addImage,
-                                                                child: Container(
-                                                                  color:
-                                                                      Colors.grey,
+                                                                onTap:
+                                                                    _addImage,
+                                                                child:
+                                                                    Container(
+                                                                  color: Colors
+                                                                      .grey,
                                                                   child: Icon(
                                                                     Icons.add,
                                                                     size: 40,
@@ -408,10 +411,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                 _currentUser
                                                                         .images![
                                                                     index],
-                                                                fit: BoxFit.cover,
+                                                                fit: BoxFit
+                                                                    .cover,
                                                                 alignment:
                                                                     Alignment
                                                                         .topCenter,
+                                                                errorBuilder:
+                                                                    (context,
+                                                                        exception,
+                                                                        stacktrace) {
+                                                                  return Container(
+                                                                    color: Colors
+                                                                        .amber,
+                                                                  );
+                                                                },
                                                               )),
                                                   );
                                                 },
