@@ -8,9 +8,7 @@ import 'package:dating_app/screens/home_page/widget/edit_profile_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -43,29 +41,29 @@ class _ProfilePageState extends State<ProfilePage> {
   bool showMoreBio = true;
   bool showMoreInterests = true;
 
-  List<File> _pickedImages = [];
 
   Future<File?> _addImage() async {
-    final picker = await MultiImagePicker.pickImages(
-      maxImages: SessionConstants.sessionUser.images != null
-          ? 10 - SessionConstants.sessionUser.images!.length
-          : 10,
-      enableCamera: true,
-    );
+  List<File> _pickedImages = [];
+    try {
+      final picker = await MultiImagePicker.pickImages(
+        maxImages: SessionConstants.sessionUser.images != null
+            ? 10 - SessionConstants.sessionUser.images!.length
+            : 10,
+        enableCamera: true,
+      );
 
-    for (var i = 0; i < picker.length; i++) {
-      final byteData = await picker[i].getByteData();
+      for (var i = 0; i < picker.length; i++) {
+       
+        _pickedImages.add(await assetToFile(picker[i]));
+      }
 
-      final tempFile =
-          File("${(await getTemporaryDirectory()).path}/${picker[i].name}");
-      final file = await tempFile.writeAsBytes(byteData.buffer
-          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-      _pickedImages.add(file);
-    }
-
-    print(_pickedImages.length);
-    profiledetailsBloc.add(AddUserImages(images: _pickedImages));
+      print(_pickedImages.length);
+      profiledetailsBloc.add(AddUserImages(images: _pickedImages));
+    } catch (e) {}
   }
+
+  ScrollController _controller = ScrollController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -110,8 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         builder: (context, state) {
           if (state is FetchingUserInfoState ||
-              state is FetchingUserLocInfoState ||
-              state is AddingUserImages) {
+              state is FetchingUserLocInfoState) {
             return Center(child: CircularProgressIndicator());
           }
           return SafeArea(
@@ -139,6 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     child: ListView(
                       shrinkWrap: true,
+                      controller: _controller,
                       children: [
                         SizedBox(height: 380.h),
                         Stack(
@@ -332,88 +330,94 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   SizedBox(height: 30.h),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Gallery',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2,
-                                      ),
-                                      Text(
-                                        'See all',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle2!
-                                            .copyWith(
-                                                color: AppColor,
-                                                fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
+                                  Text(
+                                    'Gallery',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
                                   ),
                                   SizedBox(height: 30.h),
-                                  Container(
-                                    height: 400.h,
-                                    child: _currentUser.images == null
-                                        ? Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("No Images Available"),
-                                              Spacer(),
-                                              IconButton(
-                                                icon: Icon(Icons.add, size: 25),
-                                                onPressed: _addImage,
+                                  BlocBuilder<ProfiledetailsBloc,
+                                      ProfiledetailsState>(
+                                    builder: (context, state) {
+                                      if (state is AddingUserImages) {
+                                        return Center(child: CircularProgressIndicator());
+                                      }
+                                      return Container(
+                                        child: _currentUser.images == null
+                                            ? Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("No Images Available"),
+                                                  Spacer(),
+                                                  IconButton(
+                                                    icon: Icon(Icons.add,
+                                                        size: 25),
+                                                    onPressed: _addImage,
+                                                  )
+                                                ],
                                               )
-                                            ],
-                                          )
-                                        : GridView.builder(
-                                            itemCount: _currentUser
-                                                        .images!.length <
-                                                    10
-                                                ? _currentUser.images!.length +
-                                                    1
-                                                : _currentUser.images!.length,
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    mainAxisSpacing: 2,
-                                                    crossAxisSpacing: 5,
-                                                    childAspectRatio: 1),
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.r),
-                                                  child: _currentUser.images!
-                                                                  .length <
-                                                              10 &&
-                                                          index ==
-                                                              _currentUser
-                                                                  .images!
-                                                                  .length
-                                                      ? GestureDetector(
-                                                          onTap: _addImage,
-                                                          child: Container(
-                                                            color: Colors.grey,
-                                                            child: Icon(
-                                                              Icons.add,
-                                                              size: 40,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : Image.file(
-                                                          _currentUser
-                                                              .images![index],
-                                                          fit: BoxFit.fitWidth,
-                                                          alignment: Alignment
-                                                              .topCenter,
-                                                        ));
-                                            },
-                                          ),
+                                            : GridView.builder(
+                                                itemCount: _currentUser
+                                                            .images!.length <
+                                                        10
+                                                    ? _currentUser
+                                                            .images!.length +
+                                                        1
+                                                    : _currentUser
+                                                        .images!.length,
+                                                     controller: _controller,
+                                                     shrinkWrap: true,
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 2,
+                                                        mainAxisSpacing: 2,
+                                                        crossAxisSpacing: 5,
+                                                        childAspectRatio: 1),
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return InkWell(
+                                                    onTap:()=> imagePopUp(context: context, image: _currentUser
+                                                                        .images![
+                                                                    index],),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                15.r),
+                                                        child: _currentUser
+                                                                        .images!
+                                                                        .length <
+                                                                    10 &&
+                                                                index ==
+                                                                    _currentUser
+                                                                        .images!
+                                                                        .length
+                                                            ? GestureDetector(
+                                                                onTap: _addImage,
+                                                                child: Container(
+                                                                  color:
+                                                                      Colors.grey,
+                                                                  child: Icon(
+                                                                    Icons.add,
+                                                                    size: 40,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Image.file(
+                                                                _currentUser
+                                                                        .images![
+                                                                    index],
+                                                                fit: BoxFit.cover,
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topCenter,
+                                                              )),
+                                                  );
+                                                },
+                                              ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

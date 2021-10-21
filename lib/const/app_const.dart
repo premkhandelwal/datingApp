@@ -3,10 +3,12 @@ import 'package:dating_app/logic/data/appliedFilters.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SessionConstants {
@@ -49,6 +51,15 @@ Future<File> urlToFile(String imageUrl, String? uid) async {
   } catch (e) {
     throw Exception(e);
   }
+}
+
+Future<File> assetToFile(Asset assetImage) async {
+  final byteData = await assetImage.getByteData(quality: 80);
+  final tempFile =
+      File("${(await getTemporaryDirectory()).path}/${assetImage.name}");
+  final file = await tempFile.writeAsBytes(byteData.buffer
+      .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+  return file;
 }
 
 bool isImage(String path) {
@@ -116,4 +127,64 @@ void changePageWithoutBack(
         builder: (ctx) => widget,
       ),
       (route) => false);
+}
+
+Future<void> imagePopUp(
+    {required BuildContext context, required File image}) async {
+  await showGeneralDialog(
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionBuilder: (context, a1, a2, widget) {
+        return Transform.scale(
+          scale: a1.value,
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              contentPadding: EdgeInsets.all(4.r),
+              shape: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              content: Container(
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.r),
+                  child: InteractiveViewer(
+                    child: Image.file(
+                      image,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                      /* loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!.toInt()
+                                : null,
+                          ),
+                        );
+                      }, */
+                      errorBuilder: (context, url, error) => Image.asset(
+                        'assets/images/dummy.jpg',
+                        height: 75.r,
+                        width: 75.r,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 250),
+      barrierDismissible: true,
+      barrierLabel: '',
+      context: context,
+      pageBuilder: (context, animation1, animation2) {
+        return Container();
+      });
 }

@@ -216,9 +216,8 @@ class UserActivityProvider extends BaseUserActivityProvider {
             if (user.images == null) {
               user.images = [];
             }
-            user.images!
-                .add(await urlToFile(imageUrls[i], uid! + (i + 1).toString()));
-            SessionConstants.sessionUser.images = user.images;
+            user.images!.add(
+                await urlToFile(imageUrls[i], "${uid! + (i + 1).toString()}"));
           }
         }
       }
