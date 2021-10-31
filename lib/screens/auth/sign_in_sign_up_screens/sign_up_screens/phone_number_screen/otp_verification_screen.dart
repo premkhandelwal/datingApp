@@ -1,3 +1,6 @@
+import 'package:dating_app/arguments/link_phone_email_arguments.dart';
+import 'package:dating_app/arguments/otp_verification_arguments.dart';
+import 'package:dating_app/arguments/phone_number_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
@@ -14,17 +17,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class OTPVerificationPage extends StatefulWidget {
-  final String authSide;
-  final String verificationId;
-  final bool issignUpWithEmail;
+  static const routeName = '/otpVerificationPage';
+
   // This variable will be true when user has signed with email and password and we want him to add his phone number as well as the secondary login
 
-  OTPVerificationPage(
-      {Key? key,
-      required this.authSide,
-      required this.verificationId,
-      required this.issignUpWithEmail})
-      : super(key: key);
+  OTPVerificationPage({Key? key}) : super(key: key);
 
   @override
   _OTPVerificationPageState createState() => _OTPVerificationPageState();
@@ -48,6 +45,9 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as OtpVerificationArguments;
+
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -155,36 +155,38 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                           text: 'Continue',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              firebaseauthBloc.add(!widget.issignUpWithEmail
+                              firebaseauthBloc.add(!args.issignUpWithEmail
                                   ? OtpVerificationRequested(
                                       smsCode: otpController.text,
-                                      verificationId: widget.verificationId)
+                                      verificationId: args.verificationId)
                                   : LinkPhoneNumberWithEmailEvent(
                                       smsCode: otpController.text,
-                                      verificationId: widget.verificationId));
+                                      verificationId: args.verificationId));
                             }
                           });
                     },
                     listener: (context, state) {
-                     if (state is SignedInForFirstTimeState) {
-                        changePageWithoutBack(
+                      if (state is SignedInForFirstTimeState) {
+                        changePageWithNamedRoutes(
+                          context: context,
+                          routeName: LinkPhoneEmailScreen.routeName,
+                          arguments:
+                              LinkPhoneEmailArguments(connectWith: 'email'),
+                        );
+                      } else if (state is LinkedPhoneNumberWithEmail ||
+                          state is LinkedEmailWithPhoneNumber) {
+                        changePagewithoutBackWithNamedRoutes(
                             context: context,
-                            widget: LinkPhoneEmailScreen(
-                              connectWith: "email",
-                            ));
-                      } else if (state is LinkedPhoneNumberWithEmail || state is LinkedEmailWithPhoneNumber) {
-                        changePageWithoutBack(
-                            context: context, widget: ProfileDetailPage());
-                      }  else if (state is NotSignedInForFirstTimeState) {
+                            routeName: ProfileDetailPage.routeName);
+                      } else if (state is NotSignedInForFirstTimeState) {
                         if (state.userUID != null) {
                           SharedObjects.prefs?.setString(
                               SessionConstants.sessionSignedInWith,
                               "phone number");
                           SharedObjects.prefs?.setString(
                               SessionConstants.sessionUid, state.userUID!);
-
-                          changePageWithoutBack(
-                              context: context, widget: HomePage());
+                          changePagewithoutBackWithNamedRoutes(
+                              context: context, routeName: HomePage.routeName);
                         } else {
                           showDialog(
                             context: context,
@@ -195,9 +197,10 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                               actions: [
                                 ElevatedButton(
                                     onPressed: () {
-                                      changePageWithoutBack(
+                                      changePagewithoutBackWithNamedRoutes(
                                           context: context,
-                                          widget: ChooseSignInSignUpPage());
+                                          routeName:
+                                              ChooseSignInSignUpPage.routeName);
                                     },
                                     child: Text("Ok"))
                               ],
@@ -213,10 +216,12 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
-                                          changePageWithoutBack(
+                                          changePageWithNamedRoutes(
                                               context: context,
-                                              widget: PhoneNumberPage(
-                                                  authSide: widget.authSide));
+                                              routeName:
+                                                  PhoneNumberPage.routeName,
+                                              arguments: PhoneNumberArguments(
+                                                  authSide: args.authSide));
                                         },
                                         child: Text("Ok"))
                                   ],

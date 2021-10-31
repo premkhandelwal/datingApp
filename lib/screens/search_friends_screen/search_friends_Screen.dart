@@ -10,6 +10,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SearchFriendsScreen extends StatelessWidget {
   const SearchFriendsScreen({Key? key}) : super(key: key);
 
+  static const routeName = '/searchFriendsScreen';
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -24,9 +26,9 @@ class SearchFriendsScreen extends StatelessWidget {
                         onPressed: () async {
                           await FirebaseAuthRepository().signOut();
                           Navigator.pop(ctx);
-                          changePageWithoutBack(
+                          changePagewithoutBackWithNamedRoutes(
                               context: context,
-                              widget: ChooseSignInSignUpPage());
+                              routeName: ChooseSignInSignUpPage.routeName);
                         },
                         child: Text('Yes')),
                     ElevatedButton(
@@ -80,8 +82,9 @@ class SearchFriendsScreen extends StatelessWidget {
                 CommonButton(
                     text: 'Access to a contact list',
                     onPressed: () {
-                      changePageTo(
-                          context: context, widget: EnableNotificationScreen());
+                      changePageWithNamedRoutes(
+                          context: context,
+                          routeName: EnableNotificationScreen.routeName);
                     })
               ],
             ),

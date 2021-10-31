@@ -1,25 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dating_app/arguments/full_screen_image_arguments.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FullScreenImage extends StatefulWidget {
-  final List image;
-  final int currentIndex;
-  const FullScreenImage(
-      {Key? key, required this.image, required this.currentIndex})
-      : super(key: key);
+  const FullScreenImage({Key? key}) : super(key: key);
+
+  static const routeName = '/fullScreenImage';
 
   @override
   _FullScreenImageState createState() => _FullScreenImageState();
 }
 
 class _FullScreenImageState extends State<FullScreenImage> {
-  int _current = 0;
+  int _current = -1;
   @override
   void initState() {
     super.initState();
-    _current = widget.currentIndex;
   }
 
   final _controller = ScrollController();
@@ -29,6 +27,11 @@ class _FullScreenImageState extends State<FullScreenImage> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as FullScreenImageArguments;
+    if (_current == -1) {
+      _current = args.currentIndex;
+    }
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -54,7 +57,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
                       _animateToIndex(index);
                     });
                   }),
-              items: widget.image.map((i) {
+              items: args.image.map((i) {
                 return Builder(
                   builder: (BuildContext context) {
                     return Container(
@@ -81,7 +84,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: widget.image.asMap().entries.map((entry) {
+                    children: args.image.asMap().entries.map((entry) {
                       return InkWell(
                         onTap: () {
                           setState(() {

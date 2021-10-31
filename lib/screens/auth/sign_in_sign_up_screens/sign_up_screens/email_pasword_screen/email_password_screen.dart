@@ -1,3 +1,5 @@
+import 'package:dating_app/arguments/email_password_arguments.dart';
+import 'package:dating_app/arguments/link_phone_email_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
@@ -12,10 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailPasswordScreen extends StatefulWidget {
-  final String authSide;
+  static const routeName = '/emailPasswordScreen';
 
-  const EmailPasswordScreen({Key? key, required this.authSide})
-      : super(key: key);
+  const EmailPasswordScreen({Key? key}) : super(key: key);
 
   @override
   _EmailPasswordScreenState createState() => _EmailPasswordScreenState();
@@ -39,6 +40,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as EmailPasswordArguments;
     return Form(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -69,7 +72,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                 Padding(
                   padding: EdgeInsets.only(right: 40.0.sp),
                   child: Text(
-                    'Please enter your email address and password. to ${widget.authSide}',
+                    'Please enter your email address and password. to ${args.authSide}',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
@@ -115,7 +118,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             if (val == null) {
                               return "Password cannot be empty";
                             } else if (!regex.hasMatch(val) &&
-                                widget.authSide == "Sign Up") {
+                                args.authSide == "Sign Up") {
                               return 'Password should contain at least 8 characters, at least one uppercase letter, at least one lowercase letter,at least one digit and at least one special character';
                             }
                             return null;
@@ -159,7 +162,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           keyboardType: TextInputType.text,
                         ),
                         SizedBox(height: 20.h),
-                        widget.authSide == "Sign Up"
+                        args.authSide == "Sign Up"
                             ? TextFormField(
                                 validator: (val) {
                                   if (val != passwordController.text) {
@@ -226,15 +229,6 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   listener: (context, state) {
                     if (state is UserSignedUp) {
                       firebaseauthBloc.add(EmailVerificationRequested());
-                      /* SharedObjects.prefs?.setString(
-                          SessionConstants.sessionSignedInWith, "email");
-                      SharedObjects.prefs?.setString(
-                          SessionConstants.sessionUid, state.userUID);
-                      changePageWithoutBack(
-                          context: context,
-                          widget: LinkPhoneEmailScreen(
-                            connectWith: "phone number",
-                          )); */
                     } else if (state is EmailVerificationSentState) {
                       showDialog(
                         context: context,
@@ -246,15 +240,17 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
-                                  if (widget.authSide == "Sign Up") {
-                                   firebaseauthBloc.add(SignOutRequested());
-
-                                    changePageWithoutBack(
+                                  if (args.authSide == "Sign Up") {
+                                    firebaseauthBloc.add(SignOutRequested());
+                                    changePagewithoutBackWithNamedRoutes(
                                         context: context,
-                                        widget: ChooseSignInSignUpPage());
-                                    changePageTo(
+                                        routeName:
+                                            ChooseSignInSignUpPage.routeName);
+                                    changePageWithNamedRoutes(
                                         context: context,
-                                        widget: EmailPasswordScreen(
+                                        routeName:
+                                            EmailPasswordScreen.routeName,
+                                        arguments: EmailPasswordArguments(
                                             authSide: "Sign In"));
                                   }
                                 },
@@ -264,30 +260,32 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       );
                     } else if (state is UserLoggedIn) {
                       sessionUid = state.userUID;
-                      firebaseauthBloc.add(SignedInforFirstTimeEvent(uid: state.userUID));
+                      firebaseauthBloc
+                          .add(SignedInforFirstTimeEvent(uid: state.userUID));
                     } else if (state is NotSignedInForFirstTimeState) {
                       SharedObjects.prefs?.setString(
                           SessionConstants.sessionSignedInWith, "email");
                       SharedObjects.prefs
                           ?.setString(SessionConstants.sessionUid, sessionUid);
-                      changePageWithoutBack(
-                          context: context, widget: HomePage());
+                      changePagewithoutBackWithNamedRoutes(
+                          context: context, routeName: HomePage.routeName);
                     } else if (state is EmailVerifiedState) {
                       SharedObjects.prefs?.setString(
                           SessionConstants.sessionSignedInWith, "email");
                       SharedObjects.prefs
                           ?.setString(SessionConstants.sessionUid, sessionUid);
                       firebaseauthBloc.add(LinkStatusEvent(uid: sessionUid));
-                     
                     } else if (state is PhoneEmailNotLinkedState) {
-                      changePageTo(
-                          context: context,
-                          widget: LinkPhoneEmailScreen(
-                            connectWith: "phone",
-                          ));
+                      changePageWithNamedRoutes(
+                        context: context,
+                        routeName: LinkPhoneEmailScreen.routeName,
+                        arguments:
+                            LinkPhoneEmailArguments(connectWith: 'phone'),
+                      );
                     } else if (state is PhoneEmailLinkedState) {
-                      changePageTo(
-                          context: context, widget: ProfileDetailPage());
+                      changePageWithNamedRoutes(
+                          context: context,
+                          routeName: ProfileDetailPage.routeName);
                     } else if (state is EmailNotVerifiedState) {
                       showDialog(
                         context: context,
@@ -326,10 +324,10 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       return CircularProgressIndicator();
                     }
                     return CommonButton(
-                        text: widget.authSide,
+                        text: args.authSide,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            if (widget.authSide == 'Sign Up') {
+                            if (args.authSide == 'Sign Up') {
                               firebaseauthBloc.add(
                                   SignUpWithEmailPasswordRequested(
                                       emailId: emailIdController.text,

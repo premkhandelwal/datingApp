@@ -115,9 +115,10 @@ double? calculateDistance(Map<String, num> userLocation) {
   return null;
 }
 
-void changePageTo({required BuildContext context, required Widget widget}) {
+/* void changePageTo({required BuildContext context, required Widget widget}) {
   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => widget));
 }
+
 
 void changePageWithoutBack(
     {required BuildContext context, required Widget widget}) {
@@ -127,6 +128,16 @@ void changePageWithoutBack(
         builder: (ctx) => widget,
       ),
       (route) => false);
+} */
+
+void changePageWithNamedRoutes(
+    {required BuildContext context, required String routeName, Object? arguments}) {
+  Navigator.of(context).pushNamed(routeName, arguments: arguments);
+}
+
+void changePagewithoutBackWithNamedRoutes(
+    {required BuildContext context, required String routeName, Object? arguments}) {
+  Navigator.of(context).pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
 }
 
 Future<void> imagePopUp(

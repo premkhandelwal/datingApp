@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileDetailPage extends StatefulWidget {
   const ProfileDetailPage({Key? key}) : super(key: key);
+  static const routeName = '/profileDetailPage';
 
   @override
   _ProfileDetailPageState createState() => _ProfileDetailPageState();
@@ -62,9 +63,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         onPressed: () async {
                           await FirebaseAuthRepository().signOut();
                           Navigator.pop(ctx);
-                          changePageWithoutBack(
+                          changePagewithoutBackWithNamedRoutes(
                               context: context,
-                              widget: ChooseSignInSignUpPage());
+                              routeName: ChooseSignInSignUpPage.routeName);
                         },
                         child: Text('Yes')),
                     ElevatedButton(
@@ -124,16 +125,16 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                     _image!,
                                     alignment: Alignment.topCenter,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, exception, stacktrace) {
-                              return Container(
-                                color: Colors.amber,
-                                  );
-                            },
+                                    errorBuilder:
+                                        (context, exception, stacktrace) {
+                                      return Container(
+                                        color: Colors.amber,
+                                      );
+                                    },
                                   )
-                                :  Container(
-                                color: Colors.amber,
+                                : Container(
+                                    color: Colors.amber,
                                   ),
-                            
                           )),
                       Positioned(
                         bottom: -15,
@@ -272,38 +273,36 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         }
                         if (_formKey.currentState!.validate() &&
                             !isDateNotSelected) {
-                              num age = calculateAge(_selectedDate);
-                              if(age < 18){
-                                showDialog(
+                          num age = calculateAge(_selectedDate);
+                          if (age < 18) {
+                            showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text(
-                                    'Sorry, you cannot sign up into the app. Minimum age to use the app is 18 years.'
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(ctx);
-                                    },
-                                    child: Text('Ok')),
-                                  ],
-                                  ));
-                              }
-                              else{
-                          profiledetailsBloc.add(AddBasicInfoEvent(
-                              user: CurrentUser(
-                                  name: name.text,
-                                  profession: profession.text,
-                                  birthDate: _selectedDate,
-                                  age: age,
-                                  image: _image)));
-                          changePageTo(
+                                      title: Text('Error'),
+                                      content: Text(
+                                          'Sorry, you cannot sign up into the app. Minimum age to use the app is 18 years.'),
+                                      actions: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                            },
+                                            child: Text('Ok')),
+                                      ],
+                                    ));
+                          } else {
+                            profiledetailsBloc.add(AddBasicInfoEvent(
+                                user: CurrentUser(
+                                    name: name.text,
+                                    profession: profession.text,
+                                    birthDate: _selectedDate,
+                                    age: age,
+                                    image: _image)));
+                            changePageWithNamedRoutes(
                               context: context,
-                              widget: GenderSelectionScreen());
-
+                              routeName: GenderSelectionScreen.routeName,
+                            );
+                          }
                         }
-                            }
                       },
                       text: "Confirm",
                     ),

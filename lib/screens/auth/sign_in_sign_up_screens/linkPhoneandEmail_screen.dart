@@ -1,6 +1,8 @@
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
+import 'package:dating_app/arguments/link_phone_email_arguments.dart';
+import 'package:dating_app/arguments/otp_verification_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
@@ -16,8 +18,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LinkPhoneEmailScreen extends StatefulWidget {
-  final String connectWith;
-  LinkPhoneEmailScreen({Key? key, required this.connectWith}) : super(key: key);
+  static const routeName = '/linkPhoneEmailScreen';
+
+  LinkPhoneEmailScreen({Key? key}) : super(key: key);
 
   @override
   _LinkPhoneEmailScreenState createState() => _LinkPhoneEmailScreenState();
@@ -41,18 +44,18 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as LinkPhoneEmailArguments;
     Country _selectedCountry =
         Country(isoCode: "IN", iso3Code: 'IND', phoneCode: "91", name: 'India');
     void codeSent(String verificationId, int? forceResendingToken) {
-      /* context.read<FirebaseauthBloc>().add(UserStateNone());
-      phoneNumber.clear(); */
-      changePageTo(
+      changePageWithNamedRoutes(
           context: context,
-          widget: OTPVerificationPage(
-            issignUpWithEmail: true,
-            verificationId: verificationId,
-            authSide: "Sign Up",
-          ));
+          routeName: OTPVerificationPage.routeName,
+          arguments: OtpVerificationArguments(
+              authSide: "Sign Up",
+              verificationId: verificationId,
+              issignUpWithEmail: true));
     }
 
     Widget _buildDropdownItem(Country country) => Container(
@@ -79,9 +82,9 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         onPressed: () async {
                           await FirebaseAuthRepository().signOut();
                           Navigator.pop(ctx);
-                          changePageWithoutBack(
+                          changePagewithoutBackWithNamedRoutes(
                               context: context,
-                              widget: ChooseSignInSignUpPage());
+                              routeName: ChooseSignInSignUpPage.routeName);
                         },
                         child: Text('Yes')),
                     ElevatedButton(
@@ -113,8 +116,9 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            changePageTo(
-                                context: context, widget: ProfileDetailPage());
+                            changePageWithNamedRoutes(
+                                context: context,
+                                routeName: ProfileDetailPage.routeName);
                           },
                           child: Text(
                             "Skip",
@@ -131,7 +135,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "What's your ${widget.connectWith}?",
+                      "What's your ${args.connectWith}?",
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
@@ -141,14 +145,14 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Text(
-                      "Don't lose access to your account. connect it with ${widget.connectWith}",
+                      "Don't lose access to your account. connect it with ${args.connectWith}",
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ),
                   SizedBox(
                     height: 25.h,
                   ),
-                  widget.connectWith == "email"
+                  args.connectWith == "email"
                       ? Column(
                           children: [
                             TextFormField(
@@ -161,7 +165,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                 return null;
                               },
                               controller: emailIdController,
-                              keyboardType: widget.connectWith == "phone"
+                              keyboardType: args.connectWith == "phone"
                                   ? TextInputType.phone
                                   : TextInputType.emailAddress,
                               decoration: InputDecoration(
@@ -267,9 +271,10 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                     ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(ctx);
-                                          changePageWithoutBack(
+                                          changePagewithoutBackWithNamedRoutes(
                                               context: context,
-                                              widget: ProfileDetailPage());
+                                              routeName:
+                                                  ProfileDetailPage.routeName);
                                         },
                                         child: Text("Ok"))
                                   ],
@@ -287,9 +292,10 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                     ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(ctx);
-                                          changePageWithoutBack(
+                                          changePagewithoutBackWithNamedRoutes(
                                               context: context,
-                                              widget: ProfileDetailPage());
+                                              routeName:
+                                                  ProfileDetailPage.routeName);
                                         },
                                         child: Text("Ok"))
                                   ],
@@ -304,7 +310,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                           text: 'Continue',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              firebaseauthBloc.add(widget.connectWith == "email"
+                              firebaseauthBloc.add(args.connectWith == "email"
                                   ? LinkEmailWithPhoneNumberEvent(
                                       emailId: emailIdController.text,
                                       password: passwordController.text)
@@ -323,9 +329,6 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                       phoneNumber:
                                           "+${_selectedCountry.phoneCode + phoneNumber.text}",
                                     ));
-
-                              /* changePageTo(
-                                            context: context, widget: ProfileDetailPage()); */
                             }
                           });
                     },

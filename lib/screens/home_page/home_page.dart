@@ -15,6 +15,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  static const routeName = '/homePage';
+  
+
   @override
   _HomePageState createState() => _HomePageState();
 }

@@ -1,6 +1,8 @@
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
+import 'package:dating_app/arguments/otp_verification_arguments.dart';
+import 'package:dating_app/arguments/phone_number_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
@@ -12,9 +14,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PhoneNumberPage extends StatefulWidget {
-  final String authSide;
+  const PhoneNumberPage({Key? key}) : super(key: key);
 
-  const PhoneNumberPage({Key? key, required this.authSide}) : super(key: key);
+  static const routeName = '/phoneNumberPage';
+
 
   @override
   _PhoneNumberPageState createState() => _PhoneNumberPageState();
@@ -36,17 +39,19 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as PhoneNumberArguments;
     TextEditingController phoneNumber = new TextEditingController();
     void codeSent(String verificationId, int? forceResendingToken) {
       /* context.read<FirebaseauthBloc>().add(UserStateNone());
       phoneNumber.clear(); */
-      changePageTo(
+      
+          changePageWithNamedRoutes(
           context: context,
-          widget: OTPVerificationPage(
-            issignUpWithEmail: false,
-            verificationId: verificationId,
-            authSide: widget.authSide,
-          ));
+          routeName: OTPVerificationPage.routeName,
+          arguments: OtpVerificationArguments(
+              authSide: args.authSide,
+              verificationId: verificationId,
+              issignUpWithEmail: false));
     }
 
     Widget _buildDropdownItem(Country country) => Container(

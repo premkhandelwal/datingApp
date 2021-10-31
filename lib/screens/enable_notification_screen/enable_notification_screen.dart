@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EnableNotificationScreen extends StatelessWidget {
+  static const routeName = '/enableNotificationScreen';
+
   const EnableNotificationScreen({Key? key}) : super(key: key);
 
   @override
@@ -13,7 +15,7 @@ class EnableNotificationScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(20.0.sp),
+          padding: EdgeInsets.all(20.0.sp),
           child: Column(
             children: [
               CustomAppBar(
@@ -36,7 +38,7 @@ class EnableNotificationScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20.h),
                   Padding(
-                    padding:  EdgeInsets.symmetric(horizontal: 20.0.sp),
+                    padding: EdgeInsets.symmetric(horizontal: 20.0.sp),
                     child: Text(
                       'Get push-notification when you get the match or receive a message.',
                       textAlign: TextAlign.center,
@@ -49,7 +51,8 @@ class EnableNotificationScreen extends StatelessWidget {
               CommonButton(
                   text: 'I want to be notified',
                   onPressed: () {
-                    changePageTo(context: context, widget: HomePage());
+                    changePageWithNamedRoutes(
+                        context: context, routeName: HomePage.routeName);
                   })
             ],
           ),

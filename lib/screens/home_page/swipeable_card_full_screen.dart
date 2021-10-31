@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dating_app/arguments/full_screen_image_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/screens/home_page/full_screen_image.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SwipeableCardFullScreen extends StatelessWidget {
+
   const SwipeableCardFullScreen({
     Key? key,
     required this.image,
@@ -34,26 +36,26 @@ class SwipeableCardFullScreen extends StatelessWidget {
               Container(
                 height: 500.h,
                 width: double.infinity,
-                child: image != null ? Image.file(
-                  image!,
-                  fit: BoxFit.fitWidth,
-                  alignment: Alignment.topCenter,
-                  errorBuilder: (context, exception, stacktrace) {
-                              return Container(
-                                color: Colors.amber,
-                                  );
-                            },
-                ) : 
-                               Container(
-                                color: Colors.amber,
-                                  )
-                            ,
+                child: image != null
+                    ? Image.file(
+                        image!,
+                        fit: BoxFit.fitWidth,
+                        alignment: Alignment.topCenter,
+                        errorBuilder: (context, exception, stacktrace) {
+                          return Container(
+                            color: Colors.amber,
+                          );
+                        },
+                      )
+                    : Container(
+                        color: Colors.amber,
+                      ),
               ),
               Container(
                 child: ListView(
                   children: [
                     Padding(
-                      padding:  EdgeInsets.all(20.0.sp),
+                      padding: EdgeInsets.all(20.0.sp),
                       child: CustomAppBar(
                           context: context,
                           centerWidget: Container(),
@@ -64,7 +66,7 @@ class SwipeableCardFullScreen extends StatelessWidget {
                       clipBehavior: Clip.none,
                       children: [
                         Container(
-                          padding:  EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                               horizontal: 20.0.sp, vertical: 20.sp),
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -227,18 +229,17 @@ class SwipeableCardFullScreen extends StatelessWidget {
                                       (BuildContext context, int index) {
                                     return InkWell(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                FullScreenImage(
-                                              image: sampleImages,
-                                              currentIndex: index,
-                                            ),
-                                          ),
-                                        );
+                                        changePageWithNamedRoutes(
+                                            context: context,
+                                            routeName:
+                                                FullScreenImage.routeName,
+                                            arguments: FullScreenImageArguments(
+                                                image: sampleImages,
+                                                currentIndex: index));
                                       },
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15.r),
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
                                         child: Image.asset(
                                           sampleImages[index],
                                           fit: BoxFit.fitWidth,

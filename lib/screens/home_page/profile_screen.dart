@@ -13,6 +13,9 @@ import 'package:multi_image_picker2/multi_image_picker2.dart';
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
 
+  static const routeName = '/profileScreen';
+
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }

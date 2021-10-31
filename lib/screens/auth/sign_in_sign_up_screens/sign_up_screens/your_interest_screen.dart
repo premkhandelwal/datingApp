@@ -15,6 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class YourInterestScreen extends StatefulWidget {
   YourInterestScreen({Key? key}) : super(key: key);
 
+  static const routeName = '/yourInterestScreen';
+
   @override
   _YourInterestScreenState createState() => _YourInterestScreenState();
 }
@@ -25,7 +27,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
 
   @override
   void initState() {
-    profileDetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);    
+    profileDetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
 
     super.initState();
   }
@@ -125,16 +127,19 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                               actions: [
                                 ElevatedButton(
                                     onPressed: () {
-                                      changePageWithoutBack(
+                                      changePagewithoutBackWithNamedRoutes(
                                           context: context,
-                                          widget: ChooseSignInSignUpPage());
+                                          routeName:
+                                              ChooseSignInSignUpPage.routeName);
                                     },
                                     child: Text("Ok"))
                               ],
                             ));
                   } else if (state is SubmittedInfoState) {
-                    changePageTo(
-                        context: context, widget: SearchFriendsScreen());
+                    changePageWithNamedRoutes(
+                      context: context,
+                      routeName: SearchFriendsScreen.routeName,
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -145,10 +150,10 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                   return CommonButton(
                       text: 'Continue',
                       onPressed: () {
-                      profileDetailsBloc.add(AddInterestsInfoEvent(
-                                user: CurrentUser(
-                              interests: _selectedInterests,
-                            )));
+                        profileDetailsBloc.add(AddInterestsInfoEvent(
+                            user: CurrentUser(
+                          interests: _selectedInterests,
+                        )));
                         profileDetailsBloc.add(SubmitInfoEvent());
                       });
                 },

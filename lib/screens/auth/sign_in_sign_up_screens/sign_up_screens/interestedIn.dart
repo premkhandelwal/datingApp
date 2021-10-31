@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InterestedInScreen extends StatefulWidget {
   InterestedInScreen({Key? key}) : super(key: key);
+  static const routeName = '/interestedInScreen';
 
   @override
   _InterestedInScreenState createState() => _InterestedInScreenState();
@@ -18,10 +19,10 @@ class InterestedInScreen extends StatefulWidget {
 class _InterestedInScreenState extends State<InterestedInScreen> {
   var _selected = GENDER.NotSelected;
   late ProfiledetailsBloc profiledetailsBloc;
-  
+
   @override
   void initState() {
-    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);    
+    profiledetailsBloc = BlocProvider.of<ProfiledetailsBloc>(context);
     super.initState();
   }
 
@@ -30,7 +31,7 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(20.0.sp),
+          padding: EdgeInsets.all(20.0.sp),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -85,11 +86,12 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
                         }
                       : () {
                           profiledetailsBloc.add(AddInterestedInInfoEvent(
-                                  user: CurrentUser(
-                                interestedin: _selected,
-                              )));
-                          changePageTo(
-                              context: context, widget: YourInterestScreen());
+                              user: CurrentUser(
+                            interestedin: _selected,
+                          )));
+                          changePageWithNamedRoutes(
+                              context: context,
+                              routeName: YourInterestScreen.routeName);
                         })
             ],
           ),

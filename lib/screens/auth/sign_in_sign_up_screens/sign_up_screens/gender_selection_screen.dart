@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class GenderSelectionScreen extends StatefulWidget {
   GenderSelectionScreen({Key? key}) : super(key: key);
+  static const routeName = '/genderSelectionScreen';
 
   @override
   _GenderSelectionScreenState createState() => _GenderSelectionScreenState();
@@ -31,7 +31,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(20.0.sp),
+          padding: EdgeInsets.all(20.0.sp),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -86,11 +86,13 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                         }
                       : () {
                           profiledetailsBloc.add(AddGenderInfoEvent(
-                                  user: CurrentUser(
-                                gender: _selected,
-                              )));
-                          changePageTo(
-                              context: context, widget: InterestedInScreen());
+                              user: CurrentUser(
+                            gender: _selected,
+                          )));
+                          changePageWithNamedRoutes(
+                            context: context,
+                            routeName: InterestedInScreen.routeName,
+                          );
                         })
             ],
           ),

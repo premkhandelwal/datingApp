@@ -13,6 +13,7 @@ class MatchesScreen extends StatefulWidget {
   const MatchesScreen({
     Key? key,
   }) : super(key: key);
+  static const routeName = '/matchesScreen';
 
   @override
   _MatchesScreenState createState() => _MatchesScreenState();

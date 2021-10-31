@@ -249,8 +249,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       },
                       builder: (context, state) {
                         if (state is UpdatingInfoState) {
-                          return CircularProgressIndicator(
-                            backgroundColor: Colors.yellow,
+                          return Center(
+                            child: CircularProgressIndicator(),
                           );
                         }
                         return CommonButton(

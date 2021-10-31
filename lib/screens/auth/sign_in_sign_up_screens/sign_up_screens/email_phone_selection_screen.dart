@@ -1,3 +1,6 @@
+import 'package:dating_app/arguments/email_password_arguments.dart';
+import 'package:dating_app/arguments/phone_number_arguments.dart';
+import 'package:dating_app/arguments/signin_signup_selection_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/email_pasword_screen/email_password_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/phone_number_screen.dart';
@@ -6,12 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignUpSignInSelectionScreen extends StatelessWidget {
-  final String authSide;
-  const SignUpSignInSelectionScreen({Key? key, required this.authSide})
-      : super(key: key);
+  static const routeName = '/signUpSignInSelectionScreen';
+  const SignUpSignInSelectionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments
+        as SignInSignUpSelectionArguments;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -29,22 +34,20 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
               ],
             ),
             Text(
-              '$authSide to continue',
+              '${args.authSide} to continue',
               style: Theme.of(context).textTheme.subtitle2,
             ),
             Column(
               children: [
                 CommonButton(
                   onPressed: () {
-                    changePageTo(
+                    changePageWithNamedRoutes(
                         context: context,
-                        widget: EmailPasswordScreen(
-                          authSide: authSide,
-                        ));
+                        routeName: EmailPasswordScreen.routeName,
+                        arguments: EmailPasswordArguments(authSide: args.authSide));
                   },
                   text: "Continue with email",
                   textSize: 18.sp,
-
                 ),
                 SizedBox(height: 40.h),
                 OutlinedButton(
@@ -55,11 +58,11 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    changePageTo(
+                    changePageWithNamedRoutes(
                         context: context,
-                        widget: PhoneNumberPage(
-                          authSide: authSide,
-                        ));
+                        routeName: PhoneNumberPage.routeName,
+                        arguments:
+                            PhoneNumberArguments(authSide: args.authSide));
                   },
                   child: Text(
                     'Use phone number',

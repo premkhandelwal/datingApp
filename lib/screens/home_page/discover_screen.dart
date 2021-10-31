@@ -18,6 +18,8 @@ import 'package:tcard/tcard.dart';
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({Key? key}) : super(key: key);
 
+  static const routeName = '/discoverScreen';
+
   @override
   _DiscoverScreenState createState() => _DiscoverScreenState();
 }
@@ -36,7 +38,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   late UseractivityBloc useractivityBloc;
   late FirebaseauthBloc firebaseAuthBloc;
 
-  
   @override
   void initState() {
     filteredUsers = [];
@@ -159,9 +160,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             firebaseAuthBloc.add(SignOutRequested());
 
                             WidgetsBinding.instance?.addPostFrameCallback((_) {
-                              changePageWithoutBack(
+                              changePagewithoutBackWithNamedRoutes(
                                   context: context,
-                                  widget: ChooseSignInSignUpPage());
+                                  routeName: ChooseSignInSignUpPage.routeName);
                             });
                           }),
                     ),
@@ -219,7 +220,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           controller: _controller,
                           onForward: (index, info) async {
                             if (info.direction == SwipDirection.Right) {
-                             useractivityBloc.add(UserLikedEvent(allUsers[_index].uid!));
+                              useractivityBloc
+                                  .add(UserLikedEvent(allUsers[_index].uid!));
                               useractivityBloc.add(
                                   UserFindMatchEvent(allUsers[_index].uid!));
                             } else if (info.direction == SwipDirection.Left) {
