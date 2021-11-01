@@ -1,5 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/routes.dart';
+import 'package:dating_app/logic/data/user.dart';
+import 'package:dating_app/logic/providers/audio_player_provider.dart';
+import 'package:dating_app/logic/providers/emoji_showing_provider.dart';
+import 'package:dating_app/logic/providers/is_uploading_provider.dart';
+import 'package:dating_app/logic/providers/recording_provider.dart';
+import 'package:dating_app/logic/providers/text_time_provider.dart';
+import 'package:dating_app/logic/providers/youtube_player_provider.dart';
+import 'package:dating_app/services/db_services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/const/app_const.dart';
@@ -12,10 +22,18 @@ import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
 import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+
+//Recieve messages when app is terminated and in background.
+Future<void> backgroundMessageRecieveHandler(RemoteMessage message) async {
+  // LocalNotificationService.display(message);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  _enableCatcheDatabase();
+  FirebaseMessaging.onBackgroundMessage(backgroundMessageRecieveHandler);
   SharedObjects.prefs = await CachedSharedPreference.getInstance();
   runApp(MyApp(
     firebaseAuthRepository: FirebaseAuthRepository(),
@@ -36,6 +54,7 @@ class MyApp extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    DbServices db = DbServices();
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -53,9 +72,33 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ],
-      child: ScreenUtilInit(
-          designSize: Size(393, 851), //Redmi Note 7
-          builder: () => MaterialApp(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<IsUpLoading>(
+            create: (context) => IsUpLoading(),
+          ),
+          ChangeNotifierProvider<EmojiShowing>(
+            create: (context) => EmojiShowing(),
+          ),
+          ChangeNotifierProvider<IsExpanded>(
+            create: (context) => IsExpanded(),
+          ),
+          ChangeNotifierProvider<IsPlaying>(
+            create: (context) => IsPlaying(),
+          ),
+          ChangeNotifierProvider<RecordingProvider>(
+              create: (context) => RecordingProvider()),
+          ChangeNotifierProvider<ChatAudioPlayer>(
+              create: (context) => ChatAudioPlayer()),
+          StreamProvider<List<CurrentUser>?>.value(
+            value: db.getUsers(),
+            initialData: null,
+          ),
+        ],
+        child: ScreenUtilInit(
+            designSize: Size(393, 851), //Redmi Note 7
+            builder: () => MaterialApp(
+                  initialRoute: HomePage.routeName,
                   routes: namedRoutes,
                   title: 'Dating App',
                   theme: ThemeData(
@@ -80,7 +123,15 @@ class MyApp extends StatelessWidget {
                   ),
 
                   // home: ChooseSignInSignUpPage(),
-                  home: HomePage())),
+                )),
+      ),
     );
   }
+}
+
+void _enableCatcheDatabase() {
+  FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: true); //mobile
+  FirebaseFirestore.instance.settings =
+      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
 }

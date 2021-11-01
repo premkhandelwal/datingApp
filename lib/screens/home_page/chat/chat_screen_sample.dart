@@ -1,4 +1,4 @@
-import 'dart:math';
+/*import 'dart:math';
 
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/screens/home_page/chat/chat_full_screen.dart';
@@ -99,4 +99,4 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-}
+}*/

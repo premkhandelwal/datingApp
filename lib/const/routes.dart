@@ -9,6 +9,9 @@ import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/your_interest_screen.dart';
 import 'package:dating_app/screens/enable_notification_screen/enable_notification_screen.dart';
+import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
+import 'package:dating_app/screens/home_page/chat/screens/conversations_screen.dart';
+import 'package:dating_app/screens/home_page/chat/screens/video_player_screen.dart';
 import 'package:dating_app/screens/home_page/discover_screen.dart';
 import 'package:dating_app/screens/home_page/full_screen_image.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
@@ -17,13 +20,14 @@ import 'package:dating_app/screens/home_page/profile_screen.dart';
 import 'package:dating_app/screens/search_friends_screen/search_friends_Screen.dart';
 import 'package:flutter/material.dart';
 
-Map<String, Widget Function(BuildContext)> namedRoutes = {
+Map<String, Widget Function(BuildContext context)> namedRoutes = {
   DiscoverScreen.routeName: (context) => const DiscoverScreen(),
   MatchesScreen.routeName: (context) => const MatchesScreen(),
   ProfilePage.routeName: (context) => ProfilePage(),
   ChooseSignInSignUpPage.routeName: (context) => ChooseSignInSignUpPage(),
   LinkPhoneEmailScreen.routeName: (context) => LinkPhoneEmailScreen(),
-  SignUpSignInSelectionScreen.routeName: (context) => SignUpSignInSelectionScreen(),
+  SignUpSignInSelectionScreen.routeName: (context) =>
+      SignUpSignInSelectionScreen(),
   GenderSelectionScreen.routeName: (context) => GenderSelectionScreen(),
   InterestedInScreen.routeName: (context) => InterestedInScreen(),
   ProfileDetailPage.routeName: (context) => ProfileDetailPage(),
@@ -34,6 +38,8 @@ Map<String, Widget Function(BuildContext)> namedRoutes = {
   EnableNotificationScreen.routeName: (context) => EnableNotificationScreen(),
   FullScreenImage.routeName: (context) => FullScreenImage(),
   HomePage.routeName: (context) => HomePage(),
-  SearchFriendsScreen.routeName: (context) => SearchFriendsScreen()
-  
+  SearchFriendsScreen.routeName: (context) => SearchFriendsScreen(),
+  ConversationsScreen.routeName: (context) => const ConversationsScreen(),
+  VideoPlayerScreen.routeName: (context) => const VideoPlayerScreen(),
+  ChatScreen.routeName: (context) => ChatScreen(),
 };

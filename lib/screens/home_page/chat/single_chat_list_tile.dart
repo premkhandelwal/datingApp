@@ -1,4 +1,4 @@
-import 'package:dating_app/const/app_const.dart';
+/*import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -118,3 +118,4 @@ class ChatListTile extends StatelessWidget {
     );
   }
 }
+*/
