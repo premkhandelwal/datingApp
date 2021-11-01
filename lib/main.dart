@@ -28,7 +28,7 @@ import 'package:provider/provider.dart';
 Future<void> backgroundMessageRecieveHandler(RemoteMessage message) async {
   // LocalNotificationService.display(message);
 }
-
+late BuildContext myContext;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

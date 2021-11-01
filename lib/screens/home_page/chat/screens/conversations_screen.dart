@@ -1,6 +1,7 @@
 import 'package:dating_app/arguments/chat_screen_arguments.dart';
 import 'package:dating_app/logic/data/conversations.dart';
 import 'package:dating_app/logic/data/user.dart';
+import 'package:dating_app/main.dart';
 import 'package:dating_app/services/db_services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                     child: InkWell(
                       onTap: () async {
                         Navigator.pushNamed(
-                          context,
+                          myContext,
                           ChatScreen.routeName,
                           arguments: ChatScreenArguments(
                               conversationUsers![index]!.uid!,

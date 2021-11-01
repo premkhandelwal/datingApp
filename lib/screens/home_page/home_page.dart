@@ -5,6 +5,7 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/data/conversations.dart';
 import 'package:dating_app/logic/data/user.dart';
+import 'package:dating_app/main.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
 import 'package:dating_app/screens/home_page/chat/screens/conversations_screen.dart';
@@ -115,6 +116,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    myContext = context;
     return BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
       buildWhen: (p, c) {
         if (c is FirebaseauthInitial ||
