@@ -223,6 +223,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
       }
       user.locationCoordinates = locationCoordinates;
       user.location = await coordinatestoLoc(locationCoordinates);
+      user.uid = SharedObjects.prefs?.getString(SessionConstants.sessionUid);
 
       SessionConstants.sessionUser = user;
 

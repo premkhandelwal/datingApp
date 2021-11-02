@@ -288,7 +288,7 @@ class _ChatBoxState extends State<ChatBox> {
                   widget.mess.text,
                   DateTime.now().toString(),
                   currentUser!.uid,
-                  widget.args.user,
+                  widget.args.user!.uid,
                 ),
               );
             }

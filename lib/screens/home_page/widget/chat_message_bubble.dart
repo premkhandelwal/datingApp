@@ -53,13 +53,13 @@ class _ChatMessageState extends State<ChatMessage> {
                 }
               },
               child: Bubble(
-                color: (widget.message.to == widget.args.userId!
+                color: (widget.message.to == widget.args.user.uid!
                     ? Colors.grey[500]
                     : Colors.pink[200]),
-                alignment: widget.message.from != widget.args.userId!
+                alignment: widget.message.from != widget.args.user.uid!
                     ? Alignment.topRight
                     : Alignment.topLeft,
-                nip: widget.message.from != widget.args.userId!
+                nip: widget.message.from != widget.args.user.uid!
                     ? BubbleNip.rightTop
                     : BubbleNip.leftTop,
                 radius: const Radius.circular(12),
@@ -71,13 +71,13 @@ class _ChatMessageState extends State<ChatMessage> {
               ),
             )
           : Bubble(
-              color: (widget.message.to == widget.args.userId!
+              color: (widget.message.to == widget.args.user.uid!
                   ? Colors.grey[500]
                   : Colors.pink[200]),
-              alignment: widget.message.from != widget.args.userId!
+              alignment: widget.message.from != widget.args.user.uid!
                   ? Alignment.topRight
                   : Alignment.topLeft,
-              nip: widget.message.from != widget.args.userId!
+              nip: widget.message.from != widget.args.user.uid!
                   ? BubbleNip.rightTop
                   : BubbleNip.leftTop,
               radius: const Radius.circular(12),
