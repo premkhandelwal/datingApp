@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void itIsAMatchPopUp(
-    BuildContext context, File image, String name, String uid) {
+    BuildContext context, File? image, String name, String uid) {
   showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -95,7 +95,7 @@ void itIsAMatchPopUp(
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15.r),
                                       child: Image.file(
-                                        image,
+                                        image!,
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, exception, stacktrace) {
