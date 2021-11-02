@@ -61,10 +61,6 @@ class _ChatScreenState extends State<ChatScreen> {
           value: db.getMessages(args.chatid),
           initialData: null,
         ),
-        StreamProvider<CurrentUser?>.value(
-          value: db.getCurrentUser(),
-          initialData: null,
-        ),
       ],
       child: Builder(
         builder: (context) {

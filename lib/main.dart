@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/const/routes.dart';
-import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/providers/audio_player_provider.dart';
 import 'package:dating_app/logic/providers/emoji_showing_provider.dart';
 import 'package:dating_app/logic/providers/is_uploading_provider.dart';
@@ -90,10 +89,6 @@ class MyApp extends StatelessWidget {
               create: (context) => RecordingProvider()),
           ChangeNotifierProvider<ChatAudioPlayer>(
               create: (context) => ChatAudioPlayer()),
-          StreamProvider<List<CurrentUser>?>.value(
-            value: db.getUsers(),
-            initialData: null,
-          ),
         ],
         child: ScreenUtilInit(
             designSize: Size(393, 851), //Redmi Note 7

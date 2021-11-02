@@ -1,31 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/logic/data/conversations.dart';
 import 'package:dating_app/logic/data/message.dart';
-import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class DbServices {
-  Stream<List<CurrentUser>?>? getUsers() {
-    return FirebaseFirestore.instance
-        .collection('UserActivity')
-        .orderBy('name')
-        .snapshots()
-        .map((event) => event.docs.map((e) {
-              print(e);
-              return CurrentUser.fromMap(e.data());
-            }).toList());
-  }
-
-  Stream<CurrentUser>? getCurrentUser() {
-    return FirebaseFirestore.instance
-        .collection('UserActivity')
-        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .snapshots()
-        .map((event) =>
-            event.docs.map((e) => CurrentUser.fromMap(e.data())).toList()[0]);
-  }
-
   Stream<List<Message>?>? getMessages(String chatid) {
     if (chatid == "") {
       return null;
