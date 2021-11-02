@@ -27,32 +27,32 @@ class SendMediaButton extends StatelessWidget {
             XFile? photo = await st.pickCameraPhoto();
             st.uploadMedia(
                 args.chatid,
-                ImageMessage(
-                    "", DateTime.now().toString(), currentUser!.uid, args.user),
+                ImageMessage("", DateTime.now().toString(), currentUser!.uid,
+                    args.user!.uid),
                 photo,
                 context);
           } else if (value == "Camera Video") {
             XFile? photo = await st.pickCameraVideo();
             st.uploadMedia(
                 args.chatid,
-                VideoMessage(
-                    "", DateTime.now().toString(), currentUser!.uid, args.user),
+                VideoMessage("", DateTime.now().toString(), currentUser!.uid,
+                    args.user!.uid),
                 photo,
                 context);
           } else if (value == "Gallery Photo") {
             XFile? photo = await st.pickGalleryPhoto();
             st.uploadMedia(
                 args.chatid,
-                ImageMessage(
-                    "", DateTime.now().toString(), currentUser!.uid, args.user),
+                ImageMessage("", DateTime.now().toString(), currentUser!.uid,
+                    args.user!.uid),
                 photo,
                 context);
           } else if (value == "Gallery Video") {
             XFile? photo = await st.pickGalleryVideo();
             st.uploadMedia(
                 args.chatid,
-                VideoMessage(
-                    "", DateTime.now().toString(), currentUser!.uid, args.user),
+                VideoMessage("", DateTime.now().toString(), currentUser!.uid,
+                    args.user!.uid),
                 photo,
                 context);
           } else if (value == "Record Audio") {
@@ -62,8 +62,8 @@ class SendMediaButton extends StatelessWidget {
             File? doc = await st.pickDoc();
             st.uploadDoc(
                 args.chatid,
-                DocumentMessage(
-                    "", DateTime.now().toString(), currentUser!.uid, args.user),
+                DocumentMessage("", DateTime.now().toString(), currentUser!.uid,
+                    args.user!.uid),
                 doc,
                 context);
           }
