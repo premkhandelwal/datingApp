@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:dating_app/arguments/chat_screen_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void itIsAMatchPopUp(
-    BuildContext context, File? image, String name, String uid) {
-  print(uid);
+    BuildContext context, File? image, String name, CurrentUser user) {
   showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -141,8 +141,8 @@ void itIsAMatchPopUp(
                         onPressed: () {
                           Navigator.pushNamed(context, ChatScreen.routeName,
                               arguments: ChatScreenArguments(
-                                  uid,
-                                  DateTime.now()
+                                  user: user,
+                                  chatid: DateTime.now()
                                       .microsecondsSinceEpoch
                                       .toString()));
                         },

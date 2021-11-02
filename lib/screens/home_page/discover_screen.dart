@@ -79,7 +79,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
         if (splitRoutes[0] == ChatScreen.routeName) {
           Navigator.of(context).pushNamed(splitRoutes[0]!,
-              arguments: ChatScreenArguments(splitRoutes[1]!, splitRoutes[2]!));
+              arguments: ChatScreenArguments(
+                  chatid: splitRoutes[1]!, uid: splitRoutes[2]!));
         }
       }
     });
@@ -100,7 +101,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
       if (splitRoutes[0] == ChatScreen.routeName) {
         Navigator.of(context).pushNamed(splitRoutes[0]!,
-            arguments: ChatScreenArguments(splitRoutes[1]!, splitRoutes[2]!));
+            arguments: ChatScreenArguments(
+                chatid: splitRoutes[1]!, uid: splitRoutes[2]!));
       }
     });
   }
@@ -252,7 +254,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                       listener: (context, state) {
                     if (state is UserMatchFoundState) {
                       itIsAMatchPopUp(context, state.user.image,
-                          state.user.name!, state.user.uid!);
+                          state.user.name!, state.user);
 
                       useractivityBloc.add(UserStateNoneEvent());
                     } else if (state is FetchedAllUserswithFiltersState) {

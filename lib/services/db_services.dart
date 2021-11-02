@@ -76,13 +76,13 @@ class DbServices {
           .doc(message.from)
           .collection('conversations')
           .doc(message.to)
-          .set(recieverConversation.toMap());
+          .update(recieverConversation.toMap());
       await FirebaseFirestore.instance
           .collection('UserActivity')
           .doc(message.to)
           .collection('conversations')
           .doc(message.from)
-          .set(senderConversation.toMap());
+          .update(senderConversation.toMap());
     } else if (message is ImageMessage) {
       await FirebaseFirestore.instance
           .collection('chats')
@@ -94,13 +94,13 @@ class DbServices {
           .doc(message.from)
           .collection('conversations')
           .doc(message.to)
-          .set(recieverConversation.toMap());
+          .update(recieverConversation.toMap());
       await FirebaseFirestore.instance
           .collection('UserActivity')
           .doc(message.to)
           .collection('conversations')
           .doc(message.from)
-          .set(senderConversation.toMap());
+          .update(senderConversation.toMap());
     } else if (message is GifMessage) {
       await FirebaseFirestore.instance
           .collection('chats')
@@ -112,13 +112,13 @@ class DbServices {
           .doc(message.from)
           .collection('conversations')
           .doc(message.to)
-          .set(recieverConversation.toMap());
+          .update(recieverConversation.toMap());
       await FirebaseFirestore.instance
           .collection('UserActivity')
           .doc(message.to)
           .collection('conversations')
           .doc(message.from)
-          .set(senderConversation.toMap());
+          .update(senderConversation.toMap());
     } else if (message is VideoMessage) {
       await FirebaseFirestore.instance
           .collection('chats')
@@ -130,13 +130,13 @@ class DbServices {
           .doc(message.from)
           .collection('conversations')
           .doc(message.to)
-          .set(recieverConversation.toMap());
+          .update(recieverConversation.toMap());
       await FirebaseFirestore.instance
           .collection('UserActivity')
           .doc(message.to)
           .collection('conversations')
           .doc(message.from)
-          .set(senderConversation.toMap());
+          .update(senderConversation.toMap());
     } else if (message is DocumentMessage) {
       await FirebaseFirestore.instance
           .collection('chats')
@@ -148,13 +148,13 @@ class DbServices {
           .doc(message.from)
           .collection('conversations')
           .doc(message.to)
-          .set(recieverConversation.toMap());
+          .update(recieverConversation.toMap());
       await FirebaseFirestore.instance
           .collection('UserActivity')
           .doc(message.to)
           .collection('conversations')
           .doc(message.from)
-          .set(senderConversation.toMap());
+          .update(senderConversation.toMap());
     } else if (message is AudioMessage) {
       await FirebaseFirestore.instance
           .collection('chats')
@@ -166,13 +166,13 @@ class DbServices {
           .doc(message.from)
           .collection('conversations')
           .doc(message.to)
-          .set(recieverConversation.toMap());
+          .update(recieverConversation.toMap());
       await FirebaseFirestore.instance
           .collection('UserActivity')
           .doc(message.to)
           .collection('conversations')
           .doc(message.from)
-          .set(senderConversation.toMap());
+          .update(senderConversation.toMap());
     }
   }
 

@@ -26,7 +26,8 @@ class LocalNotificationService {
           for (int i = 0; i < routeNames.length; i++) i: routeNames[i]
         };
         Navigator.of(context).pushNamed(splitRoutes[0]!,
-            arguments: ChatScreenArguments(splitRoutes[1]!, splitRoutes[2]!));
+            arguments: ChatScreenArguments(
+                chatid: splitRoutes[1]!, uid: splitRoutes[2]!));
       }
     });
   }

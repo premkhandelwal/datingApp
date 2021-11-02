@@ -154,7 +154,7 @@ class _ChatBoxState extends State<ChatBox> {
               st.uploadDoc(
                   widget.args.chatid,
                   AudioMessage("", DateTime.now().toString(), currentUser!.uid,
-                      widget.args.userId),
+                      widget.args.user),
                   audioFile,
                   context);
             } else {
@@ -250,7 +250,7 @@ class _ChatBoxState extends State<ChatBox> {
                   _gif.images.original!.url!,
                   DateTime.now().toString(),
                   currentUser!.uid,
-                  widget.args.userId,
+                  widget.args.user,
                 ),
               );
             }
@@ -288,7 +288,7 @@ class _ChatBoxState extends State<ChatBox> {
                   widget.mess.text,
                   DateTime.now().toString(),
                   currentUser!.uid,
-                  widget.args.userId,
+                  widget.args.user,
                 ),
               );
             }

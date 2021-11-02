@@ -61,7 +61,6 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .set({
             "name": user.name,
-            "uid": FirebaseAuth.instance.currentUser!.uid,
             "status": "Online",
             "age": user.age,
             "profession": user.profession,

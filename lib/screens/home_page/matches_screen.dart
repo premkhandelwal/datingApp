@@ -109,8 +109,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                                     Navigator.pushNamed(
                                         myContext, ChatScreen.routeName,
                                         arguments: ChatScreenArguments(
-                                            _matchedUsersList[index].uid!,
-                                            DateTime.now()
+                                            user: _matchedUsersList[index],
+                                            chatid: DateTime.now()
                                                 .microsecondsSinceEpoch
                                                 .toString()));
                                   },

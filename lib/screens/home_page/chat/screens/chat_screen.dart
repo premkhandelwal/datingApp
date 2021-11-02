@@ -70,7 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
         builder: (context) {
           chats = Provider.of<List<Message>?>(context);
           users = Provider.of<List<CurrentUser>?>(context) ?? [];
-          chatUser = getChatUser(users, args.userId);
+          chatUser = args.user!;
           isExpanded = Provider.of<IsExpanded>(context).isExpanded;
           isUploading = Provider.of<IsUpLoading>(context).isUpLoading;
           emojiShowing = Provider.of<EmojiShowing>(context).emojiShowing;
@@ -85,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
               }
               if (emojiShowing == false) {
                 try {
-                  await db.updateSeenStatus(args.userId);
+                  await db.updateSeenStatus(args.user!.uid!);
                 } on Exception catch (e) {
                   print("E: $e");
                 }
@@ -117,7 +117,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               }
                               Navigator.pop(context);
                               try {
-                                await db.updateSeenStatus(args.userId);
+                                await db.updateSeenStatus(args.user!.uid!);
                               } on Exception catch (e) {
                                 print("EXCEPTION: $e");
                               }
@@ -198,7 +198,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                               horizontal: 15),
                                           child: Row(
                                             mainAxisAlignment:
-                                                chats![index].to == args.userId
+                                                chats![index].to ==
+                                                        args.user!.uid
                                                     ? MainAxisAlignment.end
                                                     : MainAxisAlignment.start,
                                             children: [

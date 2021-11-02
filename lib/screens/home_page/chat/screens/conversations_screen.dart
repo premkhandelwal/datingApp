@@ -93,7 +93,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                                     myContext,
                                     ChatScreen.routeName,
                                     arguments: ChatScreenArguments(
-                                        conversationUsers![index]!.uid!,
+                                        conversationUsers![index]!,
                                         conversations[index]!.chatid!),
                                   );
                                   await db.updateSeenStatus(

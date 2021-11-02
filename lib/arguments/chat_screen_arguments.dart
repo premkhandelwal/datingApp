@@ -1,6 +1,9 @@
-class ChatScreenArguments {
-  String userId;
-  String chatid;
+import 'package:dating_app/logic/data/user.dart';
 
-  ChatScreenArguments(this.userId, this.chatid);
+class ChatScreenArguments {
+  String chatid;
+  CurrentUser? user;
+  String? uid;
+
+  ChatScreenArguments({this.user, required this.chatid, this.uid});
 }
