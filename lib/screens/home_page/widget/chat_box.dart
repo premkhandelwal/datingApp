@@ -1,4 +1,5 @@
 import 'package:dating_app/arguments/chat_screen_arguments.dart';
+import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/data/message.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/providers/emoji_showing_provider.dart';
@@ -40,7 +41,7 @@ class _ChatBoxState extends State<ChatBox> {
 
   @override
   Widget build(BuildContext context) {
-    currentUser = Provider.of<CurrentUser?>(context);
+    currentUser = SessionConstants.sessionUser;
     return Card(
       child: Container(
         padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),

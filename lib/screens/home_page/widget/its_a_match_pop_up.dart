@@ -94,8 +94,8 @@ void itIsAMatchPopUp(
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15.r),
-                                      child: Image.file(
-                                        image!,
+                                      child: image != null ?Image.file(
+                                        image,
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, exception, stacktrace) {
@@ -103,7 +103,9 @@ void itIsAMatchPopUp(
                                             color: Colors.amber,
                                           );
                                         },
-                                      ),
+                                      ): Container(
+                                            color: Colors.amber,
+                                          ),
                                     ),
                                   ),
                                 ),
