@@ -253,6 +253,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                     if (state is UserMatchFoundState) {
                       itIsAMatchPopUp(context, state.user.image,
                           state.user.name!, state.user.uid!);
+
                       useractivityBloc.add(UserStateNoneEvent());
                     } else if (state is FetchedAllUserswithFiltersState) {
                       allUsers = List.from(state.users);

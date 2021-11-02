@@ -5,7 +5,6 @@ import 'package:dating_app/main.dart';
 import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -38,12 +37,6 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void removeItem(int i) {
-      setState(() {
-        sampleImages.removeAt(i);
-      });
-    }
-
     Widget cards(int index) {
       String? personName = _matchedUsersList[index].name;
       num? personAge = _matchedUsersList[index].age;
@@ -71,10 +64,10 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               fit: BoxFit.cover,
                               alignment: Alignment.topCenter,
                               errorBuilder: (context, exception, stacktrace) {
-                              return Container(
-                                color: Colors.amber,
-                                  );
-                            },
+                                return Container(
+                                  color: Colors.amber,
+                                );
+                              },
                             ),
                     ),
                   ),
@@ -113,12 +106,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                     Navigator.pushNamed(myContext, ChatScreen.routeName,
-                              arguments: ChatScreenArguments(
-                                 _matchedUsersList[index].uid!,
-                                  DateTime.now()
-                                      .microsecondsSinceEpoch
-                                      .toString()));
+                                    Navigator.pushNamed(
+                                        myContext, ChatScreen.routeName,
+                                        arguments: ChatScreenArguments(
+                                            _matchedUsersList[index].uid!,
+                                            DateTime.now()
+                                                .microsecondsSinceEpoch
+                                                .toString()));
                                   },
                                   child: Icon(
                                     Icons.close,

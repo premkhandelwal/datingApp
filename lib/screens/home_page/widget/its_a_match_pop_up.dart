@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void itIsAMatchPopUp(
     BuildContext context, File? image, String name, String uid) {
+  print(uid);
   showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -94,18 +95,20 @@ void itIsAMatchPopUp(
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15.r),
-                                      child: image != null ?Image.file(
-                                        image,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, exception, stacktrace) {
-                                          return Container(
-                                            color: Colors.amber,
-                                          );
-                                        },
-                                      ): Container(
-                                            color: Colors.amber,
-                                          ),
+                                      child: image != null
+                                          ? Image.file(
+                                              image,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, exception,
+                                                  stacktrace) {
+                                                return Container(
+                                                  color: Colors.amber,
+                                                );
+                                              },
+                                            )
+                                          : Container(
+                                              color: Colors.amber,
+                                            ),
                                     ),
                                   ),
                                 ),
