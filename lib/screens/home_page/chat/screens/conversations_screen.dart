@@ -26,8 +26,14 @@ class ConversationsScreen extends StatefulWidget {
 class _ConversationsScreenState extends State<ConversationsScreen> {
   late DbServices db = DbServices();
   List<CurrentUser?>? conversationUsers;
-  late List<CurrentUser?> users;
+  List<CurrentUser?> users = [];
   List<Conversations?>? conversations;
+
+  @override
+  void initState() {
+    getUsers();
+    super.initState();
+  }
 
   Future<void> getDeviceTokens() async {
     String? token = await FirebaseMessaging.instance.getToken();

@@ -1,8 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:dating_app/arguments/chat_screen_arguments.dart';
-import 'package:dating_app/main.dart';
-import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
@@ -106,13 +103,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.pushNamed(
+                                    /* Navigator.pushNamed(
                                         myContext, ChatScreen.routeName,
                                         arguments: ChatScreenArguments(
                                             user: _matchedUsersList[index],
                                             chatid: DateTime.now()
                                                 .microsecondsSinceEpoch
-                                                .toString()));
+                                                .toString())); */
                                   },
                                   child: Icon(
                                     Icons.close,

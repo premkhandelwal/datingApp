@@ -75,6 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
           }
           return false;
         }, */
+        
         listener: (context, state) async {
           if (state is UpdatedInfoState) {
             _currentUser.bio = state.currentUser.bio;
