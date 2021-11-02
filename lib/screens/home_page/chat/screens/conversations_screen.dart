@@ -26,11 +26,10 @@ class ConversationsScreen extends StatefulWidget {
 
 class _ConversationsScreenState extends State<ConversationsScreen> {
   late DbServices db = DbServices();
+  late UseractivityBloc userActivityBloc;
   List<CurrentUser?>? conversationUsers;
   List<CurrentUser?> users = [];
   List<Conversations?>? conversations;
-
-
 
   Future<void> getDeviceTokens() async {
     String? token = await FirebaseMessaging.instance.getToken();
@@ -42,7 +41,12 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
     FirebaseMessaging.instance.onTokenRefresh.listen(db.saveTokenToDatabase);
   }
 
-
+  @override
+  void initState() {
+    userActivityBloc = BlocProvider.of<UseractivityBloc>(context);
+    userActivityBloc.add(FetchAllUsersEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +57,12 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
           initialData: null,
         ),
       ],
-      child: BlocBuilder<UseractivityBloc, UseractivityState>(
+      child: BlocConsumer<UseractivityBloc, UseractivityState>(
+        listener: (context, state){
+          if(state is FetchedAllUsersState){
+            users = state.users;
+          }
+        },
         buildWhen: (pState, cState) {
           if (cState is FetchingAllUsersState ||
               cState is FetchedAllUsersState ||
@@ -64,9 +73,12 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         },
         builder: (context, state) {
           if (state is FetchingAllUsersState) {
-            return CircularProgressIndicator();
-          } else if (state is FetchedAllUsersState) {
-            users = state.users;
+            return Center(child: CircularProgressIndicator());
+          }else if(state is FailedToFetchAllUsersState){
+            return Center(
+              child: Text("No users found"),
+            );
+          }
             return Builder(
               builder: (context) {
                 List<Conversations?>? conversations =
@@ -210,11 +222,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                 );
               },
             );
-          } else {
-            return Center(
-              child: Text("No users found"),
-            );
-          }
+          
         },
       ),
     );
