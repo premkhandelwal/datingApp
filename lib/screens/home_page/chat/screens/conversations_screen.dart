@@ -62,7 +62,6 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         builder: (context) {
           List<Conversations?>? conversations =
               Provider.of<List<Conversations?>?>(context) ?? [];
-          getUsers();
           conversationUsers = getConversationUsers(users, conversations);
 
           return Scaffold(

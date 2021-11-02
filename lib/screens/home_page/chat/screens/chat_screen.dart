@@ -7,6 +7,7 @@ import 'package:dating_app/logic/providers/emoji_showing_provider.dart';
 import 'package:dating_app/logic/providers/is_uploading_provider.dart';
 import 'package:dating_app/logic/providers/text_time_provider.dart';
 import 'package:dating_app/logic/providers/youtube_player_provider.dart';
+import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 import 'package:dating_app/screens/home_page/widget/chat_box.dart';
 import 'package:dating_app/screens/home_page/widget/chat_message_bubble.dart';
 import 'package:dating_app/screens/home_page/widget/emoji_selection_drawer.dart';
@@ -35,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late ChatScreenArguments args =
       ModalRoute.of(context)!.settings.arguments as ChatScreenArguments;
   List<Message>? chats;
-  late List<CurrentUser?> users;
+  List<CurrentUser?> users = [];
   late CurrentUser chatUser;
   late bool isExpanded;
   late bool isUploading;
@@ -43,13 +44,17 @@ class _ChatScreenState extends State<ChatScreen> {
   late int chatsLength;
   late String youtubeId;
 
+  void getUsers() async {
+    users = await UserActivityRepository().fetchAllUsers();
+  }
+
   @override
   void initState() {
     controller = ScrollController();
     mess = TextEditingController();
     db = DbServices();
     st = StorageServices();
-
+    getUsers();
     super.initState();
   }
 
@@ -65,7 +70,6 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Builder(
         builder: (context) {
           chats = Provider.of<List<Message>?>(context);
-          users = Provider.of<List<CurrentUser>?>(context) ?? [];
           chatUser = args.user!;
           isExpanded = Provider.of<IsExpanded>(context).isExpanded;
           isUploading = Provider.of<IsUpLoading>(context).isUpLoading;
