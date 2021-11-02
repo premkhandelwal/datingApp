@@ -1,6 +1,7 @@
 import 'package:dating_app/arguments/chat_screen_arguments.dart';
 import 'package:dating_app/logic/data/conversations.dart';
 import 'package:dating_app/logic/data/user.dart';
+import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 import 'package:dating_app/main.dart';
 import 'package:dating_app/services/db_services.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -38,6 +39,10 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
     FirebaseMessaging.instance.onTokenRefresh.listen(db.saveTokenToDatabase);
   }
 
+  void getUsers() async {
+    users = await UserActivityRepository().fetchAllUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -51,7 +56,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         builder: (context) {
           List<Conversations?>? conversations =
               Provider.of<List<Conversations?>?>(context) ?? [];
-          users = Provider.of<List<CurrentUser>?>(context) ?? [];
+          getUsers();
           conversationUsers = getConversationUsers(users, conversations);
 
           return Scaffold(

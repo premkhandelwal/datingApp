@@ -11,8 +11,10 @@ class DbServices {
         .collection('UserActivity')
         .orderBy('name')
         .snapshots()
-        .map((event) =>
-            event.docs.map((e) => CurrentUser.fromMap(e.data())).toList());
+        .map((event) => event.docs.map((e) {
+              print(e);
+              return CurrentUser.fromMap(e.data());
+            }).toList());
   }
 
   Stream<CurrentUser>? getCurrentUser() {

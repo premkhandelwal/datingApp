@@ -92,6 +92,7 @@ class UserActivityProvider extends BaseUserActivityProvider {
         user.image = doc.data()!["profileImageUrl"] != null
             ? await urlToFile(dataMap["profileImageUrl"], user.uid)
             : null;
+        user.uid = matchUserUID;
         return user;
       }
     }
