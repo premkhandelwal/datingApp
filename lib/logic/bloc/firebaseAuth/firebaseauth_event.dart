@@ -58,11 +58,9 @@ class OtpRetrievalFailure extends FirebaseauthEvent {
 }
 
 class LinkEmailWithPhoneNumberEvent extends FirebaseauthEvent {
-  final User? user;
   final String emailId;
   final String password;
   LinkEmailWithPhoneNumberEvent({
-    required this.user,
     required this.emailId,
     required this.password,
   });
@@ -71,10 +69,28 @@ class LinkEmailWithPhoneNumberEvent extends FirebaseauthEvent {
 class LinkPhoneNumberWithEmailEvent extends FirebaseauthEvent {
   final String smsCode;
   final String verificationId;
-  LinkPhoneNumberWithEmailEvent( {
+  LinkPhoneNumberWithEmailEvent({
     required this.smsCode,
     required this.verificationId,
   });
 }
 
 class SignOutRequested extends FirebaseauthEvent {}
+
+class EmailVerificationRequested extends FirebaseauthEvent {}
+
+class EmailVerificationStateRequested extends FirebaseauthEvent {}
+
+class SignedInforFirstTimeEvent extends FirebaseauthEvent {
+  final String uid;
+  SignedInforFirstTimeEvent({
+    required this.uid,
+  });
+}
+
+class LinkStatusEvent extends FirebaseauthEvent{
+  final String uid;
+  LinkStatusEvent({
+    required this.uid,
+  });
+}

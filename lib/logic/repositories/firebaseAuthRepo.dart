@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthRepository extends BaseRepository {
   FirebaseAuthProvider authprovider = FirebaseAuthProvider();
-  bool isSignedIn() => authprovider.isSignedIn();
+  FirebaseAuth get getInstance => authprovider.getInstance;
+  Future<String?> getCurrentUserUID() async =>  await authprovider.getCurrentUserUID();
   Future<CurrentUser?> signInWithEmailPassword(
           String emailId, String password) =>
       authprovider.signInWithEmailPassword(emailId, password);
@@ -24,8 +25,12 @@ class FirebaseAuthRepository extends BaseRepository {
           phoneNumber, codeSent, verificationFailed, codeAutoRetrievalTimeout);
   Future<AuthCredential?> verifyOTP(String smsCode, String verificationId) =>
       authprovider.verifyOTP(smsCode, verificationId);
-  Future<bool> linkEmailWithPhoneNumber(User? user,String emailId, String password) async => await authprovider.linkEmailWithPhoneNumber(user, emailId, password);
-  Future<bool> linkPhoneNumberWithEmail(User? user,String smsCode, String verificationId) async => await authprovider.linkPhoneNumberWithEmail(user, smsCode,verificationId);
+  Future<bool> linkEmailWithPhoneNumber(String emailId, String password) async => await authprovider.linkEmailWithPhoneNumber(emailId, password);
+  Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId) async => await authprovider.linkPhoneNumberWithEmail(smsCode,verificationId);
+  Future<bool> sendverificationEmail() async =>await authprovider.sendverificationEmail();
+  Future<bool> isEmailVerified() async =>await authprovider.isEmailVerified();
+  Future<bool> isuserDocExists(String uid) async=>await authprovider.isdatalessUserDocExists(uid);
+  Future<bool> phoneEmailLinked(String uid) => authprovider.phoneEmailLinked(uid);
 
   @override
   void dispose() {}

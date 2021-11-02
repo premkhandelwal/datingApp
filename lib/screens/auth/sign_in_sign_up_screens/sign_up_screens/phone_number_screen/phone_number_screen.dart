@@ -1,6 +1,8 @@
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
+import 'package:dating_app/arguments/otp_verification_arguments.dart';
+import 'package:dating_app/arguments/phone_number_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
@@ -9,11 +11,13 @@ import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PhoneNumberPage extends StatefulWidget {
-  final String authSide;
+  const PhoneNumberPage({Key? key}) : super(key: key);
 
-  const PhoneNumberPage({Key? key, required this.authSide}) : super(key: key);
+  static const routeName = '/phoneNumberPage';
+
 
   @override
   _PhoneNumberPageState createState() => _PhoneNumberPageState();
@@ -22,25 +26,32 @@ class PhoneNumberPage extends StatefulWidget {
 class _PhoneNumberPageState extends State<PhoneNumberPage> {
   Country _selectedCountry =
       Country(isoCode: "IN", iso3Code: 'IND', phoneCode: "91", name: 'India');
+
+  final _formKey = GlobalKey<FormState>();
+  late FirebaseauthBloc firebaseauthBloc;
+
   @override
   void initState() {
+    firebaseauthBloc = BlocProvider.of<FirebaseauthBloc>(context);
+
     super.initState();
   }
 
-  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as PhoneNumberArguments;
     TextEditingController phoneNumber = new TextEditingController();
     void codeSent(String verificationId, int? forceResendingToken) {
       /* context.read<FirebaseauthBloc>().add(UserStateNone());
       phoneNumber.clear(); */
-      changePageTo(
+      
+          changePageWithNamedRoutes(
           context: context,
-          widget: OTPVerificationPage(
-            issignUpWithEmail: false,
-            verificationId: verificationId,
-            authSide: widget.authSide,
-          ));
+          routeName: OTPVerificationPage.routeName,
+          arguments: OtpVerificationArguments(
+              authSide: args.authSide,
+              verificationId: verificationId,
+              issignUpWithEmail: false));
     }
 
     Widget _buildDropdownItem(Country country) => Container(
@@ -48,7 +59,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
             children: <Widget>[
               CountryPickerUtils.getDefaultFlagImage(country),
               SizedBox(
-                width: 5.0,
+                width: 5.0.w,
               ),
               Text("+${country.phoneCode}(${country.isoCode})"),
             ],
@@ -60,7 +71,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding:  EdgeInsets.all(20.0.sp),
             child: Column(
               children: [
                 CustomAppBar(
@@ -68,7 +79,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   centerWidget: Container(),
                   trailingWidget: Container(),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 Row(
                   children: [
                     Text(
@@ -78,18 +89,18 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 40.0),
+                  padding:  EdgeInsets.only(right: 40.0.sp),
                   child: Text(
                     'Please enter your valid phone number. We will send you a 6-digit code to verify your account.',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10.sp),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey, width: 1.w),
+                    borderRadius: BorderRadius.circular(15.r),
                   ),
                   child: Row(
                     children: <Widget>[
@@ -115,16 +126,11 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                             setState(() {
                               _selectedCountry = country;
                             });
-                            print("${country.isoCode}");
-                            print("${country.iso3Code}");
-                            print("${country.phoneCode}");
-                            print("${country.name}");
                           },
                         ),
                       ),
                       Expanded(
-                        child: TextFormField( 
-                          
+                        child: TextFormField(
                           validator: (val) {
                             if (val == null) {
                               return "Phone Number cannot be empty";
@@ -147,29 +153,56 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   ),
                 ),
                 Spacer(),
-                BlocBuilder<FirebaseauthBloc, FirebaseauthState>(
+                BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
+                  listener: (context, state) {
+                    if (state is OtpRetrievalFailed) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Error"),
+                          content: Text("${state.errorMessage}"),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Ok"))
+                          ],
+                        ),
+                      );
+                    }else if(state is OtpRetrievalTimedOut){
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text("Error"),
+                          content: Text("Otp retrieval timed out"),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(ctx);
+                                },
+                                child: Text("Ok"))
+                          ],
+                        ),
+                      );
+                    }
+                  },
                   builder: (context, state) {
                     if (state is OtpSent) {
                       return CircularProgressIndicator();
-                    } else if (state is OtpRetrievalTimedOut) {
-                      return Text("Otp retrieval timed out");
-                    } else if (state is OtpRetrievalFailed) {
-                      return Text("${state.errorMessage}");
-                    }
+                    } 
                     return CommonButton(
                         text: 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context
-                                .read<FirebaseauthBloc>()
-                                .add(OtpSendRequested(
+                                  firebaseauthBloc.add(OtpSendRequested(
                                   codeAutoRetrievalTimeout: (id) {
-                                    context
+                                    /* context
                                         .read<FirebaseauthBloc>()
-                                        .add(OtpRetrievalTimeOut());
+                                        .add(OtpRetrievalTimeOut()); */
                                   },
                                   verificationFailed: (exception) {
-                                    context.read<FirebaseauthBloc>().add(
+                                    firebaseauthBloc.add(
                                         OtpRetrievalFailure(
                                             errorMessage: exception.code));
                                     //throw Exception(exception);

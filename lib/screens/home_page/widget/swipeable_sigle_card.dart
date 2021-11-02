@@ -1,19 +1,24 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:dating_app/const/app_const.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SwipeableSingleCard extends StatelessWidget {
-  const SwipeableSingleCard({
-    Key? key,
-    required this.imageUrl,
-    required this.personName,
-    required this.personAge,
-    required this.personProfession,
-  }) : super(key: key);
+  const SwipeableSingleCard(
+      {Key? key,
+      required this.imageUrl,
+      required this.personName,
+      required this.personAge,
+      required this.personProfession,
+      required this.personDistance})
+      : super(key: key);
 
-  final String imageUrl, personName, personProfession;
+  final File? imageUrl;
+  final String personName, personProfession;
   final int personAge;
+  final num? personDistance;
 
   @override
   Widget build(BuildContext context) {
@@ -21,37 +26,46 @@ class SwipeableSingleCard extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          height: 700,
-          width: 400,
-          child: Image.asset(
-            imageUrl,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ),
+          height: 700.h,
+          width: 400.w,
+          child: imageUrl != null
+              ? Image.file(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (context, exception, stacktrace) {
+                              return Container(
+                                color: Colors.amber,
+                                  );
+                            },
+                )
+              : Container(
+                  color: Colors.amber,
+                ),
         ),
         Positioned(
-          left: 8,
-          top: 8,
+          left: 8.sp,
+          top: 8.sp,
           child: Container(
-            height: 40,
-            width: 61,
+            height: 40.h,
+            width: 100.w,
             decoration: BoxDecoration(
                 color: AppColor.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(10)),
+                borderRadius: BorderRadius.circular(10.r)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.location_on,
                   color: Colors.white,
-                  size: 18,
+                  size: 18.sp,
                 ),
                 Text(
-                  '1 KM',
+                  personDistance != null ? '${personDistance!.toInt()} KM': "-",
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!
-                      .copyWith(color: Colors.white, fontSize: 12),
+                      .copyWith(color: Colors.white, fontSize: 12.sp),
                 ),
               ],
             ),
@@ -61,15 +75,15 @@ class SwipeableSingleCard extends StatelessWidget {
           bottom: 0,
           child: ClipRRect(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15),
+              bottomLeft: Radius.circular(15.r),
+              bottomRight: Radius.circular(15.r),
             ),
             child: Container(
-              height: 70,
-              width: 400,
+              height: 70.h,
+              width: 400.w,
               child: BackdropFilter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding:  EdgeInsets.symmetric(horizontal: 8.0.sp),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -78,20 +92,20 @@ class SwipeableSingleCard extends StatelessWidget {
                         style: Theme.of(context)
                             .textTheme
                             .bodyText2!
-                            .copyWith(color: Colors.white, fontSize: 24),
+                            .copyWith(color: Colors.black, fontSize: 24.sp),
                       ),
                       Text(
                         '$personProfession',
                         style: Theme.of(context)
                             .textTheme
                             .subtitle1!
-                            .copyWith(color: Colors.white),
+                            .copyWith(color: Colors.black),
                       ),
                     ],
                   ),
                 ),
                 filter: ImageFilter.blur(
-                    sigmaX: 20.0, sigmaY: 20.0, tileMode: TileMode.clamp),
+                    sigmaX: 70.0.sp, sigmaY: 70.0.sp, tileMode: TileMode.clamp),
               ),
             ),
           ),

@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
 
 abstract class BaseAuthProvider {
-  bool isSignedIn();
+  Future<String?> getCurrentUserUID();
   Future<CurrentUser> signUpWithEmailPassword(String emailId, String password);
   Future<CurrentUser?> signInWithEmailPassword(String emailId, String password);
   //Future<String> signUpWithPhoneNumber(String phoneNumber);
@@ -15,11 +20,20 @@ abstract class BaseAuthProvider {
       PhoneCodeSent codeSent,
       PhoneVerificationFailed verificationFailed,
       PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout);
-  Future<bool> linkEmailWithPhoneNumber(User? user, String emailId, String password);
-  Future<bool> linkPhoneNumberWithEmail(User? user, String smsCode, String verificationId);
+  Future<bool> linkEmailWithPhoneNumber(String emailId, String password);
+  Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
+  Future<bool> sendverificationEmail();
+  Future<bool> isEmailVerified();
+  Future<bool> isdatalessUserDocExists(String uid);
+  Future<bool> phoneEmailLinked(String uid);
 }
 
-class FirebaseAuthProvider extends BaseAuthProvider {
+class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
+  CollectionReference<Map<String, dynamic>> datalessCollection =
+      FirebaseFirestore.instance.collection("DataLessUsers");
+  CollectionReference<Map<String, dynamic>> collection =
+      FirebaseFirestore.instance.collection("UserActivity");
+
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   FirebaseAuth get getInstance => _firebaseAuth;
@@ -45,7 +59,7 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   @override
   Future<bool> isdatalessUserDocExists(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await datalessCollection.doc("$uid").get() ;
+        await datalessCollection.doc("$uid").get();
 
     if (doc.exists) {
       return true;
@@ -54,8 +68,27 @@ class FirebaseAuthProvider extends BaseAuthProvider {
   }
 
   @override
-  bool isSignedIn() {
-    return _firebaseAuth.currentUser != null;
+  Future<bool> phoneEmailLinked(String uid) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await datalessCollection.doc("$uid").get();
+
+    if (doc.data() != null) {
+      if (doc.data()!["linkedEmailPhone"]) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  Future<bool> iscollectionDocExists(String? uid) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await collection.doc("$uid").get();
+
+    if (doc.exists) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -64,39 +97,86 @@ class FirebaseAuthProvider extends BaseAuthProvider {
     try {
       UserCredential? userCredential = await _firebaseAuth
           .signInWithEmailAndPassword(email: emailId, password: password);
+          bool docExists = await iscollectionDocExists(userCredential.user?.uid) ;
+      if (docExists) {
+        
+        collection
+            .doc(userCredential.user!.uid)
+            .update({"lastLogin": DateTime.now()});
+      }
 
       return CurrentUser(firebaseUser: userCredential.user);
-    } catch (e) {
-      throw Exception(e);
+    } on FirebaseAuthException catch (error) {
+      throw Exception(error.message);
     }
   }
 
   @override
   Future<void> signOut() async {
+    SharedObjects.prefs?.clearSession();
+    SharedObjects.prefs?.clearAll();
+    Directory tempDir = await getTemporaryDirectory();
+    tempDir.deleteSync(recursive: true);
     _firebaseAuth.signOut();
+    notifyListeners();
   }
 
   @override
   Future<CurrentUser> signUpWithEmailPassword(
       String emailId, String password) async {
-    UserCredential credential = await _firebaseAuth
-        .createUserWithEmailAndPassword(email: emailId, password: password);
-    return CurrentUser(firebaseUser: credential.user);
+    try {
+      UserCredential credential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: emailId, password: password);
+      await datalessCollection.doc(credential.user!.uid).set(
+        {"timeStamp": DateTime.now(), "linkedEmailPhone": false},
+      );
+      return CurrentUser(firebaseUser: credential.user);
+    } on FirebaseAuthException catch (error) {
+      throw Exception(error.message);
+    }
   }
 
   @override
-  Future<bool> linkEmailWithPhoneNumber(User? user,String emailId, String password) async {
-    AuthCredential credential =
-        EmailAuthProvider.credential(email: emailId, password: password);
-    UserCredential? userCredential = await user?.linkWithCredential(credential);
-    return userCredential != null;
+  Future<bool> linkEmailWithPhoneNumber(String emailId, String password) async {
+    try {
+      AuthCredential credential =
+          EmailAuthProvider.credential(email: emailId, password: password);
+      UserCredential? userCredential =
+          await _firebaseAuth.currentUser?.linkWithCredential(credential);
+      if (userCredential != null)
+        await datalessCollection.doc(userCredential.user!.uid).update(
+          {"linkedEmailPhone": true},
+        );
+      return userCredential != null;
+    } on FirebaseAuthException catch (error) {
+      throw Exception(error.message);
+    }
   }
 
   @override
-  Future<bool> linkPhoneNumberWithEmail(User? user,String smsCode,String verificationId) async {
-    AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
-    UserCredential? userCredential = await user?.linkWithCredential(credential);
-    return userCredential != null;
+  Future<bool> linkPhoneNumberWithEmail(
+      String smsCode, String verificationId) async {
+    try {
+      AuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: smsCode);
+
+      UserCredential? userCredential =
+          await _firebaseAuth.currentUser?.linkWithCredential(credential);
+      if (userCredential != null) {
+        /* bool isNewUser = userCredential.additionalUserInfo!.isNewUser;
+        if (isNewUser) {
+          return true;
+        }
+        return false; */
+        await datalessCollection
+            .doc(userCredential.user!.uid)
+            .update({"linkedEmailPhone": true});
+      }
+      return userCredential != null;
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      throw Exception(e.message);
+    }
   }
 
   /* @override
@@ -115,10 +195,29 @@ class FirebaseAuthProvider extends BaseAuthProvider {
             smsCode); // Creates a credential by taking verificationId and smsCode recieved via OTP
     UserCredential result =
         await _firebaseAuth.signInWithCredential(credential);
-    if (result.user?.uid != null) {
+    collection.doc(result.user!.uid).update({"lastLogin": DateTime.now()});
+
+    if (result.user != null) {
+      bool docExist = await iscollectionDocExists(result.user!.uid);
+      if (!docExist) {
+        await datalessCollection
+            .doc(result.user!.uid)
+            .set({"timeStamp": DateTime.now()});
+      }
+
       return credential;
     } //Pass the credential created, to the signInWithCredential()
     return null; // returns true if otp is verified else returns false
+  }
+
+  @override
+  Future<bool> sendverificationEmail() async {
+    if (_firebaseAuth.currentUser != null) {
+      await _firebaseAuth.currentUser?.sendEmailVerification();
+
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -130,14 +229,21 @@ class FirebaseAuthProvider extends BaseAuthProvider {
     try {
       _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
-          timeout: Duration(seconds: 30),
+          timeout: Duration(seconds: 60),
           verificationCompleted: (auth) {},
           verificationFailed: verificationFailed,
           codeSent: codeSent,
           codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {
-      print("hello");
-      print(e);
+      throw Exception(e);
     }
+  }
+
+  @override
+  Future<bool> isEmailVerified() async {
+    if (_firebaseAuth.currentUser != null) {
+      return _firebaseAuth.currentUser!.emailVerified;
+    }
+    return false;
   }
 }

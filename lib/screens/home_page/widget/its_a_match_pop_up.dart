@@ -1,11 +1,15 @@
-import 'dart:math';
+import 'dart:io';
 
+import 'package:dating_app/arguments/chat_screen_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/dummy_content/dummy_content.dart';
+import 'package:dating_app/logic/data/user.dart';
+import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void itIsAMatchPopUp(BuildContext context, int index) {
+void itIsAMatchPopUp(
+    BuildContext context, File? image, String name, CurrentUser user) {
   showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -18,19 +22,19 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0)),
                 content: Container(
-                  height: 600,
+                  height: 600.h,
                   child: Column(
                     children: [
                       Container(
-                        height: 360,
+                        height: 360.h,
                         child: Stack(
                           children: [
                             Positioned(
                               right: 20,
                               top: 20,
                               child: Container(
-                                height: 240,
-                                width: 140,
+                                height: 240.h,
+                                width: 140.w,
                                 child: Transform.rotate(
                                   angle: 360 * -10,
                                   alignment: Alignment.center,
@@ -39,18 +43,31 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.grey.withOpacity(0.8),
-                                          spreadRadius: 1,
-                                          blurRadius: 25,
-                                          offset: Offset(0, 7),
+                                          spreadRadius: 1.r,
+                                          blurRadius: 25.r,
+                                          offset: Offset(0, 7.sp),
                                         ),
                                       ],
                                     ),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        sampleImages[index],
-                                        fit: BoxFit.cover,
-                                      ),
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      child:
+                                          SessionConstants.sessionUser.image !=
+                                                  null
+                                              ? Image.file(
+                                                  SessionConstants
+                                                      .sessionUser.image!,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context,
+                                                      exception, stacktrace) {
+                                                    return Container(
+                                                      color: Colors.amber,
+                                                    );
+                                                  },
+                                                )
+                                              : Container(
+                                                  color: Colors.amber,
+                                                ),
                                     ),
                                   ),
                                 ),
@@ -60,8 +77,8 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                               left: 20,
                               bottom: 10,
                               child: Container(
-                                height: 240,
-                                width: 140,
+                                height: 240.h,
+                                width: 140.w,
                                 child: Transform.rotate(
                                   angle: 360 * 10,
                                   alignment: Alignment.center,
@@ -70,18 +87,28 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.grey.withOpacity(0.8),
-                                          spreadRadius: 1,
-                                          blurRadius: 25,
-                                          offset: Offset(0, 7),
+                                          spreadRadius: 1.r,
+                                          blurRadius: 25.r,
+                                          offset: Offset(0, 7.sp),
                                         ),
                                       ],
                                     ),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        sampleImages[index],
-                                        fit: BoxFit.cover,
-                                      ),
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      child: image != null
+                                          ? Image.file(
+                                              image,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, exception,
+                                                  stacktrace) {
+                                                return Container(
+                                                  color: Colors.amber,
+                                                );
+                                              },
+                                            )
+                                          : Container(
+                                              color: Colors.amber,
+                                            ),
                                     ),
                                   ),
                                 ),
@@ -96,7 +123,7 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'It’s a match with ${name[index]}!',
+                            'It’s a match with $name!',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
@@ -108,19 +135,24 @@ void itIsAMatchPopUp(BuildContext context, int index) {
                         'Start a conversation now with each other',
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 30.h),
                       CommonButton(
                         text: 'Say Hello',
                         onPressed: () {
-                          // changePageTo(context: context, widget: );
+                          Navigator.pushNamed(context, ChatScreen.routeName,
+                              arguments: ChatScreenArguments(
+                                  user: user,
+                                  chatid: DateTime.now()
+                                      .microsecondsSinceEpoch
+                                      .toString()));
                         },
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 10.h),
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          fixedSize: Size(350, 56),
+                          fixedSize: Size(350.sp, 56.sp),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(15.r),
                           ),
                         ),
                         onPressed: () {

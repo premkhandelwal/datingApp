@@ -1,13 +1,20 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/const/app_const.dart';
+import 'package:dating_app/const/shared_objects.dart';
+import 'package:dating_app/logic/data/appliedFilters.dart';
+import 'package:dating_app/logic/data/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class BaseUserActivityProvider {
   Future<void> userLiked(String likedUserUID);
   Future<void> userDisliked(String likedUserUID);
   Future<CurrentUser?> userFindMatch(String matchUserUID);
   Future<void> updateLocationInfo();
-  Stream<List<CurrentUser>> fetchAllUsers();
+  Future<List<CurrentUser>> fetchAllUsers();
   Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters();
   Future<List<CurrentUser>> fetchMatchedUsers();
   Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates);
@@ -17,37 +24,87 @@ abstract class BaseUserActivityProvider {
 }
 
 class UserActivityProvider extends BaseUserActivityProvider {
-  CollectionReference collection =
+  CollectionReference<Map<String, dynamic>> collection =
       FirebaseFirestore.instance.collection("UserActivity");
 
+  FirebaseStorage storage = FirebaseStorage.instance;
+
   @override
-  Future<void> userDisliked(String userUID, String dislikedUserUID) async {
+  Future<void> updateLocationInfo() async {
     await collection
-        .doc(userUID)
-        .collection("DislikedUsers")
-        .doc(dislikedUserUID)
-        .set({dislikedUserUID: DateTime.now()});
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+        .update({
+      "locationCoordinates": SessionConstants.sessionUser.locationCoordinates
+    });
   }
 
   @override
-  Future<bool> userFindMatch(String matchUserUID, String selfUID) async {
+  Future<void> userDisliked(String dislikedUserUID) async {
+    await collection
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+        .collection("InteractedUsers")
+        .doc(dislikedUserUID)
+        .set({"liked": false, "matched": false});
+  }
+
+  @override
+  Future<CurrentUser?> userFindMatch(String matchUserUID) async {
     bool exist = false;
-    print(selfUID);
     await collection
         .doc(matchUserUID)
         .collection("LikedUsers")
-        .doc(selfUID)
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .get()
-        .then((doc) {
+        .then((doc) async {
       exist = doc.exists;
+      if (exist) {
+        String? selfUid =
+            SharedObjects.prefs?.getString(SessionConstants.sessionUid);
+        await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .collection("MatchedUsers")
+            .doc(matchUserUID)
+            .set({matchUserUID: DateTime.now()});
+
+        await collection
+            .doc(matchUserUID)
+            .collection("MatchedUsers")
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .set({selfUid!: DateTime.now()});
+
+        await collection
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .collection("InteractedUsers")
+            .doc(matchUserUID)
+            .set({"liked": true, "matched": true});
+
+        await collection
+            .doc(matchUserUID)
+            .collection("InteractedUsers")
+            .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
+            .set({"liked": true, "matched": true});
+      }
     });
-    return exist;
+    if (exist) {
+      DocumentSnapshot<Map<String, dynamic>> doc =
+          await collection.doc(matchUserUID).get();
+      if (doc.exists && doc.data() != null) {
+        Map<String, dynamic> dataMap = doc.data()!;
+        CurrentUser user = CurrentUser.fromMap(dataMap);
+        user.image = doc.data()!["profileImageUrl"] != null
+            ? await urlToFile(dataMap["profileImageUrl"], user.uid)
+            : null;
+        user.uid = matchUserUID;
+        return user;
+      }
+    }
+    return null;
   }
 
   @override
-  Future<void> userLiked(String userUID, String likedUserUID) async {
+  Future<void> userLiked(String likedUserUID) async {
     await collection
-        .doc(userUID)
+        .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
         .collection("LikedUsers")
         .doc(likedUserUID)
         .set({likedUserUID: DateTime.now()});
@@ -245,33 +302,18 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Stream<List<CurrentUser>> fetchAllUsers() {
+  Future<List<CurrentUser>> fetchAllUsers() async {
     try {
-      // QuerySnapshot<Map<String, dynamic>> querySnapshot =
-      return collection.snapshots().transform(
-            StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
-                List<CurrentUser>>.fromHandlers(
-              handleData: (QuerySnapshot<Map<String, dynamic>> querySnapshot,
-                      EventSink<List<CurrentUser>> sink) =>
-                  mapQueryToConversation(querySnapshot, sink),
-            ),
-          );
-      /* List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await collection.get();
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
           querySnapshot.docs;
 
       List<CurrentUser> usersList =
           await CurrentUser.toCurrentList(listSnapShots);
       return usersList;
-           */
     } catch (e) {
       throw Exception(e);
     }
-  }
-
-  void mapQueryToConversation(QuerySnapshot<Map<String, dynamic>> querySnapshot,
-      EventSink<List<CurrentUser>> sink) async {
-    List<CurrentUser> usersList =
-        await CurrentUser.toCurrentList(querySnapshot.docs);
-    sink.add(usersList);
   }
 }

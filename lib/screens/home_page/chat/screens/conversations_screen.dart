@@ -46,7 +46,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   }
 
   void getUsers() async {
-    users = await UserActivityRepository().fetchAllUsers().first;
+    users = await UserActivityRepository().fetchAllUsers();
   }
 
   @override
