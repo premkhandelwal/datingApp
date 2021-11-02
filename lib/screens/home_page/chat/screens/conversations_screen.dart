@@ -3,7 +3,10 @@ import 'package:dating_app/logic/data/conversations.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/main.dart';
 import 'package:dating_app/services/db_services.dart';
+import 'package:dating_app/widgets/buttons/common_button.dart';
+import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -52,83 +55,129 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
           conversationUsers = getConversationUsers(users, conversations);
 
           return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: const Text('Chats'),
-            ),
-            body: ListView.builder(
-                itemCount: conversations.length,
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 16),
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: InkWell(
-                      onTap: () async {
-                        Navigator.pushNamed(
-                          myContext,
-                          ChatScreen.routeName,
-                          arguments: ChatScreenArguments(
-                              conversationUsers![index]!.uid!,
-                              conversations[index]!.chatid!),
-                        );
-                        await db
-                            .updateSeenStatus(conversations[index]!.userId!);
-                      },
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          maxRadius: 30,
-                          backgroundImage: conversationUsers?[index]?.image ==
-                                  null
-                              ? null
-                              : FileImage(conversationUsers![index]!.image!),
-                          child: conversationUsers?[index]?.image == null
-                              ? Text(
-                                  conversationUsers?[index]
-                                          ?.name![0]
-                                          .toUpperCase() ??
-                                      '',
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 25),
-                                )
-                              : Container(),
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(20.0.sp),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CustomAppBar(
+                        context: context,
+                        canGoBack: false,
+                        centerWidget: Container(
+                          child: Column(
+                            children: [
+                              Text(
+                                'Messages',
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ],
+                          ),
                         ),
-                        title: Text(
-                          conversationUsers?[index]?.name! ?? '',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Text(
-                          conversations[index]!.message!,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: conversations[index]!.status == 'unseen'
-                                  ? Colors.blue
-                                  : Colors.grey.shade600,
-                              fontWeight:
-                                  conversations[index]!.status == 'unseen'
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                        ),
-                        trailing: Text(
-                          DateFormat('yy/MM/dd hh:mm').format(
-                              DateTime.parse(conversations[index]!.sendTime!)),
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: conversations[index]!.status == 'unseen'
-                                  ? Colors.blue
-                                  : Colors.grey.shade600,
-                              fontWeight:
-                                  conversations[index]!.status == 'unseen'
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                        ),
+                        trailingWidget: IconsOutlinedButton(
+                            icon: Icons.tune,
+                            size: Size(52.sp, 52.sp),
+                            onPressed: () {}),
                       ),
-                    ),
-                  );
-                }),
+                      ListView.builder(
+                          itemCount: conversations.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 16),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Card(
+                              elevation: 0,
+                              child: InkWell(
+                                onTap: () async {
+                                  Navigator.pushNamed(
+                                    myContext,
+                                    ChatScreen.routeName,
+                                    arguments: ChatScreenArguments(
+                                        conversationUsers![index]!.uid!,
+                                        conversations[index]!.chatid!),
+                                  );
+                                  await db.updateSeenStatus(
+                                      conversations[index]!.userId!);
+                                },
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.pink,
+                                        maxRadius: 30,
+                                        backgroundImage:
+                                            conversationUsers?[index]?.image ==
+                                                    null
+                                                ? null
+                                                : FileImage(
+                                                    conversationUsers![index]!
+                                                        .image!),
+                                        child:
+                                            conversationUsers?[index]?.image ==
+                                                    null
+                                                ? Text(
+                                                    conversationUsers?[index]
+                                                            ?.name![0]
+                                                            .toUpperCase() ??
+                                                        '',
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 25),
+                                                  )
+                                                : Container(),
+                                      ),
+                                      title: Text(
+                                        conversationUsers?[index]?.name! ?? '',
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                      subtitle: Text(
+                                        conversations[index]!.message!,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color:
+                                                conversations[index]!.status ==
+                                                        'unseen'
+                                                    ? Colors.blue
+                                                    : Colors.grey.shade600,
+                                            fontWeight:
+                                                conversations[index]!.status ==
+                                                        'unseen'
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal),
+                                      ),
+                                      trailing: Text(
+                                        DateFormat('yy/MM/dd hh:mm').format(
+                                            DateTime.parse(conversations[index]!
+                                                .sendTime!)),
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color:
+                                                conversations[index]!.status ==
+                                                        'unseen'
+                                                    ? Colors.blue
+                                                    : Colors.grey.shade600,
+                                            fontWeight:
+                                                conversations[index]!.status ==
+                                                        'unseen'
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal),
+                                      ),
+                                    ),
+                                    Divider(
+                                      thickness: 1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           );
         },
       ),

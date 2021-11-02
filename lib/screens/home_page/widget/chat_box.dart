@@ -63,7 +63,7 @@ class _ChatBoxState extends State<ChatBox> {
             ? Provider.of<RecordingProvider>(context).isPlaying
                 ? const Text(
                     "Playing",
-                    style: TextStyle(fontSize: 14, color: Colors.blue),
+                    style: TextStyle(fontSize: 14, color: Colors.pink),
                   )
                 : IconButton(
                     onPressed: () async {
@@ -78,7 +78,7 @@ class _ChatBoxState extends State<ChatBox> {
             : Provider.of<RecordingProvider>(context).isRecording
                 ? const Text(
                     "Recording",
-                    style: TextStyle(fontSize: 14, color: Colors.blue),
+                    style: TextStyle(fontSize: 14, color: Colors.pink),
                   )
                 : IconButton(
                     onPressed: () async {
@@ -219,7 +219,7 @@ class _ChatBoxState extends State<ChatBox> {
           icon: const Icon(
             Icons.emoji_emotions,
             size: 30,
-            color: Colors.blue,
+            color: Colors.pink,
           ),
         ),
         IconButton(
@@ -258,7 +258,7 @@ class _ChatBoxState extends State<ChatBox> {
           icon: const Icon(
             Icons.gif_sharp,
             size: 45,
-            color: Colors.blue,
+            color: Colors.pink,
           ),
         ),
         const SizedBox(
@@ -295,7 +295,7 @@ class _ChatBoxState extends State<ChatBox> {
           },
           icon: const Icon(
             Icons.send,
-            color: Colors.blue,
+            color: Colors.pink,
             size: 24,
           ),
         ),

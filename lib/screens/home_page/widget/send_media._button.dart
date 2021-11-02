@@ -72,7 +72,7 @@ class SendMediaButton extends StatelessWidget {
           height: 30,
           width: 30,
           decoration: BoxDecoration(
-            color: Colors.lightBlue,
+            color: Colors.pink,
             borderRadius: BorderRadius.circular(30),
           ),
           child: const Icon(

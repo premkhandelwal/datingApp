@@ -55,7 +55,7 @@ class _ChatMessageState extends State<ChatMessage> {
               child: Bubble(
                 color: (widget.message.to == widget.args.userId!
                     ? Colors.grey[500]
-                    : Colors.blue[200]),
+                    : Colors.pink[200]),
                 alignment: widget.message.from != widget.args.userId!
                     ? Alignment.topRight
                     : Alignment.topLeft,
@@ -73,7 +73,7 @@ class _ChatMessageState extends State<ChatMessage> {
           : Bubble(
               color: (widget.message.to == widget.args.userId!
                   ? Colors.grey[500]
-                  : Colors.blue[200]),
+                  : Colors.pink[200]),
               alignment: widget.message.from != widget.args.userId!
                   ? Alignment.topRight
                   : Alignment.topLeft,

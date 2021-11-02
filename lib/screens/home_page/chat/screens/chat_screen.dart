@@ -102,6 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
               },
               child: Scaffold(
                 appBar: AppBar(
+                  backgroundColor: Colors.white,
                   automaticallyImplyLeading: false,
                   flexibleSpace: SafeArea(
                     child: Container(
@@ -123,7 +124,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             },
                             icon: const Icon(
                               Icons.arrow_back,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           const SizedBox(
@@ -139,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     style: const TextStyle(color: Colors.white),
                                   )
                                 : Container(),
-                            backgroundColor: Colors.green,
+                            backgroundColor: Colors.pink,
                           ),
                           const SizedBox(
                             width: 12,
@@ -154,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.white),
+                                      color: Colors.black),
                                 ),
                                 const SizedBox(
                                   height: 6,
@@ -162,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Text(
                                   chatUser.status ?? "",
                                   style: const TextStyle(
-                                      color: Colors.white, fontSize: 13),
+                                      color: Colors.black, fontSize: 13),
                                 ),
                               ],
                             ),
@@ -223,7 +224,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               ? Container(
                                   width: double.infinity,
                                   height: 50,
-                                  color: const Color(0xDD5F96D8),
+                                  color: Colors.pinkAccent,
                                   child: Center(
                                     child: Text(
                                       'Sending Attachment...',
