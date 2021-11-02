@@ -37,8 +37,8 @@ class LocalNotificationService {
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
       const NotificationDetails notificationDetails = NotificationDetails(
-          android: AndroidNotificationDetails("easy_approach",
-              "easy_approach_channel", "This is our notification Channel",
+          android: AndroidNotificationDetails("chatnotification",
+              "chat_notification_channel", "This is chat notification Channel",
               importance: Importance.max, priority: Priority.high),
           iOS: IOSNotificationDetails(
               presentAlert: true, presentBadge: true, presentSound: true));
