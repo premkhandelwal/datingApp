@@ -21,6 +21,38 @@ abstract class BaseAuthProvider {
 
 class FirebaseAuthProvider extends BaseAuthProvider {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  FirebaseAuth get getInstance => _firebaseAuth;
+
+  @override
+  Future<String?> getCurrentUserUID() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.reload();
+
+      if (_firebaseAuth.currentUser?.uid != null) {
+        collection
+            .doc(_firebaseAuth.currentUser!.uid)
+            .update({"lastLogin": DateTime.now()});
+      }
+      return _firebaseAuth.currentUser?.uid;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-disabled') {
+        return null;
+      }
+    }
+  }
+
+  @override
+  Future<bool> isdatalessUserDocExists(String uid) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await datalessCollection.doc("$uid").get() ;
+
+    if (doc.exists) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   bool isSignedIn() {
     return _firebaseAuth.currentUser != null;
