@@ -1,12 +1,13 @@
 import 'package:dating_app/arguments/chat_screen_arguments.dart';
+import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
 import 'package:dating_app/logic/data/conversations.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/userActivityRepo.dart';
 import 'package:dating_app/main.dart';
 import 'package:dating_app/services/db_services.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -29,11 +30,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   List<CurrentUser?> users = [];
   List<Conversations?>? conversations;
 
-  @override
-  void initState() {
-    getUsers();
-    super.initState();
-  }
+
 
   Future<void> getDeviceTokens() async {
     String? token = await FirebaseMessaging.instance.getToken();
@@ -45,9 +42,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
     FirebaseMessaging.instance.onTokenRefresh.listen(db.saveTokenToDatabase);
   }
 
-  void getUsers() async {
-    users = await UserActivityRepository().fetchAllUsers();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,137 +53,168 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
           initialData: null,
         ),
       ],
-      child: Builder(
-        builder: (context) {
-          List<Conversations?>? conversations =
-              Provider.of<List<Conversations?>?>(context) ?? [];
-          conversationUsers = getConversationUsers(users, conversations);
+      child: BlocBuilder<UseractivityBloc, UseractivityState>(
+        buildWhen: (pState, cState) {
+          if (cState is FetchingAllUsersState ||
+              cState is FetchedAllUsersState ||
+              cState is FailedToFetchAllUsersState) {
+            return true;
+          }
+          return false;
+        },
+        builder: (context, state) {
+          if (state is FetchingAllUsersState) {
+            return CircularProgressIndicator();
+          } else if (state is FetchedAllUsersState) {
+            users = state.users;
+            return Builder(
+              builder: (context) {
+                List<Conversations?>? conversations =
+                    Provider.of<List<Conversations?>?>(context) ?? [];
+                conversationUsers = getConversationUsers(users, conversations);
 
-          return Scaffold(
-            body: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(20.0.sp),
-                child: Center(
-                  child: Column(
-                    children: [
-                      CustomAppBar(
-                        context: context,
-                        canGoBack: false,
-                        centerWidget: Container(
-                          child: Column(
-                            children: [
-                              Text(
-                                'Messages',
-                                style: Theme.of(context).textTheme.bodyText2,
-                              ),
-                            ],
-                          ),
-                        ),
-                        trailingWidget: IconsOutlinedButton(
-                            icon: Icons.tune,
-                            size: Size(52.sp, 52.sp),
-                            onPressed: () {}),
-                      ),
-                      ListView.builder(
-                          itemCount: conversations.length,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.only(top: 16),
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Card(
-                              elevation: 0,
-                              child: InkWell(
-                                onTap: () async {
-                                  Navigator.pushNamed(
-                                    myContext,
-                                    ChatScreen.routeName,
-                                    arguments: ChatScreenArguments(
-                                        user: conversationUsers![index]!,
-                                        chatid: conversations[index]!.chatid!),
-                                  );
-                                  await db.updateSeenStatus(
-                                      conversations[index]!.userId!);
-                                },
+                return Scaffold(
+                  body: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0.sp),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            CustomAppBar(
+                              context: context,
+                              canGoBack: false,
+                              centerWidget: Container(
                                 child: Column(
                                   children: [
-                                    ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundColor: Colors.pink,
-                                        maxRadius: 30,
-                                        backgroundImage:
-                                            conversationUsers?[index]?.image ==
-                                                    null
-                                                ? null
-                                                : FileImage(
-                                                    conversationUsers![index]!
-                                                        .image!),
-                                        child:
-                                            conversationUsers?[index]?.image ==
-                                                    null
-                                                ? Text(
-                                                    conversationUsers?[index]
-                                                            ?.name![0]
-                                                            .toUpperCase() ??
-                                                        '',
-                                                    style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 25),
-                                                  )
-                                                : Container(),
-                                      ),
-                                      title: Text(
-                                        conversationUsers?[index]?.name! ?? '',
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      subtitle: Text(
-                                        conversations[index]!.message!,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color:
-                                                conversations[index]!.status ==
-                                                        'unseen'
-                                                    ? Colors.blue
-                                                    : Colors.grey.shade600,
-                                            fontWeight:
-                                                conversations[index]!.status ==
-                                                        'unseen'
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal),
-                                      ),
-                                      trailing: Text(
-                                        DateFormat('yy/MM/dd hh:mm').format(
-                                            DateTime.parse(conversations[index]!
-                                                .sendTime!)),
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color:
-                                                conversations[index]!.status ==
-                                                        'unseen'
-                                                    ? Colors.blue
-                                                    : Colors.grey.shade600,
-                                            fontWeight:
-                                                conversations[index]!.status ==
-                                                        'unseen'
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal),
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
+                                    Text(
+                                      'Messages',
+                                      style:
+                                          Theme.of(context).textTheme.bodyText2,
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          }),
-                    ],
+                              trailingWidget: IconsOutlinedButton(
+                                  icon: Icons.tune,
+                                  size: Size(52.sp, 52.sp),
+                                  onPressed: () {}),
+                            ),
+                            ListView.builder(
+                                itemCount: conversations.length,
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.only(top: 16),
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    elevation: 0,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        Navigator.pushNamed(
+                                          myContext,
+                                          ChatScreen.routeName,
+                                          arguments: ChatScreenArguments(
+                                              user: conversationUsers![index]!,
+                                              chatid: conversations[index]!
+                                                  .chatid!),
+                                        );
+                                        await db.updateSeenStatus(
+                                            conversations[index]!.userId!);
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundColor: Colors.pink,
+                                              maxRadius: 30,
+                                              backgroundImage:
+                                                  conversationUsers?[index]
+                                                              ?.image ==
+                                                          null
+                                                      ? null
+                                                      : FileImage(
+                                                          conversationUsers![
+                                                                  index]!
+                                                              .image!),
+                                              child: conversationUsers?[index]
+                                                          ?.image ==
+                                                      null
+                                                  ? Text(
+                                                      conversationUsers?[index]
+                                                              ?.name![0]
+                                                              .toUpperCase() ??
+                                                          '',
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 25),
+                                                    )
+                                                  : Container(),
+                                            ),
+                                            title: Text(
+                                              conversationUsers?[index]
+                                                      ?.name! ??
+                                                  '',
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                            ),
+                                            subtitle: Text(
+                                              conversations[index]!.message!,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: conversations[index]!
+                                                              .status ==
+                                                          'unseen'
+                                                      ? Colors.blue
+                                                      : Colors.grey.shade600,
+                                                  fontWeight:
+                                                      conversations[index]!
+                                                                  .status ==
+                                                              'unseen'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal),
+                                            ),
+                                            trailing: Text(
+                                              DateFormat('yy/MM/dd hh:mm')
+                                                  .format(DateTime.parse(
+                                                      conversations[index]!
+                                                          .sendTime!)),
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: conversations[index]!
+                                                              .status ==
+                                                          'unseen'
+                                                      ? Colors.blue
+                                                      : Colors.grey.shade600,
+                                                  fontWeight:
+                                                      conversations[index]!
+                                                                  .status ==
+                                                              'unseen'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal),
+                                            ),
+                                          ),
+                                          Divider(
+                                            thickness: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          );
+                );
+              },
+            );
+          } else {
+            return Center(
+              child: Text("No users found"),
+            );
+          }
         },
       ),
     );

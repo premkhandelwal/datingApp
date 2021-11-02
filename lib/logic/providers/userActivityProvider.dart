@@ -14,7 +14,7 @@ abstract class BaseUserActivityProvider {
   Future<void> userDisliked(String likedUserUID);
   Future<CurrentUser?> userFindMatch(String matchUserUID);
   Future<void> updateLocationInfo();
-  Future<List<CurrentUser>> fetchAllUsers();
+  Stream<List<CurrentUser>> fetchAllUsers();
   Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters();
   Future<List<CurrentUser>> fetchMatchedUsers();
   Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates);
@@ -302,18 +302,25 @@ class UserActivityProvider extends BaseUserActivityProvider {
   }
 
   @override
-  Future<List<CurrentUser>> fetchAllUsers() async {
+  Stream<List<CurrentUser>> fetchAllUsers() {
     try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await collection.get();
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> listSnapShots =
-          querySnapshot.docs;
-
-      List<CurrentUser> usersList =
-          await CurrentUser.toCurrentList(listSnapShots);
-      return usersList;
+      return collection.snapshots().transform(
+            StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
+                List<CurrentUser>>.fromHandlers(
+              handleData: (QuerySnapshot<Map<String, dynamic>> querySnapshot,
+                      EventSink<List<CurrentUser>> sink) =>
+                  mapQueryToConversation(querySnapshot, sink),
+            ),
+          );
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  void mapQueryToConversation(QuerySnapshot<Map<String, dynamic>> querySnapshot,
+      EventSink<List<CurrentUser>> sink) async {
+    List<CurrentUser> usersList =
+        await CurrentUser.toCurrentList(querySnapshot.docs);
+    sink.add(usersList);
   }
 }

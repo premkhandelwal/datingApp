@@ -11,7 +11,7 @@ class UserActivityRepository extends BaseRepository {
     Future<void> updateLocationInfo() =>
       activityProvider.updateLocationInfo();
   Future<List<CurrentUser>> fetchMatchedUsers() => activityProvider.fetchMatchedUsers();
-  Future<List<CurrentUser>> fetchAllUsers() => activityProvider.fetchAllUsers();
+  Stream<List<CurrentUser>> fetchAllUsers() => activityProvider.fetchAllUsers();
   Future<List<CurrentUser>> fetchAllUsersWithAppliedFilters() => activityProvider.fetchAllUsersWithAppliedFilters();
 Future<CurrentUser> fetchUserInfo(Map<String, num> locationCoordinates) => activityProvider.fetchUserInfo(locationCoordinates);
   Future<Map<String,num>> fetchLocationInfo() =>
