@@ -121,6 +121,7 @@ CurrentUser getChatUser(List<CurrentUser?> allUsers, String? userId) {
   for (int i = 0; i < allUsers.length; i++) {
     if (userId! == allUsers[i]!.uid) {
       filteredUser = allUsers[i]!;
+      break;
     }
   }
   return filteredUser;

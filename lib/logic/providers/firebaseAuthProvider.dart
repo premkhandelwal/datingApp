@@ -59,7 +59,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   @override
   Future<bool> isdatalessUserDocExists(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await datalessCollection.doc("$uid").get();
+        await datalessCollection.doc("$uid").get() ;
 
     if (doc.exists) {
       return true;

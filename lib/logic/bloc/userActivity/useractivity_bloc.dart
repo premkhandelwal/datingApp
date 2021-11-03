@@ -9,14 +9,14 @@ part 'useractivity_state.dart';
 
 class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   final UserActivityRepository userActivityRepository;
-  StreamSubscription? profileDetailsSubsciption;
+  StreamSubscription? userDetailsSubsciption;
   UseractivityBloc({
     required this.userActivityRepository,
   }) : super(UseractivityInitial());
 
   @override
   Future<void> close() {
-    profileDetailsSubsciption?.cancel();
+    userDetailsSubsciption?.cancel();
     return super.close();
   }
 
@@ -36,6 +36,8 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
       yield* _mapFetchUserswithFiltersEventtoState();
     } else if (event is FetchAllUsersEvent) {
       yield* _mapFetchUserEventtoState();
+    } else if (event is RecievedAllUsersEvent) {
+      yield FetchedAllUsersState(users: event.users);
     } else if (event is FetchMatchedUsersEvent) {
       yield* _mapFetchMatchedUsersEventtoState();
     } else if (event is FetchInfoEvent) {
@@ -89,8 +91,10 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
   Stream<UseractivityState> _mapFetchUserEventtoState() async* {
     yield FetchingAllUsersState();
     try {
-      List<CurrentUser> _users = await userActivityRepository.fetchAllUsers();
-      yield FetchedAllUsersState(users: _users);
+      userDetailsSubsciption =
+          userActivityRepository.fetchAllUsers().listen((users) {
+        add(RecievedAllUsersEvent(users: users));
+      });
     } catch (e) {
       yield FailedToFetchAllUsersState();
     }

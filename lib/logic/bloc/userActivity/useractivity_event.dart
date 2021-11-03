@@ -1,9 +1,8 @@
 part of 'useractivity_bloc.dart';
 
+class UseractivityEvent {}
 
- class UseractivityEvent {}
-
-class UserStateNoneEvent extends UseractivityEvent{}
+class UserStateNoneEvent extends UseractivityEvent {}
 
 class UserLikedEvent extends UseractivityEvent {
   final String likedUserUID;
@@ -30,6 +29,13 @@ class FetchAllUsersWithAppliedFiltersEvent extends UseractivityEvent {}
 
 class FetchAllUsersEvent extends UseractivityEvent {}
 
+class RecievedAllUsersEvent extends UseractivityEvent {
+  List<CurrentUser> users;
+  RecievedAllUsersEvent({
+    required this.users,
+  });
+}
+
 class FetchLocationInfoEvent extends UseractivityEvent {}
 
 class FetchInfoEvent extends UseractivityEvent {
@@ -41,8 +47,9 @@ class FetchInfoEvent extends UseractivityEvent {
 
 class UpdateLocationInfoEvent extends UseractivityEvent {}
 
-class AppliedFiltersEvent extends UseractivityEvent{}
-class ClearedFiltersEvent extends UseractivityEvent{}
+class AppliedFiltersEvent extends UseractivityEvent {}
+
+class ClearedFiltersEvent extends UseractivityEvent {}
 
 class FilterChangedEvent extends UseractivityEvent {
   final num minAge;
@@ -55,9 +62,5 @@ class FilterChangedEvent extends UseractivityEvent {
     required this.maxAge,
     required this.interestedIn,
     required this.thresholdDist,
-
   });
 }
-
-
-
