@@ -124,20 +124,18 @@ class _MatchesScreenState extends State<MatchesScreen> {
                                         });
                                         if (conversation != null &&
                                             conversation.chatid != null) {
-                                          Navigator.pushNamedAndRemoveUntil(
+                                          Navigator.pushNamed(
                                               myContext,
                                               ChatScreen.routeName,
-                                              (route) => false,
                                               arguments: ChatScreenArguments(
                                                   user:
                                                       _matchedUsersList[index],
                                                   chatid:
                                                       conversation.chatid!));
                                         } else {
-                                          Navigator.pushNamedAndRemoveUntil(
+                                          Navigator.pushNamed(
                                               myContext,
                                               ChatScreen.routeName,
-                                              (route) => false,
                                               arguments: ChatScreenArguments(
                                                   user:
                                                       _matchedUsersList[index],
@@ -146,10 +144,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
                                                       .toString()));
                                         }
                                       }else {
-                                          Navigator.pushNamedAndRemoveUntil(
+                                          Navigator.pushNamed(
                                               myContext,
                                               ChatScreen.routeName,
-                                              (route) => false,
                                               arguments: ChatScreenArguments(
                                                   user:
                                                       _matchedUsersList[index],
@@ -227,7 +224,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 }, builder: (context, state) {
                   if (state is FetchingAllUsersState ||
                       state is FetchingMatchedUsersState ||
-                      state is FetchedAllUsersState) {
+                      (state is FetchedAllUsersState && _matchedUsersList.isEmpty)) {
                     return Container(
                         height: 350.h,
                         child: Center(child: CircularProgressIndicator()));
