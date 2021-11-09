@@ -15,6 +15,7 @@ import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/services/db_services.dart';
 import 'package:dating_app/services/notification_services.dart';
+import 'package:dating_app/widgets/common_progressIndicator.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -272,13 +273,23 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                           width: 450.w,
                           height: 500.h,
                           child: Center(child: Text("Failed to fetch users")));
-                    } else if (state is FetchingAllUsersState ||
-                        state is FetchingInfoState ||
-                        state is ApplyingFilters) {
+                    } else if (state is FetchingAllUsersState) {
                       return Container(
                         width: 450.w,
                         height: 500.h,
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(child: CommonIndicator(progressText: "Fetching All Users...",mainAxisAlignment: MainAxisAlignment.center,)),
+                      );
+                    } else if (state is FetchingInfoState) {
+                      return Container(
+                        width: 450.w,
+                        height: 500.h,
+                        child: Center(child: CommonIndicator(progressText: "Fetching Your Info...",mainAxisAlignment: MainAxisAlignment.center,)),
+                      );
+                    } else if (state is ApplyingFilters) {
+                      return Container(
+                        width: 450.w,
+                        height: 500.h,
+                        child: Center(child: CommonIndicator(progressText: "Applying Filters",mainAxisAlignment: MainAxisAlignment.center,)),
                       );
                     } else if (allUsers.isEmpty ||
                         (state is AppliedFiltersState && allUsers.isEmpty)) {
