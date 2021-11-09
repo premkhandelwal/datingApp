@@ -1,5 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:dating_app/arguments/chat_screen_arguments.dart';
+import 'package:dating_app/logic/data/conversations.dart';
+import 'package:dating_app/main.dart';
+import 'package:dating_app/screens/home_page/chat/screens/chat_screen.dart';
+import 'package:dating_app/services/db_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
@@ -20,12 +25,13 @@ class MatchesScreen extends StatefulWidget {
 
 class _MatchesScreenState extends State<MatchesScreen> {
   late UseractivityBloc useractivityBloc;
+  late DbServices dbServices;
 
   @override
   void initState() {
+    dbServices = DbServices();
     useractivityBloc = BlocProvider.of<UseractivityBloc>(context);
     useractivityBloc.add(FetchAllUsersEvent());
-    useractivityBloc.add(FetchMatchedUsersEvent());
     super.initState();
   }
 
@@ -98,41 +104,59 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         height: 50.h,
                         width: 170.w,
                         child: BackdropFilter(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    /* Navigator.pushNamed(
-                                        myContext, ChatScreen.routeName,
-                                        arguments: ChatScreenArguments(
-                                            user: _matchedUsersList[index],
-                                            chatid: DateTime.now()
-                                                .microsecondsSinceEpoch
-                                                .toString())); */
-                                  },
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 50.h,
-                                width: 2.w,
-                                color: Colors.white,
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {},
-                                  child: Icon(
-                                    Icons.favorite,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: StreamBuilder<List<Conversations>?>(
+                              stream: dbServices.getConversations(),
+                              builder: (context, snapshot) {
+                                return IconButton(
+                                    onPressed: () async {
+                                      List<Conversations?> _conversationsList =
+                                          [];
+
+                                      _conversationsList =
+                                          List.from(snapshot.data!);
+                                      if (_conversationsList.isNotEmpty) {
+                                        Conversations? conversation =
+                                            _conversationsList
+                                                .firstWhere((conversation) {
+                                          return conversation != null &&
+                                              conversation.userId ==
+                                                  _matchedUsersList[index].uid;
+                                        });
+                                        if (conversation != null &&
+                                            conversation.chatid != null) {
+                                          Navigator.pushNamed(
+                                              myContext,
+                                              ChatScreen.routeName,
+                                              arguments: ChatScreenArguments(
+                                                  user:
+                                                      _matchedUsersList[index],
+                                                  chatid:
+                                                      conversation.chatid!));
+                                        } else {
+                                          Navigator.pushNamed(
+                                              myContext,
+                                              ChatScreen.routeName,
+                                              arguments: ChatScreenArguments(
+                                                  user:
+                                                      _matchedUsersList[index],
+                                                  chatid: DateTime.now()
+                                                      .microsecondsSinceEpoch
+                                                      .toString()));
+                                        }
+                                      }else {
+                                          Navigator.pushNamed(
+                                              myContext,
+                                              ChatScreen.routeName,
+                                              arguments: ChatScreenArguments(
+                                                  user:
+                                                      _matchedUsersList[index],
+                                                  chatid: DateTime.now()
+                                                      .microsecondsSinceEpoch
+                                                      .toString()));
+                                        }
+                                    },
+                                    icon: Icon(Icons.chat));
+                              }),
                           filter: ImageFilter.blur(
                               sigmaX: 10.0,
                               sigmaY: 10.0,
@@ -192,12 +216,15 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       _matchedUsersList[i].image = _allUsersList[index].image;
                     }
                   } else if (state is FetchedAllUsersState) {
-                    _allUsersList = state.users;
+                    _allUsersList = List.from(state.users);
+                    if (_matchedUsersList.isEmpty) {
+                      useractivityBloc.add(FetchMatchedUsersEvent());
+                    }
                   }
                 }, builder: (context, state) {
                   if (state is FetchingAllUsersState ||
                       state is FetchingMatchedUsersState ||
-                      state is FetchedAllUsersState) {
+                      (state is FetchedAllUsersState && _matchedUsersList.isEmpty)) {
                     return Container(
                         height: 350.h,
                         child: Center(child: CircularProgressIndicator()));
