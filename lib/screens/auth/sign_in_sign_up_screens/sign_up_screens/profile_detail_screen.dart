@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
+import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/gender_selection_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';

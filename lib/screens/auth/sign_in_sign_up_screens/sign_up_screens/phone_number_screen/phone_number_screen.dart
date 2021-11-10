@@ -18,7 +18,6 @@ class PhoneNumberPage extends StatefulWidget {
 
   static const routeName = '/phoneNumberPage';
 
-
   @override
   _PhoneNumberPageState createState() => _PhoneNumberPageState();
 }
@@ -39,13 +38,15 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as PhoneNumberArguments;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as PhoneNumberArguments;
     TextEditingController phoneNumber = new TextEditingController();
+    int? _resendToken;
     void codeSent(String verificationId, int? forceResendingToken) {
       /* context.read<FirebaseauthBloc>().add(UserStateNone());
       phoneNumber.clear(); */
-      
-          changePageWithNamedRoutes(
+      _resendToken = forceResendingToken;
+      changePageWithNamedRoutes(
           context: context,
           routeName: OTPVerificationPage.routeName,
           arguments: OtpVerificationArguments(
@@ -71,7 +72,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding:  EdgeInsets.all(20.0.sp),
+            padding: EdgeInsets.all(20.0.sp),
             child: Column(
               children: [
                 CustomAppBar(
@@ -89,7 +90,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   ],
                 ),
                 Padding(
-                  padding:  EdgeInsets.only(right: 40.0.sp),
+                  padding: EdgeInsets.only(right: 40.0.sp),
                   child: Text(
                     'Please enter your valid phone number. We will send you a 6-digit code to verify your account.',
                     style: Theme.of(context).textTheme.subtitle1,
@@ -170,47 +171,38 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                           ],
                         ),
                       );
-                    }else if(state is OtpRetrievalTimedOut){
-                      showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text("Error"),
-                          content: Text("Otp retrieval timed out"),
-                          actions: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(ctx);
-                                },
-                                child: Text("Ok"))
-                          ],
-                        ),
-                      );
                     }
                   },
                   builder: (context, state) {
                     if (state is OtpSent) {
-                      return CircularProgressIndicator();
-                    } 
+                      return const CircularProgressIndicator();
+                    }
+                    if (state is OtpRetrievalTimedOut) {
+                      phoneNumber.text = phoneNumber.text;
+                    }
                     return CommonButton(
-                        text: 'Continue',
+                        text: state is OtpRetrievalTimedOut
+                            ? 'Resend OTP'
+                            : 'Continue',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                                  firebaseauthBloc.add(OtpSendRequested(
-                                  codeAutoRetrievalTimeout: (id) {
-                                    /* context
-                                        .read<FirebaseauthBloc>()
-                                        .add(OtpRetrievalTimeOut()); */
-                                  },
-                                  verificationFailed: (exception) {
-                                    firebaseauthBloc.add(
-                                        OtpRetrievalFailure(
-                                            errorMessage: exception.code));
-                                    //throw Exception(exception);
-                                  },
-                                  codeSent: codeSent,
-                                  phoneNumber:
-                                      "+${_selectedCountry.phoneCode + phoneNumber.text}",
-                                ));
+                            firebaseauthBloc.add(OtpSendRequested(
+                              codeAutoRetrievalTimeout: (id) {
+                                print("Timed out");
+                                if (mounted) {
+                                  firebaseauthBloc.add(OtpRetrievalTimeOut());
+                                }
+                              },
+                              verificationFailed: (exception) {
+                                firebaseauthBloc.add(OtpRetrievalFailure(
+                                    errorMessage: exception.code));
+                                //throw Exception(exception);
+                              },
+                              resendToken: _resendToken,
+                              codeSent: codeSent,
+                              phoneNumber:
+                                  "+${_selectedCountry.phoneCode + phoneNumber.text}",
+                            ));
                           }
                         });
                   },

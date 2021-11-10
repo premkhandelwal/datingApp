@@ -30,12 +30,14 @@ class OtpSendRequested extends FirebaseauthEvent {
   final PhoneVerificationFailed verificationFailed;
   final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout;
   final String phoneNumber;
+  final int? resendToken;
 
   OtpSendRequested({
     required this.codeSent,
     required this.verificationFailed,
     required this.codeAutoRetrievalTimeout,
     required this.phoneNumber,
+    this.resendToken
   });
 }
 
@@ -88,7 +90,7 @@ class SignedInforFirstTimeEvent extends FirebaseauthEvent {
   });
 }
 
-class LinkStatusEvent extends FirebaseauthEvent{
+class LinkStatusEvent extends FirebaseauthEvent {
   final String uid;
   LinkStatusEvent({
     required this.uid,

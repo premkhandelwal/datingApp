@@ -1,5 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
+import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/enable_notification_screen/enable_notification_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';

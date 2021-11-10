@@ -1,5 +1,5 @@
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/providers/firebaseAuthProvider.dart';
+import 'package:dating_app/logic/providers/firebaseauth_provider.dart';
 import 'package:dating_app/logic/repositories/baseRepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -20,9 +20,10 @@ class FirebaseAuthRepository extends BaseRepository {
           String phoneNumber,
           PhoneCodeSent codeSent,
           PhoneVerificationFailed verificationFailed,
-          PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout) =>
+          PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
+          [int? resendToken]) =>
       authprovider.sendOTP(
-          phoneNumber, codeSent, verificationFailed, codeAutoRetrievalTimeout);
+          phoneNumber, codeSent, verificationFailed, codeAutoRetrievalTimeout,resendToken);
   Future<AuthCredential?> verifyOTP(String smsCode, String verificationId) =>
       authprovider.verifyOTP(smsCode, verificationId);
   Future<bool> linkEmailWithPhoneNumber(String emailId, String password) async => await authprovider.linkEmailWithPhoneNumber(emailId, password);

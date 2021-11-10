@@ -19,7 +19,8 @@ abstract class BaseAuthProvider {
       String phoneNumber,
       PhoneCodeSent codeSent,
       PhoneVerificationFailed verificationFailed,
-      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout);
+      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
+      [int? resendToken]);
   Future<bool> linkEmailWithPhoneNumber(String emailId, String password);
   Future<bool> linkPhoneNumberWithEmail(String smsCode, String verificationId);
   Future<bool> sendverificationEmail();
@@ -59,7 +60,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   @override
   Future<bool> isdatalessUserDocExists(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await datalessCollection.doc("$uid").get() ;
+        await datalessCollection.doc(uid).get() ;
 
     if (doc.exists) {
       return true;
@@ -70,7 +71,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
   @override
   Future<bool> phoneEmailLinked(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
-        await datalessCollection.doc("$uid").get();
+        await datalessCollection.doc(uid).get();
 
     if (doc.data() != null) {
       if (doc.data()!["linkedEmailPhone"]) {
@@ -225,13 +226,14 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
       String phoneNumber,
       PhoneCodeSent codeSent,
       PhoneVerificationFailed verificationFailed,
-      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout) async {
+      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout, [int? resendToken]) async {
     try {
       _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
-          timeout: Duration(seconds: 60),
+          timeout: Duration(seconds: 30+2),
           verificationCompleted: (auth) {},
           verificationFailed: verificationFailed,
+          forceResendingToken: resendToken,
           codeSent: codeSent,
           codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {

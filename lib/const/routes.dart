@@ -27,7 +27,7 @@ Map<String, Widget Function(BuildContext context)> namedRoutes = {
   ChooseSignInSignUpPage.routeName: (context) => ChooseSignInSignUpPage(),
   LinkPhoneEmailScreen.routeName: (context) => LinkPhoneEmailScreen(),
   SignUpSignInSelectionScreen.routeName: (context) =>
-      SignUpSignInSelectionScreen(),
+      const SignUpSignInSelectionScreen(),
   GenderSelectionScreen.routeName: (context) => GenderSelectionScreen(),
   InterestedInScreen.routeName: (context) => InterestedInScreen(),
   ProfileDetailPage.routeName: (context) => ProfileDetailPage(),

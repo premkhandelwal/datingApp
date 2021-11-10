@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/firebaseAuthRepo.dart';
+import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
@@ -135,7 +135,7 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       OtpSendRequested event) async* {
     try {
       await firebaseAuthRepo.sendOTP(event.phoneNumber, event.codeSent,
-          event.verificationFailed, event.codeAutoRetrievalTimeout);
+          event.verificationFailed, event.codeAutoRetrievalTimeout, event.resendToken);
       yield OtpSent();
     } on Exception catch (e) {
       yield RequestedOperationFailed(errorMessage: e);
