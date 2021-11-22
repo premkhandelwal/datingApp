@@ -11,8 +11,6 @@ abstract class BaseAuthProvider {
   Future<String?> getCurrentUserUID();
   Future<CurrentUser> signUpWithEmailPassword(String emailId, String password);
   Future<CurrentUser?> signInWithEmailPassword(String emailId, String password);
-  //Future<String> signUpWithPhoneNumber(String phoneNumber);
-  // Future<String> signInWithPhoneNumber(String phoneNumber);
   Future<void> signOut();
   Future<AuthCredential?> verifyOTP(String smsCode, String verificationId);
   Future<void> sendOTP(
@@ -47,7 +45,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
       if (_firebaseAuth.currentUser?.uid != null) {
         collection
             .doc(_firebaseAuth.currentUser!.uid)
-            .update({"lastLogin": DateTime.now()});
+            .update({"lastLogin": DateTime.now()});//Log the last user login time in the database
       }
       return _firebaseAuth.currentUser?.uid;
     } on FirebaseAuthException catch (e) {
@@ -59,6 +57,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
 
   @override
   Future<bool> isdatalessUserDocExists(String uid) async {
+    // If user hasn't entered his/her profile details like name, profession, birthdate, etc, DataLessUsers document will exist in Firestore Database 
     DocumentSnapshot<Map<String, dynamic>> doc =
         await datalessCollection.doc(uid).get() ;
 
@@ -70,6 +69,7 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
 
   @override
   Future<bool> phoneEmailLinked(String uid) async {
+    // Check the value of linkedEmailPhone variable, which is present in the DataLessUser collection  
     DocumentSnapshot<Map<String, dynamic>> doc =
         await datalessCollection.doc(uid).get();
 
@@ -144,10 +144,11 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
           EmailAuthProvider.credential(email: emailId, password: password);
       UserCredential? userCredential =
           await _firebaseAuth.currentUser?.linkWithCredential(credential);
-      if (userCredential != null)
+      if (userCredential != null) {
         await datalessCollection.doc(userCredential.user!.uid).update(
           {"linkedEmailPhone": true},
         );
+      }
       return userCredential != null;
     } on FirebaseAuthException catch (error) {
       throw Exception(error.message);
@@ -164,28 +165,15 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
       UserCredential? userCredential =
           await _firebaseAuth.currentUser?.linkWithCredential(credential);
       if (userCredential != null) {
-        /* bool isNewUser = userCredential.additionalUserInfo!.isNewUser;
-        if (isNewUser) {
-          return true;
-        }
-        return false; */
         await datalessCollection
             .doc(userCredential.user!.uid)
             .update({"linkedEmailPhone": true});
       }
       return userCredential != null;
     } on FirebaseAuthException catch (e) {
-      print(e);
       throw Exception(e.message);
     }
   }
-
-  /* @override
-  Future<String> signUpWithPhoneNumber(String phoneNumber) async {
-    ConfirmationResult userCredential =
-        await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
-    return userCredential.verificationId;
-  } */
 
   @override
   Future<AuthCredential?> verifyOTP(
@@ -230,10 +218,10 @@ class FirebaseAuthProvider extends BaseAuthProvider with ChangeNotifier {
     try {
       _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
-          timeout: Duration(seconds: 30+2),
+          timeout: const Duration(seconds: 30),
           verificationCompleted: (auth) {},
           verificationFailed: verificationFailed,
-          forceResendingToken: resendToken,
+          forceResendingToken: resendToken,// Will be not null, only when resend OTP is requested by the user
           codeSent: codeSent,
           codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {

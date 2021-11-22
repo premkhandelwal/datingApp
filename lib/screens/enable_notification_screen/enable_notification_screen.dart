@@ -24,12 +24,10 @@ class EnableNotificationScreen extends StatelessWidget {
                 trailingWidget: Container(),
               ),
               SizedBox(height: 20.h),
-              Container(
-                child: Center(
-                    child: Image.asset(
-                        'assets/images/enable_notification/chat.png')),
-              ),
-              Spacer(),
+              Center(
+                  child: Image.asset(
+                      'assets/images/enable_notification/chat.png')),
+              const Spacer(),
               Column(
                 children: [
                   Text(
@@ -47,7 +45,7 @@ class EnableNotificationScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               CommonButton(
                   text: 'I want to be notified',
                   onPressed: () {

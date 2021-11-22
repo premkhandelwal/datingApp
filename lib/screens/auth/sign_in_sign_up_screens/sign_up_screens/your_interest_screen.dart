@@ -3,7 +3,7 @@ import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
-import 'package:dating_app/screens/search_friends_screen/search_friends_Screen.dart';
+import 'package:dating_app/screens/search_friends_screen/search_friend_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,7 +13,7 @@ import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class YourInterestScreen extends StatefulWidget {
-  YourInterestScreen({Key? key}) : super(key: key);
+  const YourInterestScreen({Key? key}) : super(key: key);
 
   static const routeName = '/yourInterestScreen';
 
@@ -22,7 +22,7 @@ class YourInterestScreen extends StatefulWidget {
 }
 
 class _YourInterestScreenState extends State<YourInterestScreen> {
-  List<String> _selectedInterests = [];
+  final List<String> _selectedInterests = [];
   late ProfiledetailsBloc profileDetailsBloc;
 
   @override
@@ -63,7 +63,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
               SizedBox(height: 20.h),
               Expanded(
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisSpacing: 1,
                       childAspectRatio: 3 / 1),
@@ -76,7 +76,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                             iconsList[index],
                             color: _selectedInterests.contains(interests[index])
                                 ? Colors.white
-                                : AppColor,
+                                : appColor,
                           ),
                           backgroundColor: Colors.white,
                           label: Row(children: [
@@ -96,7 +96,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                                   ? 5.sp
                                   : 0,
                           labelPadding: EdgeInsets.symmetric(vertical: 8.0.sp),
-                          selectedColor: AppColor,
+                          selectedColor: appColor,
                           selected:
                               _selectedInterests.contains(interests[index]),
                           onSelected: (selected) {
@@ -120,8 +120,8 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                     showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                              title: Text("Error"),
-                              content: Text(
+                              title: const Text("Error"),
+                              content: const Text(
                                 "Failed to add your information",
                               ),
                               actions: [
@@ -132,7 +132,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                                           routeName:
                                               ChooseSignInSignUpPage.routeName);
                                     },
-                                    child: Text("Ok"))
+                                    child: const Text("Ok"))
                               ],
                             ));
                   } else if (state is SubmittedInfoState) {
@@ -145,7 +145,7 @@ class _YourInterestScreenState extends State<YourInterestScreen> {
                 builder: (context, state) {
                   if (state is AddingInfoState ||
                       state is SubmittingInfoState) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                   return CommonButton(
                       text: 'Continue',

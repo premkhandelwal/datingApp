@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
+import 'package:dating_app/logic/repositories/firebase_auth_repo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/gender_selection_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -25,8 +25,8 @@ class ProfileDetailPage extends StatefulWidget {
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
   String _date = "Choose birthday date";
   DateTime _selectedDate = DateTime.now();
-  TextEditingController name = new TextEditingController();
-  TextEditingController profession = new TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController profession = TextEditingController();
   File? _image;
   late ProfiledetailsBloc profiledetailsBloc;
 
@@ -56,8 +56,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
         showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-                  title: Text('Confirm'),
-                  content: Text('Are you sure you want to sign out?'),
+                  title: const Text('Confirm'),
+                  content: const Text('Are you sure you want to sign out?'),
                   actions: [
                     ElevatedButton(
                         onPressed: () async {
@@ -67,12 +67,12 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                               context: context,
                               routeName: ChooseSignInSignUpPage.routeName);
                         },
-                        child: Text('Yes')),
+                        child: const Text('Yes')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.pop(ctx);
                         },
-                        child: Text('No')),
+                        child: const Text('No')),
                   ],
                 ));
 
@@ -144,13 +144,13 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           width: 50.w,
                           padding: EdgeInsets.all(5.sp),
                           decoration: BoxDecoration(
-                              color: AppColor,
+                              color: appColor,
                               borderRadius: BorderRadius.circular(15.0.r),
                               border:
                                   Border.all(color: Colors.white, width: 2.w)),
                           child: IconButton(
                             onPressed: _addImage,
-                            icon: Icon(Icons.camera_alt_rounded),
+                            icon: const Icon(Icons.camera_alt_rounded),
                             color: Colors.white,
                           ),
                         ),
@@ -160,6 +160,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       height: 50.h,
                     ),
                     TextFormField(
+                      //Full Name (Compulsory field)
                       validator: (val) {
                         if (val == null || val == "") {
                           return "This is a required field";
@@ -171,33 +172,36 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             gapPadding: 5.sp,
-                            borderSide: BorderSide(color: Colors.black45),
+                            borderSide: const BorderSide(color: Colors.black45),
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.r),
-                              borderSide: BorderSide(color: Colors.black45)),
+                              borderSide: const BorderSide(color: Colors.black45)),
                           labelText: "Full Name",
-                          labelStyle: TextStyle(color: Colors.black45)),
+                          labelStyle: const TextStyle(color: Colors.black45)),
                     ),
                     SizedBox(
                       height: 20.h,
                     ),
                     TextFormField(
+                      //Profession (Optional field)
                       controller: profession,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             gapPadding: 5.sp,
-                            borderSide: BorderSide(color: Colors.black45),
+                            borderSide: const BorderSide(color: Colors.black45),
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.r),
-                              borderSide: BorderSide(color: Colors.black45)),
+                              borderSide: const BorderSide(color: Colors.black45)),
                           labelText: "Profession",
-                          labelStyle: TextStyle(color: Colors.black45)),
+                          labelStyle: const TextStyle(color: Colors.black45)),
                     ),
                     SizedBox(height: 10.h),
                     ElevatedButton(
+                      /* Birth Date (Compulsory Field): User must be greater than 18 years, otherwise he/she will not be able to use the app. 
+                         We are checking the same when user submits the form */
                       style: ElevatedButton.styleFrom(
                         primary: Colors.red[50],
                         shape: RoundedRectangleBorder(
@@ -207,19 +211,19 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         DatePicker.showDatePicker(context,
                             theme: DatePickerTheme(
                               backgroundColor: Colors.white,
-                              cancelStyle: TextStyle(color: Colors.grey),
-                              doneStyle: TextStyle(color: AppColor),
-                              itemStyle: TextStyle(color: AppColor),
+                              cancelStyle: const TextStyle(color: Colors.grey),
+                              doneStyle: const TextStyle(color: appColor),
+                              itemStyle: const TextStyle(color: appColor),
                               containerHeight: 210.0.h,
                             ),
                             onCancel: () {
                               ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
+                                  .showSnackBar(const SnackBar(
                                 content: Text(
                                   'Please Select Your Birth Date',
                                 ),
                                 duration: Duration(seconds: 1),
-                                backgroundColor: AppColor,
+                                backgroundColor: appColor,
                               ));
                             },
                             showTitleActions: true,
@@ -239,9 +243,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           children: <Widget>[
                             Row(
                               children: <Widget>[
-                                Icon(
+                                const Icon(
                                   Icons.calendar_today,
-                                  color: AppColor,
+                                  color: appColor,
                                 ),
                                 SizedBox(
                                   width: 20.w,
@@ -249,7 +253,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 Text(
                                   " $_date",
                                   style: TextStyle(
-                                      color: AppColor, fontSize: 15.0.sp),
+                                      color: appColor, fontSize: 15.0.sp),
                                 )
                               ],
                             ),
@@ -266,7 +270,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                         bool isDateNotSelected = false;
                         if (_date == "Choose birthday date") {
                           isDateNotSelected = true;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text("Please select your birth date!")));
                         } else {
                           isDateNotSelected = false;
@@ -278,15 +282,15 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                             showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                      title: Text('Error'),
-                                      content: Text(
+                                      title: const Text('Error'),
+                                      content: const Text(
                                           'Sorry, you cannot sign up into the app. Minimum age to use the app is 18 years.'),
                                       actions: [
                                         ElevatedButton(
                                             onPressed: () {
                                               Navigator.pop(ctx);
                                             },
-                                            child: Text('Ok')),
+                                            child: const Text('Ok')),
                                       ],
                                     ));
                           } else {

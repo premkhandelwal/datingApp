@@ -15,9 +15,9 @@ import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
-import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
-import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
-import 'package:dating_app/logic/repositories/userActivityRepo.dart';
+import 'package:dating_app/logic/repositories/firebase_auth_repo.dart';
+import 'package:dating_app/logic/repositories/profile_details_repo.dart';
+import 'package:dating_app/logic/repositories/user_activity_repo.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -89,13 +89,13 @@ class MyApp extends StatelessWidget {
               create: (context) => ChatAudioPlayer()),
         ],
         child: ScreenUtilInit(
-            designSize: Size(393, 851), //Redmi Note 7
+            designSize: const Size(393, 851), //Redmi Note 7
             builder: () => MaterialApp(
                   initialRoute: HomePage.routeName,
                   routes: namedRoutes,
                   title: 'Dating App',
                   theme: ThemeData(
-                    primaryColor: AppColor,
+                    primaryColor: appColor,
                     scaffoldBackgroundColor: Colors.white,
                     textTheme: TextTheme(
                       bodyText1: TextStyle(
@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
                           TextStyle(fontSize: 18.sp, fontFamily: 'Modernist'),
                     ),
                     colorScheme: ColorScheme.fromSwatch()
-                        .copyWith(secondary: AppColor.withOpacity(0.1)),
+                        .copyWith(secondary: appColor.withOpacity(0.1)),
                   ),
 
                   // home: ChooseSignInSignUpPage(),

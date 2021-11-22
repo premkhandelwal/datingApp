@@ -1,5 +1,5 @@
 import 'package:dating_app/const/app_const.dart';
-import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
+import 'package:dating_app/logic/repositories/firebase_auth_repo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/enable_notification_screen/enable_notification_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -19,8 +19,8 @@ class SearchFriendsScreen extends StatelessWidget {
         showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-                  title: Text('Confirm'),
-                  content: Text('Are you sure you want to sign out?'),
+                  title: const Text('Confirm'),
+                  content: const Text('Are you sure you want to sign out?'),
                   actions: [
                     ElevatedButton(
                         onPressed: () async {
@@ -30,12 +30,12 @@ class SearchFriendsScreen extends StatelessWidget {
                               context: context,
                               routeName: ChooseSignInSignUpPage.routeName);
                         },
-                        child: Text('Yes')),
+                        child: const Text('Yes')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.pop(ctx);
                         },
-                        child: Text('No')),
+                        child: const Text('No')),
                   ],
                 ));
 
@@ -55,12 +55,10 @@ class SearchFriendsScreen extends StatelessWidget {
                   trailingWidget: Container(),
                 ),
                 SizedBox(height: 20.h),
-                Container(
-                  child: Center(
-                      child: Image.asset(
-                          'assets/images/search_friends/people.png')),
-                ),
-                Spacer(),
+                Center(
+                    child: Image.asset(
+                        'assets/images/search_friends/people.png')),
+                const Spacer(),
                 Column(
                   children: [
                     Text(
@@ -78,7 +76,7 @@ class SearchFriendsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 CommonButton(
                     text: 'Access to a contact list',
                     onPressed: () {

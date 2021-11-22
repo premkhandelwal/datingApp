@@ -40,7 +40,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as PhoneNumberArguments;
-    TextEditingController phoneNumber = new TextEditingController();
+    TextEditingController phoneNumber = TextEditingController();
     int? _resendToken;
     void codeSent(String verificationId, int? forceResendingToken) {
       /* context.read<FirebaseauthBloc>().add(UserStateNone());
@@ -55,17 +55,15 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
               issignUpWithEmail: false));
     }
 
-    Widget _buildDropdownItem(Country country) => Container(
-          child: Row(
-            children: <Widget>[
-              CountryPickerUtils.getDefaultFlagImage(country),
-              SizedBox(
-                width: 5.0.w,
-              ),
-              Text("+${country.phoneCode}(${country.isoCode})"),
-            ],
-          ),
-        );
+    Widget _buildDropdownItem(Country country) => Row(
+      children: <Widget>[
+        CountryPickerUtils.getDefaultFlagImage(country),
+        SizedBox(
+          width: 5.0.w,
+        ),
+        Text("+${country.phoneCode}(${country.isoCode})"),
+      ],
+    );
 
     return Form(
       key: _formKey,
@@ -143,7 +141,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                           maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           maxLength: 10,
                           keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             counterText: '',
                             border: InputBorder.none,
                             hintText: "Phone Number",
@@ -153,21 +151,21 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                     ],
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                   listener: (context, state) {
                     if (state is OtpRetrievalFailed) {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text("Error"),
-                          content: Text("${state.errorMessage}"),
+                          title: const Text("Error"),
+                          content: Text(state.errorMessage),
                           actions: [
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text("Ok"))
+                                child: const Text("Ok"))
                           ],
                         ),
                       );
@@ -188,7 +186,6 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                           if (_formKey.currentState!.validate()) {
                             firebaseauthBloc.add(OtpSendRequested(
                               codeAutoRetrievalTimeout: (id) {
-                                print("Timed out");
                                 if (mounted) {
                                   firebaseauthBloc.add(OtpRetrievalTimeOut());
                                 }

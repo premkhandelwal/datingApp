@@ -25,7 +25,7 @@ class SwipeableSingleCard extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
+        SizedBox(
           height: 700.h,
           width: 400.w,
           child: imageUrl != null
@@ -50,7 +50,7 @@ class SwipeableSingleCard extends StatelessWidget {
             height: 40.h,
             width: 100.w,
             decoration: BoxDecoration(
-                color: AppColor.withOpacity(0.9),
+                color: appColor.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(10.r)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +78,7 @@ class SwipeableSingleCard extends StatelessWidget {
               bottomLeft: Radius.circular(15.r),
               bottomRight: Radius.circular(15.r),
             ),
-            child: Container(
+            child: SizedBox(
               height: 70.h,
               width: 400.w,
               child: BackdropFilter(
@@ -95,7 +95,7 @@ class SwipeableSingleCard extends StatelessWidget {
                             .copyWith(color: Colors.black, fontSize: 24.sp),
                       ),
                       Text(
-                        '$personProfession',
+                        personProfession,
                         style: Theme.of(context)
                             .textTheme
                             .subtitle1!

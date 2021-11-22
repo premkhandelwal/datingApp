@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:dating_app/logic/data/appliedFilters.dart';
+import 'package:dating_app/logic/data/applied_filters.dart';
 import 'package:dating_app/logic/data/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,27 +13,27 @@ import 'package:path_provider/path_provider.dart';
 
 class SessionConstants {
   static AppliedFilters? appliedFilters = AppliedFilters(
-      maxAge: 0, minAge: 0, interestedIn: GENDER.NotSelected, thresholdDist: 0);
-  static AppliedFilters? defaultFilters;
-  static const sessionUid = "sessionUid";
+      maxAge: 0, minAge: 0, interestedIn: GENDER.notSelected, thresholdDist: 0);
+  static AppliedFilters? defaultFilters; // The default filters, as per the preferences laid out by the user while signing into the app
+  static const sessionUid = "sessionUid"; // This sessionUid can ONLY be used for SharedPreferneces Object
   static const sessionUsername = 'sessionUsername';
   static const sessionSignedInWith = "sessionSignedInWith";
 
-  static CurrentUser sessionUser = CurrentUser(); //[phone Number, email]
+  static CurrentUser sessionUser = CurrentUser(); //This is the user who is currently logged in, in the app
 
   static void clear() {
     sessionUser = CurrentUser();
     appliedFilters = AppliedFilters(
         maxAge: 0,
         minAge: 0,
-        interestedIn: GENDER.NotSelected,
+        interestedIn: GENDER.notSelected,
         thresholdDist: 0);
   }
   // statsic const profileImage
 }
 
-const Color AppColor = Color(0xffE94057);
-enum GENDER { NotSelected, male, female, other, both }
+const Color appColor = Color(0xffE94057);
+enum GENDER { notSelected, male, female, other, both }
 
 Future<File> urlToFile(String imageUrl, String? uid) async {
   try {
@@ -41,7 +41,7 @@ Future<File> urlToFile(String imageUrl, String? uid) async {
 // get temporary path from temporary directory.
     String tempPath = tempDir.path;
 // create a new file in temporary path with random file name.
-    File file = new File('$tempPath' + "$uid" + '.jpeg');
+    File file = File(tempPath + "$uid" + '.jpeg');
     Uri uri = Uri.parse(imageUrl);
     http.Response response = await http.get(uri);
     await file
@@ -70,6 +70,7 @@ bool isImage(String path) {
   return false;
 }
 
+//Calculate age from the birth date
 int calculateAge(DateTime birthDate) {
   DateTime currentDate = DateTime.now();
   int age = currentDate.year - birthDate.year;
@@ -86,7 +87,7 @@ int calculateAge(DateTime birthDate) {
   }
   return age;
 }
-
+// A function to convert latitude and longitude to actual named Location
 Future<String> coordinatestoLoc(Map<String, num> coordinates) async {
   if (coordinates["latitude"] != null && coordinates["longitude"] != null) {
     List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -101,7 +102,7 @@ Future<String> coordinatestoLoc(Map<String, num> coordinates) async {
   }
   return "";
 }
-
+// A function to calculate distance of SessionUser from the latitude and longitude values
 double? calculateDistance(Map<String, num> userLocation) {
   if (userLocation["latitude"] != null && userLocation["longitude"] != null) {
     double distanceInMeters = Geolocator.distanceBetween(
@@ -155,7 +156,7 @@ Future<void> imagePopUp(
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16.r),
               ),
-              content: Container(
+              content: SizedBox(
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.r),
@@ -192,7 +193,7 @@ Future<void> imagePopUp(
           ),
         );
       },
-      transitionDuration: Duration(milliseconds: 250),
+      transitionDuration: const Duration(milliseconds: 250),
       barrierDismissible: true,
       barrierLabel: '',
       context: context,

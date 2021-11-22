@@ -15,7 +15,7 @@ import 'package:dating_app/screens/home_page/widget/its_a_match_pop_up.dart';
 import 'package:dating_app/screens/home_page/widget/swipeable_card.dart';
 import 'package:dating_app/services/db_services.dart';
 import 'package:dating_app/services/notification_services.dart';
-import 'package:dating_app/widgets/progressIndicator.dart';
+import 'package:dating_app/widgets/progress_indicator.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -47,15 +47,16 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     _controller.forward(direction: SwipDirection.Right);
   }
 
-  TCardController _controller = TCardController();
+  final TCardController _controller = TCardController();
   int _index = 0;
   late UseractivityBloc useractivityBloc;
+  // UserActivityBloc is required when user likes, disLikes another user, to fetch location info, to fetch the details of the user,etc
   late FirebaseauthBloc firebaseAuthBloc;
+  // FirebaseauthBloc is required by signOut function in this page
 
   @override
   void initState() {
     super.initState();
-    filteredUsers = [];
     useractivityBloc = BlocProvider.of<UseractivityBloc>(context);
     firebaseAuthBloc = BlocProvider.of<FirebaseauthBloc>(context);
     useractivityBloc.add(FetchLocationInfoEvent());
@@ -127,11 +128,10 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     }
   }
 
-  List<CurrentUser> filteredUsers = [];
   List<CurrentUser> allUsers = [];
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();
+    final GlobalKey<_DiscoverScreenState> key1 = GlobalKey();//Scaffold key
 
     List<Widget> cards(List<CurrentUser> listUsers) {
       listUsers.sort((user1, user2) {
@@ -175,7 +175,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
               CustomAppBar(
                 context: context,
                 canGoBack: false,
-                centerWidget: Container(
+                centerWidget: SizedBox(
                   height: 50.h,
                   child: Column(
                     children: [
@@ -206,9 +206,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.filter_alt,
-                        color: AppColor,
+                        color: appColor,
                       ),
                       onPressed: () {
                         UseractivityState state =
@@ -218,7 +218,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                         if (state is FetchingAllUsersState ||
                             state is FetchingInfoState ||
                             state is ApplyingFilters) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text("Loading Data..Please wait")));
                         } else {
                           showModalBottomSheet(
@@ -226,15 +226,15 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                               isScrollControlled: true,
                               context: context,
                               backgroundColor: Colors.white.withOpacity(0),
-                              builder: (ctx) => FilterModalBottomSheet());
+                              builder: (ctx) => const FilterModalBottomSheet());
                         }
                       },
                     ),
                     Flexible(
                       child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.logout_outlined,
-                            color: AppColor,
+                            color: appColor,
                           ),
                           onPressed: () {
                             firebaseAuthBloc.add(SignOutRequested());
@@ -261,53 +261,45 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                     } else if (state is FetchedAllUserswithFiltersState) {
                       allUsers = List.from(state.users);
                     } else if (state is AppliedFiltersState) {
-                      if (filteredUsers == []) {
-                        filteredUsers = new List.from(allUsers);
-                      }
                       allUsers = List.from(state.usersList);
                     }
                   }, builder: (context, state) {
-                    print(state);
                     if (state is FailedToFetchAllUsersState) {
-                      return Container(
+                      return SizedBox(
                           width: 450.w,
                           height: 500.h,
-                          child: Center(child: Text("Failed to fetch users")));
+                          child: const Center(child: Text("Failed to fetch users")));
                     } else if (state is FetchingAllUsersState) {
-                      return Container(
+                      return SizedBox(
                         width: 450.w,
                         height: 500.h,
-                        child: Center(child: CommonIndicator(progressText: "Fetching All Users...",mainAxisAlignment: MainAxisAlignment.center,)),
+                        child: const Center(child: CommonIndicator(progressText: "Fetching All Users...",mainAxisAlignment: MainAxisAlignment.center,)),
                       );
                     } else if (state is FetchingInfoState) {
-                      return Container(
+                      return SizedBox(
                         width: 450.w,
                         height: 500.h,
-                        child: Center(child: CommonIndicator(progressText: "Fetching Your Info...",mainAxisAlignment: MainAxisAlignment.center,)),
+                        child: const Center(child: CommonIndicator(progressText: "Fetching Your Info...",mainAxisAlignment: MainAxisAlignment.center,)),
                       );
                     } else if (state is ApplyingFilters) {
-                      return Container(
+                      return SizedBox(
                         width: 450.w,
                         height: 500.h,
-                        child: Center(child: CommonIndicator(progressText: "Applying Filters",mainAxisAlignment: MainAxisAlignment.center,)),
+                        child: const Center(child: CommonIndicator(progressText: "Applying Filters",mainAxisAlignment: MainAxisAlignment.center,)),
                       );
                     } else if (allUsers.isEmpty ||
                         (state is AppliedFiltersState && allUsers.isEmpty)) {
-                      return Container(
+                      return SizedBox(
                           width: 450.w,
                           height: 500.h,
-                          child: Center(child: Text("No users found")));
+                          child: const Center(child: Text("No users found")));
                     }
                     return Column(
                       children: [
                         TCard(
                           size: Size(450.w, 0.6.sh),
                           slideSpeed: 10,
-                          cards: cards(
-                              /* state is AppliedFiltersState
-                                    ? filteredUsers
-                                    :  */
-                              allUsers),
+                          cards: cards(allUsers),
                           controller: _controller,
                           onForward: (index, info) async {
                             if (info.direction == SwipDirection.Right) {
@@ -337,10 +329,10 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                   swipeLeft();
                                 },
                                 iconSize: 30.sp,
-                                color: Color(0xffF27121),
-                                icon: Icon(Icons.close)),
+                                color: const Color(0xffF27121),
+                                icon: const Icon(Icons.close)),
                             CircleAvatar(
-                              backgroundColor: AppColor,
+                              backgroundColor: appColor,
                               radius: 0.045.sh,
                               child: Center(
                                 child: IconButton(
@@ -349,7 +341,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                     },
                                     iconSize: 0.05.sh,
                                     color: Colors.white,
-                                    icon: Icon(Icons.favorite)),
+                                    icon: const Icon(Icons.favorite)),
                               ),
                             ),
                             IconButton(
@@ -357,8 +349,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                   _controller.back();
                                 },
                                 iconSize: 30.sp,
-                                color: Color(0xffF27121),
-                                icon: Icon(Icons.restore)),
+                                color: const Color(0xffF27121),
+                                icon: const Icon(Icons.restore)),
                           ],
                         )
                       ],

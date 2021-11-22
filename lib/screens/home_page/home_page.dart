@@ -23,7 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  PersistentTabController _controller =
+  final PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
   late FirebaseauthBloc firebaseauthBloc;
 
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
           firebaseauthBloc.add(UserStateRequested());
           return Container();
         } else if (state is UserLoggedOut) {
-          return ChooseSignInSignUpPage();
+          return const ChooseSignInSignUpPage();
         }
         return persistentTabView(context);
       },
@@ -70,22 +70,22 @@ class _HomePageState extends State<HomePage> {
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
-      backgroundColor: Color(0xffF3F3F3),
+      backgroundColor: const Color(0xffF3F3F3),
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
       hideNavigationBarWhenKeyboardShows: true,
       decoration: NavBarDecoration(
         borderRadius: BorderRadius.circular(10.0.r),
-        colorBehindNavBar: Color(0xffF3F3F3),
+        colorBehindNavBar: const Color(0xffF3F3F3),
       ),
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties(
+      itemAnimationProperties: const ItemAnimationProperties(
         duration: Duration(milliseconds: 200),
         curve: Curves.bounceInOut,
       ),
-      screenTransitionAnimation: ScreenTransitionAnimation(
+      screenTransitionAnimation: const ScreenTransitionAnimation(
         animateTabTransition: true,
         curve: Curves.linearToEaseOut,
         duration: Duration(milliseconds: 200),
@@ -96,33 +96,33 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildScreens() {
     return [
-      DiscoverScreen(),
-      MatchesScreen(),
-      ConversationsScreen(),
-      ProfilePage()
+      const DiscoverScreen(),
+      const MatchesScreen(),
+      const ConversationsScreen(),
+      const ProfilePage()
     ];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.recent_actors),
+        icon: const Icon(Icons.recent_actors),
         title: ("Discover"),
         activeColorPrimary: Colors.grey,
-        activeColorSecondary: AppColor,
+        activeColorSecondary: appColor,
       ),
       PersistentBottomNavBarItem(
         icon: Stack(
           clipBehavior: Clip.none,
           children: [
-            Icon(Icons.favorite_border),
+            const Icon(Icons.favorite_border),
             if (Random().nextBool())
               Positioned(
                 top: -8.sp,
                 right: -10.sp,
                 child: CircleAvatar(
                   radius: 12.r,
-                  backgroundColor: AppColor,
+                  backgroundColor: appColor,
                   child: Text(
                     '5',
                     style: TextStyle(
@@ -136,20 +136,20 @@ class _HomePageState extends State<HomePage> {
         ),
         title: ("Matches"),
         activeColorPrimary: Colors.grey,
-        activeColorSecondary: AppColor,
+        activeColorSecondary: appColor,
       ),
       PersistentBottomNavBarItem(
         icon: Stack(
           clipBehavior: Clip.none,
           children: [
-            Icon(Icons.chat),
+            const Icon(Icons.chat),
             if (Random().nextBool())
               Positioned(
                 top: -8.sp,
                 right: -10.sp,
                 child: CircleAvatar(
                   radius: 12.r,
-                  backgroundColor: AppColor,
+                  backgroundColor: appColor,
                   child: Text(
                     '5',
                     style: TextStyle(
@@ -163,13 +163,13 @@ class _HomePageState extends State<HomePage> {
         ),
         title: ("Chat"),
         activeColorPrimary: Colors.grey,
-        activeColorSecondary: AppColor,
+        activeColorSecondary: appColor,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.person),
+        icon: const Icon(Icons.person),
         title: ("Profile"),
         activeColorPrimary: Colors.grey,
-        activeColorSecondary: AppColor,
+        activeColorSecondary: appColor,
       ),
     ];
   }

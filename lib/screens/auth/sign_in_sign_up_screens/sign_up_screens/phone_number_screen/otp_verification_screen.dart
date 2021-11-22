@@ -6,7 +6,7 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/link_phoneemail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -21,14 +21,14 @@ class OTPVerificationPage extends StatefulWidget {
 
   // This variable will be true when user has signed with email and password and we want him to add his phone number as well as the secondary login
 
-  OTPVerificationPage({Key? key}) : super(key: key);
+  const OTPVerificationPage({Key? key}) : super(key: key);
 
   @override
   _OTPVerificationPageState createState() => _OTPVerificationPageState();
 }
 
 class _OTPVerificationPageState extends State<OTPVerificationPage> {
-  TextEditingController otpController = new TextEditingController();
+  TextEditingController otpController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late FirebaseauthBloc firebaseauthBloc;
 
@@ -156,11 +156,11 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                             lineHeight: 1.h,
                             hintTextStyle:
                                 TextStyle(fontSize: 20.sp, color: Colors.grey),
-                            bgColorBuilder: const FixedColorBuilder(AppColor),
+                            bgColorBuilder: const FixedColorBuilder(appColor),
                             textStyle:
                                 TextStyle(fontSize: 20.sp, color: Colors.white),
                             gapSpace: 10.sp,
-                            colorBuilder: const FixedColorBuilder(AppColor),
+                            colorBuilder: const FixedColorBuilder(appColor),
                           ),
                           codeLength: 6,
                           // controller: otpController,
@@ -242,7 +242,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                                         routeName:
                                             ChooseSignInSignUpPage.routeName);
                                   },
-                                  child: Text("Ok"))
+                                  child: const Text("Ok"))
                             ],
                           ),
                         );
@@ -251,14 +251,14 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                                title: Text("Error"),
-                                content: Text("Failed to verify otp!"),
+                                title: const Text("Error"),
+                                content: const Text("Failed to verify otp!"),
                                 actions: [
                                   ElevatedButton(
                                       onPressed: () {
                                         Navigator.pop(ctx);
                                       },
-                                      child: Text("Ok"))
+                                      child: const Text("Ok"))
                                 ],
                               ));
                     }

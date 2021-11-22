@@ -45,12 +45,12 @@ class CurrentUser {
   factory CurrentUser.fromMap(Map<String, dynamic> map) {
     // int interestedIn = map['interestedin'];
     return CurrentUser(
-      uid: map['uid'] != null ? map['uid'] : null,
-      name: map['name'] != null ? map['name'] : null,
-      profession: map['profession'] != null ? map['profession'] : null,
-      bio: map['bio'] != null ? map['bio'] : null,
-      age: map['age'] != null ? map['age'] : null,
-      birthDate: map['birthDate'] != null ? map['birthDate'].toDate() : null,
+      uid: map['uid'],
+      name: map['name'],
+      profession: map['profession'],
+      bio: map['bio'],
+      age: map['age'],
+      birthDate: map['birthDate']?.toDate() ,
       gender: map["gender"] == "Male"
           ? GENDER.male
           : map["gender"] == "Female"
@@ -62,11 +62,11 @@ class CurrentUser {
               : map["interestedIn"] == "Female"
                   ? GENDER.female
                   : GENDER.other
-          : GENDER.NotSelected,
+          : GENDER.notSelected,
       // interestedin: INTERESTEDIN.values[interestedIn],
       location: map['location'] ?? map['location'],
       imageDownloadUrl:
-          map['profileImageUrl'] != null ? map['profileImageUrl'] : null,
+          map['profileImageUrl'],
       interests:
           map['interests'] != null ? List<String>.from(map['interests']) : [],
       locationCoordinates: map['locationCoordinates'] != null

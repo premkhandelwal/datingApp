@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/providers/profileDetailsProvider.dart';
-import 'package:dating_app/logic/providers/userActivityProvider.dart';
-import 'package:dating_app/logic/repositories/baseRepo.dart';
+import 'package:dating_app/logic/providers/profile_details_provider.dart';
+import 'package:dating_app/logic/providers/user_activity_provider.dart';
+import 'package:dating_app/logic/repositories/base_repo.dart';
 
 class ProfileDetailsRepository extends BaseRepository {
   final ProfileDetailsProvider profileDetailsProvider =

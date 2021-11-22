@@ -10,7 +10,7 @@ class CommonIndicator extends StatelessWidget {
     return Column(
       mainAxisAlignment: mainAxisAlignment,
       children: <Widget>[
-        new CircularProgressIndicator(),
+        const CircularProgressIndicator(),
         Text(
           progressText,
           textAlign: TextAlign.end,

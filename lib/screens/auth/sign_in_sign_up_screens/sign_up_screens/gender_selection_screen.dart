@@ -1,7 +1,7 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/profileDetails/profiledetails_bloc.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/interestedIn.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/interested_in_screen.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:dating_app/widgets/topbar_signup_signin.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GenderSelectionScreen extends StatefulWidget {
-  GenderSelectionScreen({Key? key}) : super(key: key);
+  const GenderSelectionScreen({Key? key}) : super(key: key);
   static const routeName = '/genderSelectionScreen';
 
   @override
@@ -17,7 +17,7 @@ class GenderSelectionScreen extends StatefulWidget {
 }
 
 class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
-  var _selected = GENDER.NotSelected;
+  var _selected = GENDER.notSelected;
   late ProfiledetailsBloc profiledetailsBloc;
 
   @override
@@ -41,8 +41,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                 trailingWidget: Container(),
               ),
               SizedBox(height: 20.h),
-              Text('I am a '),
-              Spacer(),
+              const Text('I am a '),
+              const Spacer(),
               Column(
                 children: [
                   GenderSelectionTile(
@@ -74,14 +74,14 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               CommonButton(
                   text: 'Continue',
-                  onPressed: _selected == GENDER.NotSelected
+                  onPressed: _selected == GENDER.notSelected
                       ? () {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text('Please select your gender'),
-                            backgroundColor: AppColor,
+                            backgroundColor: appColor,
                           ));
                         }
                       : () {
@@ -122,7 +122,7 @@ class GenderSelectionTile extends StatelessWidget {
           border: Border.all(
               width: 2.w,
               color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0)),
-          color: AppColor.withOpacity(isThisTile ? 1 : 0),
+          color: appColor.withOpacity(isThisTile ? 1 : 0),
           borderRadius: BorderRadius.circular(15.r)),
       child: InkWell(
         onTap: onPress,

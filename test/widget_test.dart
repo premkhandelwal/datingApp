@@ -5,9 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
-import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
-import 'package:dating_app/logic/repositories/userActivityRepo.dart';
+import 'package:dating_app/logic/repositories/firebase_auth_repo.dart';
+import 'package:dating_app/logic/repositories/profile_details_repo.dart';
+import 'package:dating_app/logic/repositories/user_activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

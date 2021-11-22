@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/userActivityRepo.dart';
+import 'package:dating_app/logic/repositories/user_activity_repo.dart';
 
 part 'useractivity_event.dart';
 part 'useractivity_state.dart';
@@ -142,7 +142,9 @@ class UseractivityBloc extends Bloc<UseractivityEvent, UseractivityState> {
     try {
       userActivityRepository.updateLocationInfo();
       yield UpdatedLocInfoState();
-    } catch (e) {}
+    } catch (e) {
+      yield FailedUpdateLocInfoState();
+    }
   }
 
   Stream<UseractivityState> _mapFilterEventtoState(

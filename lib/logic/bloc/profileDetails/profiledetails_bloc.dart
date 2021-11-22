@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/profileDetailsRepo.dart';
+import 'package:dating_app/logic/repositories/profile_details_repo.dart';
 
 part 'profiledetails_event.dart';
 part 'profiledetails_state.dart';

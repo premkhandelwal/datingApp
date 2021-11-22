@@ -1,7 +1,7 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/providers/userActivityProvider.dart';
-import 'package:dating_app/logic/repositories/baseRepo.dart';
+import 'package:dating_app/logic/providers/user_activity_provider.dart';
+import 'package:dating_app/logic/repositories/base_repo.dart';
 
 class UserActivityRepository extends BaseRepository {
   UserActivityProvider activityProvider = UserActivityProvider();

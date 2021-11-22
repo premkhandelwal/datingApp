@@ -73,9 +73,9 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         },
         builder: (context, state) {
           if (state is FetchingAllUsersState) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }else if(state is FailedToFetchAllUsersState){
-            return Center(
+            return const Center(
               child: Text("No users found"),
             );
           }
@@ -95,16 +95,14 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                             CustomAppBar(
                               context: context,
                               canGoBack: false,
-                              centerWidget: Container(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Messages',
-                                      style:
-                                          Theme.of(context).textTheme.bodyText2,
-                                    ),
-                                  ],
-                                ),
+                              centerWidget: Column(
+                                children: [
+                                  Text(
+                                    'Messages',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
                               ),
                               trailingWidget: IconsOutlinedButton(
                                   icon: Icons.tune,
@@ -206,7 +204,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                                                           : FontWeight.normal),
                                             ),
                                           ),
-                                          Divider(
+                                          const Divider(
                                             thickness: 1,
                                           ),
                                         ],

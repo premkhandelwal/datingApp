@@ -5,7 +5,7 @@ import 'package:dating_app/arguments/link_phone_email_arguments.dart';
 import 'package:dating_app/arguments/otp_verification_arguments.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
-import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
+import 'package:dating_app/logic/repositories/firebase_auth_repo.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/phone_number_screen/otp_verification_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
@@ -20,7 +20,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class LinkPhoneEmailScreen extends StatefulWidget {
   static const routeName = '/linkPhoneEmailScreen';
 
-  LinkPhoneEmailScreen({Key? key}) : super(key: key);
+  const LinkPhoneEmailScreen({Key? key}) : super(key: key);
 
   @override
   _LinkPhoneEmailScreenState createState() => _LinkPhoneEmailScreenState();
@@ -28,11 +28,11 @@ class LinkPhoneEmailScreen extends StatefulWidget {
 
 class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
   late FirebaseauthBloc firebaseauthBloc;
-  final TextEditingController emailIdController = new TextEditingController();
+  final TextEditingController emailIdController = TextEditingController();
 
-  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final TextEditingController phoneNumber = new TextEditingController();
+  final TextEditingController phoneNumber = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -58,25 +58,23 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
               issignUpWithEmail: true));
     }
 
-    Widget _buildDropdownItem(Country country) => Container(
-          child: Row(
-            children: <Widget>[
-              CountryPickerUtils.getDefaultFlagImage(country),
-              SizedBox(
-                width: 5.0.w,
-              ),
-              Text("+${country.phoneCode}(${country.isoCode})"),
-            ],
-          ),
-        );
+    Widget _buildDropdownItem(Country country) => Row(
+      children: <Widget>[
+        CountryPickerUtils.getDefaultFlagImage(country),
+        SizedBox(
+          width: 5.0.w,
+        ),
+        Text("+${country.phoneCode}(${country.isoCode})"),
+      ],
+    );
 
     return WillPopScope(
       onWillPop: () async {
         showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-                  title: Text('Confirm'),
-                  content: Text('Are you sure you want to sign out?'),
+                  title: const Text('Confirm'),
+                  content: const Text('Are you sure you want to sign out?'),
                   actions: [
                     ElevatedButton(
                         onPressed: () async {
@@ -86,12 +84,12 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                               context: context,
                               routeName: ChooseSignInSignUpPage.routeName);
                         },
-                        child: Text('Yes')),
+                        child: const Text('Yes')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.pop(ctx);
                         },
-                        child: Text('No')),
+                        child: const Text('No')),
                   ],
                 ));
 
@@ -168,7 +166,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                               keyboardType: args.connectWith == "phone"
                                   ? TextInputType.phone
                                   : TextInputType.emailAddress,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintStyle: TextStyle(
                                     fontFamily: 'Modernist', fontSize: 20),
                                 counterText: '',
@@ -182,7 +180,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                               validator: (val) {
                                 String pattern =
                                     r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-                                RegExp regex = new RegExp(pattern);
+                                RegExp regex = RegExp(pattern);
                                 if (val == null) {
                                   return "Password cannot be empty";
                                 } else if (!regex.hasMatch(val)) {
@@ -256,14 +254,14 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                             ],
                           ),
                         ),
-                  Spacer(),
+                  const Spacer(),
                   BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                     listener: (context, state) {
                       if (state is FailedtoLinkedPhoneNumberEmail) {
                         showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                                  title: Text("Error"),
+                                  title: const Text("Error"),
                                   content: Text(
                                     "${state.errorMessage}",
                                   ),
@@ -276,7 +274,7 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                               routeName:
                                                   ProfileDetailPage.routeName);
                                         },
-                                        child: Text("Ok"))
+                                        child: const Text("Ok"))
                                   ],
                                 ));
                       } else if (state is LinkedEmailWithPhoneNumber ||
@@ -284,8 +282,8 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                         showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                                  title: Text("Message"),
-                                  content: Text(
+                                  title: const Text("Message"),
+                                  content: const Text(
                                     "Successfully Linked Email and Phone Number",
                                   ),
                                   actions: [
@@ -297,14 +295,14 @@ class _LinkPhoneEmailScreenState extends State<LinkPhoneEmailScreen> {
                                               routeName:
                                                   ProfileDetailPage.routeName);
                                         },
-                                        child: Text("Ok"))
+                                        child: const Text("Ok"))
                                   ],
                                 ));
                       }
                     },
                     builder: (context, state) {
                       if (state is OtpSent || state is OperationInProgress) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                       return CommonButton(
                           text: 'Continue',

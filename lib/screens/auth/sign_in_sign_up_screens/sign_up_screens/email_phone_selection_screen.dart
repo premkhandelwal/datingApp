@@ -27,8 +27,8 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 CircleAvatar(
-                  child: Text('LOGO HERE'),
-                  backgroundColor: AppColor,
+                  child: const Text('LOGO HERE'),
+                  backgroundColor: appColor,
                   radius: 50.r,
                 ),
               ],
@@ -69,7 +69,7 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!
-                        .copyWith(color: AppColor),
+                        .copyWith(color: appColor),
                   ),
                 ),
               ],
@@ -82,14 +82,14 @@ class SignUpSignInSelectionScreen extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!
-                      .copyWith(color: AppColor),
+                      .copyWith(color: appColor),
                 ),
                 Text(
                   'Privacy Policy',
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!
-                      .copyWith(color: AppColor),
+                      .copyWith(color: appColor),
                 ),
               ],
             )

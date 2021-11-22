@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InterestedInScreen extends StatefulWidget {
-  InterestedInScreen({Key? key}) : super(key: key);
+  const InterestedInScreen({Key? key}) : super(key: key);
   static const routeName = '/interestedInScreen';
 
   @override
@@ -17,7 +17,7 @@ class InterestedInScreen extends StatefulWidget {
 }
 
 class _InterestedInScreenState extends State<InterestedInScreen> {
-  var _selected = GENDER.NotSelected;
+  var _selected = GENDER.notSelected;
   late ProfiledetailsBloc profiledetailsBloc;
 
   @override
@@ -41,8 +41,8 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
                 trailingWidget: Container(),
               ),
               SizedBox(height: 20.h),
-              Text('Interested In'),
-              Spacer(),
+              const Text('Interested In'),
+              const Spacer(),
               Column(
                 children: [
                   InterestedInTile(
@@ -74,14 +74,14 @@ class _InterestedInScreenState extends State<InterestedInScreen> {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               CommonButton(
                   text: 'Continue',
-                  onPressed: _selected == GENDER.NotSelected
+                  onPressed: _selected == GENDER.notSelected
                       ? () {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text('Please select interested gender'),
-                            backgroundColor: AppColor,
+                            backgroundColor: appColor,
                           ));
                         }
                       : () {
@@ -121,7 +121,7 @@ class InterestedInTile extends StatelessWidget {
           border: Border.all(
               width: 2.w,
               color: !isThisTile ? Colors.grey : Colors.grey.withOpacity(0)),
-          color: AppColor.withOpacity(isThisTile ? 1 : 0),
+          color: appColor.withOpacity(isThisTile ? 1 : 0),
           borderRadius: BorderRadius.circular(15.r)),
       child: InkWell(
         onTap: onPress,

@@ -101,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     try {
                       await db.updateSeenStatus(args.user!.uid!);
                     } on Exception catch (e) {
-                      print("E: ");
+                      print("E: $e");
                     }
                     return true;
                   } else {
@@ -134,7 +134,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   try {
                                     await db.updateSeenStatus(args.user!.uid!);
                                   } on Exception catch (e) {
-                                    print("EXCEPTION: ");
+                                    print("EXCEPTION: $e");
                                   }
                                 },
                                 icon: const Icon(

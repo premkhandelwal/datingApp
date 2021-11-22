@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomAppBar extends StatelessWidget {
   final bool canGoBack;
   final Widget centerWidget, trailingWidget;
-  CustomAppBar({
+  const CustomAppBar({
     Key? key,
     required BuildContext context,
     this.canGoBack = true,
@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (canGoBack)
-          Container(
+          SizedBox(
               height: 62.h,
               width: 62.w,
               child: IconsOutlinedButton(
@@ -29,7 +29,7 @@ class CustomAppBar extends StatelessWidget {
                     Navigator.of(context).pop();
                   })),
         centerWidget,
-        Container(height: 62.h, width: 100.w, child: trailingWidget)
+        SizedBox(height: 62.h, width: 100.w, child: trailingWidget)
       ],
     );
   }

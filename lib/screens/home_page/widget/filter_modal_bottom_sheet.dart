@@ -1,14 +1,14 @@
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/dummy_content/dummy_content.dart';
 import 'package:dating_app/logic/bloc/userActivity/useractivity_bloc.dart';
-import 'package:dating_app/logic/data/appliedFilters.dart';
+import 'package:dating_app/logic/data/applied_filters.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FilterModalBottomSheet extends StatefulWidget {
-  FilterModalBottomSheet({
+  const FilterModalBottomSheet({
     Key? key,
   }) : super(key: key);
   @override
@@ -20,7 +20,7 @@ double distance = 5;
 
 class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
   String dropdownValue = location[0];
-  var _selectedGender = GENDER.NotSelected;
+  var _selectedGender = GENDER.notSelected;
   late UseractivityBloc useractivityBloc;
   /*  void clearFilter() {
     _selectedGender = GENDER.NotSelected;
@@ -86,14 +86,14 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                       onTap: () {
                         useractivityBloc.add(ClearedFiltersEvent());
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: 50.w,
                         child: Text(
                           'Clear',
                           style: Theme.of(context)
                               .textTheme
                               .subtitle2!
-                              .copyWith(color: AppColor),
+                              .copyWith(color: appColor),
                         ),
                       ),
                     ),
@@ -101,7 +101,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 ),
                 SizedBox(height: 20.h),
                 Row(
-                  children: [
+                  children: const [
                     SectionHeading(
                       text: 'Interested in',
                     ),
@@ -133,10 +133,10 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                   : 90.w,
                               decoration: BoxDecoration(
                                   color: _selectedGender == GENDER.female
-                                      ? AppColor
+                                      ? appColor
                                       : Colors.white),
                               padding: EdgeInsets.all(20.sp),
-                              duration: Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 200),
                               child: Center(
                                 child: Text(
                                   'Girls',
@@ -167,10 +167,10 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                 _selectedGender == GENDER.male ? 120.w : 90.w,
                             decoration: BoxDecoration(
                                 color: _selectedGender == GENDER.male
-                                    ? AppColor
+                                    ? appColor
                                     : Colors.white),
                             padding: EdgeInsets.all(20.sp),
-                            duration: Duration(milliseconds: 200),
+                            duration: const Duration(milliseconds: 200),
                             child: Center(
                               child: Text(
                                 'Boys',
@@ -204,10 +204,10 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                                   : 90.w,
                               decoration: BoxDecoration(
                                   color: _selectedGender == GENDER.both
-                                      ? AppColor
+                                      ? appColor
                                       : Colors.white),
                               padding: EdgeInsets.all(20.sp),
-                              duration: Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 200),
                               child: Center(
                                 child: Text(
                                   'Both',
@@ -253,7 +253,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SectionHeading(text: 'Distance'),
+                    const SectionHeading(text: 'Distance'),
                     Text(
                       distance < 80
                           ? '${(distance.toStringAsFixed(1))}km'
@@ -268,7 +268,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     divisions: 80,
                     max: 90,
                     inactiveColor: Colors.grey,
-                    activeColor: AppColor,
+                    activeColor: appColor,
                     onChanged: (val) {
                       setState(() {
                         /*  SessionConstants.appliedFilters[
@@ -280,7 +280,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SectionHeading(text: 'Age'),
+                    const SectionHeading(text: 'Age'),
                     Text(
                       '${(ageRange.start.toStringAsFixed(0))} - ${(ageRange.end.toStringAsFixed(0))}',
                       style: Theme.of(context).textTheme.subtitle1,
@@ -292,7 +292,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                     min: 18,
                     max: 60,
                     inactiveColor: Colors.grey,
-                    activeColor: AppColor,
+                    activeColor: appColor,
                     onChanged: (val) {
                       setState(() {
                         /*   SessionConstants.appliedFilters[AgeFilterChangedEvent(
@@ -301,7 +301,7 @@ class _FilterModalBottomSheetState extends State<FilterModalBottomSheet> {
                         ageRange = val;
                       });
                     }),
-                Spacer(),
+                const Spacer(),
                 CommonButton(
                     text: 'Continue',
                     onPressed: () {

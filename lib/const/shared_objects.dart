@@ -14,14 +14,14 @@ class CachedSharedPreference {
     SessionConstants.sessionSignedInWith,
   };
 
-  static Map<String, dynamic> map = Map();
+  static Map<String, dynamic> map = {};
 
   static Future<CachedSharedPreference?> getInstance() async {
     sharedPreferences = await SharedPreferences.getInstance();
     for (String key in sessionKeyList) {
       map[key] = sharedPreferences?.get(key);
     }
-    if (instance == null) instance = CachedSharedPreference();
+    instance ??= CachedSharedPreference();
     return instance;
   }
 
@@ -54,7 +54,7 @@ class CachedSharedPreference {
   Future<void> clearAll() async {
     await sharedPreferences?.clear();
     SessionConstants.clear();
-    map = Map();
+    map = {};
   }
 
   Future<void> clearSession() async {

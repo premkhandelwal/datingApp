@@ -22,7 +22,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
 
   final _controller = ScrollController();
   void _animateToIndex(i) => _controller.animateTo(55.0 * i,
-      duration: Duration(milliseconds: 350), curve: Curves.fastOutSlowIn);
+      duration: const Duration(milliseconds: 350), curve: Curves.fastOutSlowIn);
   final CarouselController buttonCarouselController = CarouselController();
 
   @override
@@ -74,7 +74,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
                 );
               }).toList(),
             ),
-            Container(
+            SizedBox(
               width: 300.w,
               height: 55.h,
               child: ListView(

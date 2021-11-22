@@ -4,7 +4,7 @@ import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/bloc/firebaseAuth/firebaseauth_bloc.dart';
 import 'package:dating_app/screens/auth/choose_sign_in_sign_up_page.dart';
-import 'package:dating_app/screens/auth/sign_in_sign_up_screens/linkPhoneandEmail_screen.dart';
+import 'package:dating_app/screens/auth/sign_in_sign_up_screens/link_phoneemail_screen.dart';
 import 'package:dating_app/screens/auth/sign_in_sign_up_screens/sign_up_screens/profile_detail_screen.dart';
 import 'package:dating_app/screens/home_page/home_page.dart';
 import 'package:dating_app/widgets/buttons/common_button.dart';
@@ -24,9 +24,9 @@ class EmailPasswordScreen extends StatefulWidget {
 
 class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailIdController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  TextEditingController confirmpasswordController = new TextEditingController();
+  TextEditingController emailIdController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmpasswordController = TextEditingController();
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
   String sessionUid = "";
@@ -94,18 +94,18 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.r),
-                                  borderSide: BorderSide(color: AppColor)),
-                              focusColor: AppColor,
+                                  borderSide: const BorderSide(color: appColor)),
+                              focusColor: appColor,
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.r),
                                 gapPadding: 5.sp,
-                                borderSide: BorderSide(color: AppColor),
+                                borderSide: const BorderSide(color: appColor),
                               ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.r),
-                                  borderSide: BorderSide(color: AppColor)),
+                                  borderSide: const BorderSide(color: appColor)),
                               labelText: "Enter Your Email",
-                              labelStyle: TextStyle(color: AppColor)),
+                              labelStyle: const TextStyle(color: appColor)),
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
                         ),
@@ -114,7 +114,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           validator: (val) {
                             String pattern =
                                 r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-                            RegExp regex = new RegExp(pattern);
+                            RegExp regex = RegExp(pattern);
                             if (val == null) {
                               return "Password cannot be empty";
                             } else if (!regex.hasMatch(val) &&
@@ -145,19 +145,19 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                         )),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.r),
-                                  borderSide: BorderSide(color: AppColor)),
-                              focusColor: AppColor,
+                                  borderSide: const BorderSide(color: appColor)),
+                              focusColor: appColor,
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15.r),
                                 gapPadding: 5.sp,
-                                borderSide: BorderSide(color: AppColor),
+                                borderSide: const BorderSide(color: appColor),
                               ),
                               errorMaxLines: 4,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.r),
-                                  borderSide: BorderSide(color: AppColor)),
+                                  borderSide: const BorderSide(color: appColor)),
                               labelText: "Enter Your Password",
-                              labelStyle: TextStyle(color: AppColor)),
+                              labelStyle: const TextStyle(color: appColor)),
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.text,
                         ),
@@ -195,28 +195,28 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                         borderRadius:
                                             BorderRadius.circular(15.r),
                                         borderSide:
-                                            BorderSide(color: AppColor)),
-                                    focusColor: AppColor,
+                                            const BorderSide(color: appColor)),
+                                    focusColor: appColor,
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(15.r),
                                       gapPadding: 5.sp,
-                                      borderSide: BorderSide(color: AppColor),
+                                      borderSide: const BorderSide(color: appColor),
                                     ),
                                     errorMaxLines: 4,
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(15.r),
                                         borderSide:
-                                            BorderSide(color: AppColor)),
+                                            const BorderSide(color: appColor)),
                                     labelText: "Confirm Your Password",
-                                    labelStyle: TextStyle(color: AppColor)),
+                                    labelStyle: const TextStyle(color: appColor)),
                                 textInputAction: TextInputAction.done,
                                 keyboardType: TextInputType.text,
                               )
                             : Container(),
                       ],
                     )),
-                Spacer(),
+                const Spacer(),
                 BlocConsumer<FirebaseauthBloc, FirebaseauthState>(
                   /* listenWhen: (previousState, currentState) {
                     if (previousState is OperationInProgress &&
@@ -233,8 +233,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: Text("Message"),
-                          content: Text(
+                          title: const Text("Message"),
+                          content: const Text(
                               "An email verification link has been sent to your email id. Please verify your email to continue."),
                           actions: [
                             ElevatedButton(
@@ -254,7 +254,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                             authSide: "Sign In"));
                                   }
                                 },
-                                child: Text("Ok"))
+                                child: const Text("Ok"))
                           ],
                         ),
                       );
@@ -290,15 +290,15 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: Text("Message"),
-                          content: Text(
+                          title: const Text("Message"),
+                          content: const Text(
                               "An email verification link has been sent to your email id. Please verify your email to continue."),
                           actions: [
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
                                 },
-                                child: Text("Ok"))
+                                child: const Text("Ok"))
                           ],
                         ),
                       );
@@ -306,14 +306,14 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: Text("Message"),
+                          title: const Text("Message"),
                           content: Text(state.errorMessage.toString()),
                           actions: [
                             ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
                                 },
-                                child: Text("Ok"))
+                                child: const Text("Ok"))
                           ],
                         ),
                       );
@@ -321,7 +321,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                   },
                   builder: (context, state) {
                     if (state is OperationInProgress) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                     return CommonButton(
                         text: args.authSide,

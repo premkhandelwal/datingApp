@@ -66,7 +66,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return null;
   }
 
-  ScrollController _controller = ScrollController();
+  final ScrollController _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -76,7 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         expand: true,
         builder: (context, controller) => Container(
               height: 100.h,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25),
@@ -90,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   children: [
                     CustomAppBar(
                         context: context,
-                        centerWidget: Text('Your Profile'),
+                        centerWidget: const Text('Your Profile'),
                         trailingWidget: Container()),
                     Stack(
                       alignment: Alignment.center,
@@ -127,7 +127,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 icon: Icon(
                                   Icons.add_a_photo,
                                   size: 30.sp,
-                                  color: AppColor,
+                                  color: appColor,
                                 ),
                               ),
                             ),
@@ -142,13 +142,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             gapPadding: 5.sp,
-                            borderSide: BorderSide(color: Colors.black45),
+                            borderSide: const BorderSide(color: Colors.black45),
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.r),
-                              borderSide: BorderSide(color: Colors.black45)),
+                              borderSide: const BorderSide(color: Colors.black45)),
                           labelText: "Name",
-                          labelStyle: TextStyle(color: Colors.black45)),
+                          labelStyle: const TextStyle(color: Colors.black45)),
                     ),
                     SizedBox(
                       height: 20.h,
@@ -159,13 +159,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             gapPadding: 5.sp,
-                            borderSide: BorderSide(color: Colors.black45),
+                            borderSide: const BorderSide(color: Colors.black45),
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.r),
-                              borderSide: BorderSide(color: Colors.black45)),
+                              borderSide: const BorderSide(color: Colors.black45)),
                           labelText: "Profession",
-                          labelStyle: TextStyle(color: Colors.black45)),
+                          labelStyle: const TextStyle(color: Colors.black45)),
                     ),
                     SizedBox(
                       height: 20.h,
@@ -178,19 +178,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             gapPadding: 5.sp,
-                            borderSide: BorderSide(color: Colors.black45),
+                            borderSide: const BorderSide(color: Colors.black45),
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.r),
-                              borderSide: BorderSide(color: Colors.black45)),
+                              borderSide: const BorderSide(color: Colors.black45)),
                           labelText: "Bio",
-                          labelStyle: TextStyle(color: Colors.black45)),
+                          labelStyle: const TextStyle(color: Colors.black45)),
                     ),
                     SizedBox(height: 20.h),
                     GridView.builder(
                       shrinkWrap: true,
                       controller: _controller,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           mainAxisSpacing: 1,
                           childAspectRatio: 3 / 1),
@@ -204,7 +204,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 color: _selectedInterests
                                         .contains(interests[index])
                                     ? Colors.white
-                                    : AppColor,
+                                    : appColor,
                               ),
                               backgroundColor: Colors.white,
                               label: Row(children: [
@@ -225,7 +225,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       : 0.sp,
                               labelPadding:
                                   EdgeInsets.symmetric(vertical: 8.0.sp),
-                              selectedColor: AppColor,
+                              selectedColor: appColor,
                               selected:
                                   _selectedInterests.contains(interests[index]),
                               onSelected: (selected) {
@@ -249,7 +249,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       },
                       builder: (context, state) {
                         if (state is UpdatingInfoState) {
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }

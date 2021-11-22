@@ -38,7 +38,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
           "interests": user.interests,
           "interestedIn": user.interestedin?.index,
           "profileImageUrl":
-              user.imageDownloadUrl != null ? user.imageDownloadUrl : null,
+              user.imageDownloadUrl,
           "locationCoordinates": user.locationCoordinates
         });
       });
@@ -55,7 +55,6 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
         uploadTask = ref.putFile(user.image!);
         await uploadTask.whenComplete(() async {
           user.imageDownloadUrl = await ref.getDownloadURL();
-          print(SharedObjects.prefs?.getString(SessionConstants.sessionUid));
           await collection
               .doc(SharedObjects.prefs?.getString(SessionConstants.sessionUid))
               .set({
@@ -76,7 +75,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
                     ? "Female"
                     : "Other",
             "profileImageUrl":
-                user.imageDownloadUrl != null ? user.imageDownloadUrl : null,
+                user.imageDownloadUrl,
             "lastLogin": DateTime.now()
           });
           await dataLessCollection
@@ -117,7 +116,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
   @override
   Future<void> uploadImages(List<File> images) async {
     try {
-      if (images.isEmpty) return null;
+      if (images.isEmpty) return;
       List<String> _downloadUrls = [];
       String? uid = SharedObjects.prefs?.getString(SessionConstants.sessionUid);
       for (var i = 0; i < images.length; i++) {
@@ -135,9 +134,7 @@ class ProfileDetailsProvider extends BaseProfileDetailProvider {
         });
       }
 
-      if (SessionConstants.sessionUser.images == null) {
-        SessionConstants.sessionUser.images = [];
-      }
+      SessionConstants.sessionUser.images ??= [];
       SessionConstants.sessionUser.images =
           SessionConstants.sessionUser.images! + images;
 

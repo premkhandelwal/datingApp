@@ -50,12 +50,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
       return Container(
           padding: EdgeInsets.all(7.sp),
           child: ClipRRect(
-            child: Container(
+            child: SizedBox(
               height: 350.h,
               child: Stack(
                 children: [
                   Center(
-                    child: Container(
+                    child: SizedBox(
                       height: 350.h,
                       width: 200.w,
                       child: imageUrl == null
@@ -100,7 +100,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         bottomLeft: Radius.circular(15.r),
                         bottomRight: Radius.circular(15.r),
                       ),
-                      child: Container(
+                      child: SizedBox(
                         height: 50.h,
                         width: 170.w,
                         child: BackdropFilter(
@@ -155,7 +155,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                                                       .toString()));
                                         }
                                     },
-                                    icon: Icon(Icons.chat));
+                                    icon: const Icon(Icons.chat));
                               }),
                           filter: ImageFilter.blur(
                               sigmaX: 10.0,
@@ -182,15 +182,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 CustomAppBar(
                   context: context,
                   canGoBack: false,
-                  centerWidget: Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          'Matches',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ],
-                    ),
+                  centerWidget: Column(
+                    children: [
+                      Text(
+                        'Matches',
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ],
                   ),
                   trailingWidget: IconsOutlinedButton(
                       icon: Icons.filter_list,
@@ -225,18 +223,18 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   if (state is FetchingAllUsersState ||
                       state is FetchingMatchedUsersState ||
                       (state is FetchedAllUsersState && _matchedUsersList.isEmpty)) {
-                    return Container(
+                    return SizedBox(
                         height: 350.h,
-                        child: Center(child: CircularProgressIndicator()));
+                        child: const Center(child: CircularProgressIndicator()));
                   } else if ((_matchedUsersList.isNotEmpty &&
                           state is FetchedMatchedUsersState) ||
                       _matchedUsersList.isNotEmpty) {
                     return Expanded(
                       child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         child: GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2, childAspectRatio: 2 / 3),
                             itemCount: _matchedUsersList.length,
                             itemBuilder: (context, index) {
@@ -245,9 +243,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
                       ),
                     );
                   } else {
-                    return Container(
+                    return SizedBox(
                         height: 350.h,
-                        child: Center(child: Text("No Matched Users")));
+                        child: const Center(child: Text("No Matched Users")));
                   }
                 })
               ],

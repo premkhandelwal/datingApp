@@ -1,6 +1,6 @@
 import 'package:dating_app/logic/data/user.dart';
 import 'package:dating_app/logic/providers/firebaseauth_provider.dart';
-import 'package:dating_app/logic/repositories/baseRepo.dart';
+import 'package:dating_app/logic/repositories/base_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthRepository extends BaseRepository {
@@ -13,8 +13,6 @@ class FirebaseAuthRepository extends BaseRepository {
   Future<CurrentUser?> signUpWithEmailPassword(
           String emailId, String password) =>
       authprovider.signUpWithEmailPassword(emailId, password);
-  /* Future<String?> signInWithPhoneNumber(String phoneNumber) =>
-      authprovider.signInWithPhoneNumber(phoneNumber); */
   Future<void> signOut() => authprovider.signOut();
   Future<void> sendOTP(
           String phoneNumber,

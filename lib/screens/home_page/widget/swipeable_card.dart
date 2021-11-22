@@ -30,29 +30,27 @@ class SwipeableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: OpenContainer(
-        openBuilder: (BuildContext context,
-            void Function({Object? returnValue}) action) {
-          return SwipeableCardFullScreen(
-            image: imageUrl,
-            personProfession: personProfession,
-            personBio: personBio,
-            personName: personName,
+    return OpenContainer(
+      openBuilder: (BuildContext context,
+          void Function({Object? returnValue}) action) {
+        return SwipeableCardFullScreen(
+          image: imageUrl,
+          personProfession: personProfession,
+          personBio: personBio,
+          personName: personName,
+          personAge: personAge,
+          swipeRight: swipeRight,
+          swipeLeft: swipeLeft,
+        );
+      },
+      closedBuilder: (BuildContext context, void Function() action) {
+        return SwipeableSingleCard(
+          personDistance: personDistance,
+            imageUrl: imageUrl,
             personAge: personAge,
-            swipeRight: swipeRight,
-            swipeLeft: swipeLeft,
-          );
-        },
-        closedBuilder: (BuildContext context, void Function() action) {
-          return SwipeableSingleCard(
-            personDistance: personDistance,
-              imageUrl: imageUrl,
-              personAge: personAge,
-              personName: personName,
-              personProfession: personProfession);
-        },
-      ),
+            personName: personName,
+            personProfession: personProfession);
+      },
     );
   }
 }

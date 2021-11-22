@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dating_app/const/app_const.dart';
 import 'package:dating_app/const/shared_objects.dart';
 import 'package:dating_app/logic/data/user.dart';
-import 'package:dating_app/logic/repositories/firebaseAuth_Repo.dart';
+import 'package:dating_app/logic/repositories/firebase_auth_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
@@ -13,24 +13,8 @@ part 'firebaseauth_state.dart';
 
 class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   FirebaseauthBloc({required this.firebaseAuthRepo})
-      : super(FirebaseauthInitial()) {
-    subscription =
-        firebaseAuthRepo.getInstance.authStateChanges().listen((user) async* {
-      if (user == null) {
-        yield UserLoggedOut();
-      } else {
-        yield UserLoggedIn(userUID: user.uid);
-      }
-    });
-  }
+      : super(FirebaseauthInitial());
   final FirebaseAuthRepository firebaseAuthRepo;
-  StreamSubscription<User?>? subscription;
-
-  @override
-  Future<void> close() {
-    subscription?.cancel();
-    return super.close();
-  }
 
   @override
   Stream<FirebaseauthState> mapEventToState(
@@ -93,7 +77,6 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
         yield UserLoggedIn(userUID: user.firebaseUser!.uid);
       }
     } catch (e) {
-      print(e.runtimeType);
       yield RequestedOperationFailed(errorMessage: e);
     }
   }
@@ -118,13 +101,6 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
       yield OperationInProgress();
 
       await firebaseAuthRepo.signOut();
-      firebaseAuthRepo.getInstance.authStateChanges().listen((user) async* {
-        if (user == null) {
-          yield UserLoggedOut();
-        } else {
-          yield UserLoggedIn(userUID: user.uid);
-        }
-      });
       yield UserLoggedOut();
     } catch (e) {
       yield RequestedOperationFailed(errorMessage: e);
@@ -134,8 +110,12 @@ class FirebaseauthBloc extends Bloc<FirebaseauthEvent, FirebaseauthState> {
   Stream<FirebaseauthState> _mapSendOtpRequesttoState(
       OtpSendRequested event) async* {
     try {
-      await firebaseAuthRepo.sendOTP(event.phoneNumber, event.codeSent,
-          event.verificationFailed, event.codeAutoRetrievalTimeout, event.resendToken);
+      await firebaseAuthRepo.sendOTP(
+          event.phoneNumber,
+          event.codeSent,
+          event.verificationFailed,
+          event.codeAutoRetrievalTimeout,
+          event.resendToken);
       yield OtpSent();
     } on Exception catch (e) {
       yield RequestedOperationFailed(errorMessage: e);

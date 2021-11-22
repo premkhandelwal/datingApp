@@ -21,18 +21,18 @@ void itIsAMatchPopUp(
               child: AlertDialog(
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0)),
-                content: Container(
+                content: SizedBox(
                   height: 600.h,
                   child: Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height: 360.h,
                         child: Stack(
                           children: [
                             Positioned(
                               right: 20,
                               top: 20,
-                              child: Container(
+                              child: SizedBox(
                                 height: 240.h,
                                 width: 140.w,
                                 child: Transform.rotate(
@@ -76,7 +76,7 @@ void itIsAMatchPopUp(
                             Positioned(
                               left: 20,
                               bottom: 10,
-                              child: Container(
+                              child: SizedBox(
                                 height: 240.h,
                                 width: 140.w,
                                 child: Transform.rotate(
@@ -117,8 +117,8 @@ void itIsAMatchPopUp(
                           ],
                         ),
                       ),
-                      Spacer(),
-                      Container(
+                      const Spacer(),
+                      SizedBox(
                         width: double.infinity,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
@@ -127,7 +127,7 @@ void itIsAMatchPopUp(
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
-                                .copyWith(color: AppColor),
+                                .copyWith(color: appColor),
                           ),
                         ),
                       ),
@@ -158,7 +158,7 @@ void itIsAMatchPopUp(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Keep swiping',
                           ),
@@ -172,11 +172,11 @@ void itIsAMatchPopUp(
           ),
         );
       },
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       barrierDismissible: true,
       barrierLabel: '',
       context: context,
       pageBuilder: (context, animation1, animation2) {
-        return Text('PAGE BUILDER');
+        return const Text('PAGE BUILDER');
       });
 }

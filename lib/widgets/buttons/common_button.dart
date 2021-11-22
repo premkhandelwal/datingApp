@@ -16,7 +16,7 @@ class CommonButton extends StatelessWidget {
       child: Text(text,style: TextStyle(fontSize: textSize),),
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        primary: AppColor,
+        primary: appColor,
         fixedSize: Size(350.sp, 56.sp),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0.r),
@@ -31,7 +31,7 @@ class IconsOutlinedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Size size;
   final double iconSize;
-  IconsOutlinedButton({
+  const IconsOutlinedButton({
     Key? key,
     required this.icon,
     required this.onPressed,
@@ -53,7 +53,7 @@ class IconsOutlinedButton extends StatelessWidget {
         child: Icon(
           icon,
           size: iconSize,
-          color: AppColor,
+          color: appColor,
         ),
       ),
     );
